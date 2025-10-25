@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2017 ForgeFlow
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+
+    <record id="action_stock_takeover_reason" model="ir.actions.act_window">
+        <field name="name">Reasons of Handover</field>
+        <field name="res_model">stock.takeover.reason</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_stock_takeover_reason"
+              name="Reasons of Handover"
+              parent="stock_request.menu_stock_request_operations"
+              action="action_stock_takeover_reason" sequence="80"/>
+
+</odoo>

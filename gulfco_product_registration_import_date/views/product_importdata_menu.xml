@@ -1,0 +1,5 @@
+<odoo>
+    <menuitem id="product_registration_menu" name="Product Registration Import Data"
+              action="gulfco_product_registration_import_date.action_product_registration_wizard"
+              parent="stock.menu_stock_inventory_control" sequence="1"/>
+</odoo>

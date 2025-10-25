@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ek_powerbi_connector.PowerBIDashboardMain" owl="1">
+        <div class="h-100 w-100 bg-white">
+            <div class="bd-highlight dashboard-main-block">
+                <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white m-2 rounded shadow" style="width: 20%;">
+                    <div class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none my-1 shadow-sm">
+                        <i class="fa fa-bar-chart fa-2x me-2 text-primary" aria-hidden="true"></i>
+                        <strong class="fs-4">PowerBI Reports</strong>
+                    </div>
+                    <div class="mx-2 mt-2">
+                        <input type="text" id="searchInput" t-on-input="onSearchSiderBarInput" class="form-control" placeholder="Search reports..."></input>
+                    </div>
+                    <div class="list-group list-group-flush border-bottom sidebar-scrollarea my-1 shadow rounded">
+                        <t t-foreach="Object.keys(state.powerBIReports)" t-as="value" t-key="value_index">
+                            <a href="#" t-attf-class="list-group-item list-group-item-action py-3 lh-tight search-pb-report-item {{state.sideBarActiveIndex ==  state.powerBIReports[value].id ? 'active': ''}}" aria-current="true" t-on-click="() => this.onClickReportItem(state.powerBIReports[value].id)">
+                                <div class="d-flex w-100 align-items-center justify-content-between">
+                                    <strong class="mb-1"><t t-out="state.powerBIReports[value]['name']"/></strong>
+                                    <t t-if="state.powerBIReports[value]['report_tag_id']">
+                                        <small>
+                                            <span class="badge bg-light"><t t-out="state.powerBIReports[value]['report_tag_id'][1]"/></span>
+                                        </small>
+                                    </t>
+                                    <t t-else="">
+                                    </t>
+                                </div>
+                                <div class="col-10 mb-1 small">
+                                    <t t-if="state.powerBIReports[value]['description']">
+                                        <t t-out="state.powerBIReports[value]['description']"/>
+                                    </t>
+                                    <t t-else="">
+                                    </t>
+                                </div>
+                            </a>
+                        </t>
+                    </div>
+
+                    <!-- <ul class="nav nav-pills flex-column mb-auto">
+                        <t t-foreach="state.powerBIReports" t-as="value" t-key="value['id']">
+                            <li class="nav-item">
+                              <a href="#" t-attf-class="nav-link {{state.sideBarActiveIndex ===  value['id'] ? 'active': ''}}" aria-current="page">
+                                <t t-out="value['name']"/>
+                              </a>
+                            </li>
+                        </t>
+                    </ul> -->
+                </div>
+
+
+                <div class="p-1 flex-grow-1 bd-highlight overflow-auto">
+                    <t t-if="is_powerbi_logged_in">
+                        <div class="d-flex justify-content-between my-2 rounded shadow-sm border">
+                            <div class="d-flex py-2 align-items-center">
+                                <strong class="px-3 fw-bold fs-3"><t t-out="state.powerBIReportName"/></strong>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <div class="d-flex align-items-center m-2">
+                                    <div class="d-flex flex-column align-items-center px-2">
+                                        <span class=" fw-bold"><t t-out="state.powerBIUserInfo.name"/></span>
+                                        <span><t t-out="state.powerBIUserInfo.email"/></span>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <button class="btn btn-info" t-on-click="signoutPowerBI">Signout</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div t-ref="powerbi-report-container" id="PowerBIreportContainer" class="d-none my-2 my-2 rounded border shadow-sm">
+                        </div>
+                        <t t-if="state.isLoadingDashboard">
+                            <t t-call="ek_powerbi_connector.dashboardLoadingTemplate"/>
+                        </t>
+                        <t t-else="">
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <div class="container">
+                            <button class="btn btn-primary" t-ref="powerbi-signin" id="signIn" t-on-click="powerBISignin">Sign In to Microsoft</button>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="ek_powerbi_connector.dashboardLoadingTemplate">
+        <div class="spinner-grow text-info" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </t>
+</templates>

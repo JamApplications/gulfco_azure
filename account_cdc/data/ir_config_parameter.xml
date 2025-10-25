@@ -1,0 +1,13 @@
+<odoo noupdate="1">
+
+    <record id="default_template_hand_over_cdc_config" model="ir.config_parameter">
+        <field name="key">account_cdc.default_notify_hand_over_template</field>
+        <field name="value" ref="account_cdc.hand_over_cdc_mail_template"/>
+    </record>
+
+    <record id="default_template_hand_over_reject_cdc_config" model="ir.config_parameter">
+        <field name="key">account_cdc.default_notify_hand_over_reject_template</field>
+        <field name="value" ref="account_cdc.hand_over_reject_mail_template"/>
+    </record>
+
+</odoo>

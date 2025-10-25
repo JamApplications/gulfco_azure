@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="fsm_order_form_inherit_from_customer_stock_count" model="ir.ui.view">
+        <field name="name">fsm.order.form.inherit.shelf.display</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_open_stock_store_count"
+                        type="object"
+                        string="Customer Stock Count"
+                        class="btn-primary"
+                        groups="plnx_sales_team.group_sales_team_pre_sales"/>
+            </header>
+        </field>
+    </record>
+</odoo>

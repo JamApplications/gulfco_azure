@@ -1,0 +1,47 @@
+<odoo>
+
+    <record id="action_sales_order_report_wizard" model="ir.actions.act_window">
+        <field name="name">Sales Order Excel Report</field>
+        <field name="res_model">sales.order.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_sales_order_report_wizard_form" model="ir.ui.view">
+        <field name="name">sales.order.report.wizard.form</field>
+        <field name="model">sales.order.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sales Order Report Wizard">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="invoice_date_from"/>
+                            <field name="invoice_date_to"/>
+                            <field name="show_invoice_dates"/>
+                        </group>
+                        <group invisible="not show_invoice_dates">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <footer>
+                            <button string="Generate Report" type="object" name="generate_report" class="btn-primary"/>
+                            <button string="Close" class="btn-secondary" special="cancel"/>
+                        </footer>
+                        <group invisible="file_data == False">
+                            <field name="file_name" readonly="1"/>
+                            <field name="file_data" filename="file_name" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_sales_order_report"
+              name="Sales Order Report By Date"
+              parent="sale.menu_sale_report"
+              action="action_sales_order_report_wizard"
+              sequence="100"/>
+
+
+</odoo>

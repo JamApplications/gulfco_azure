@@ -1,0 +1,3 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_credit_hold_reason,access_credit_hold_reason,model_credit_hold_reason,,1,1,1,1
+gulfco_cash_transaction_limit.access_tl_expiry_report,access_tl_expiry_report,gulfco_cash_transaction_limit.model_tl_expiry_report,,1,1,0,0

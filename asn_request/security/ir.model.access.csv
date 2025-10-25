@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_asn_request,asn.request,model_asn_request,base.group_user,1,1,1,1
+access_asn_request_line,asn.request.line,model_asn_request_line,base.group_user,1,1,1,1
+access_asn_stage,asn.stage,model_asn_stage,base.group_user,1,1,1,1
+access_asn_stock_landed_cost,asn.stock.landed.cost,model_asn_stock_landed_cost,base.group_user,1,1,1,1

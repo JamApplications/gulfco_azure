@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sale_commission_plan_view_form_inherit" model="ir.ui.view">
+            <field name="name">sale.commission.plan.view.form</field>
+            <field name="model">sale.commission.plan</field>
+            <field name="inherit_id" ref="sale_commission.sale_commission_plan_view_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//div[@name='button_box']/button[@name='action_open_commission']" position="replace">
+                    <button name="action_open_commission" type="object"
+                            class="oe_stat_button" icon="fa-dollar"
+                            invisible="state in ['draft', 'cancel'] or kpi_type == 'msl_availability'">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">Commissions</span>
+                        </div>
+                    </button>
+
+                    <button name="action_open_msl_commission" type="object"
+                            class="oe_stat_button" icon="fa-dollar"
+                            invisible="state in ['draft', 'cancel'] or kpi_type != 'msl_availability'">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">MSL Commissions</span>
+                        </div>
+                    </button>
+                </xpath>
+
+                <xpath expr="//label[@for='date_from']" position="before">
+                    <field name="job_position_id"/>
+                    <field name="commission_kpi_id"/>
+                </xpath>
+
+                <xpath expr="//notebook[@name='main_book']/page" position="replace">
+                    <page string="Commissions"
+                          invisible="type == 'achieve' or kpi_type in ('collection', 'msl_availability', 'journal_plan')">
+                        <group>
+                            <group>
+                                <field name="target_commission_ids" readonly="state != 'draft'" nolabel="1">
+                                    <list editable="bottom" default_order="amount">
+                                        <control>
+                                            <create string="Add a new commission level"/>
+                                        </control>
+                                        <field name="target_rate_from" widget="percentage"/>
+                                        <field name="target_rate_to" widget="percentage"/>
+                                        <field name="target_rate" widget="percentage" column_invisible="0" optional="hide"/>
+                                        <field name="amount" force_save="1" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                        <field name="amount_rate" widget="percentage" force_save="1" optional="hide"/>
+                                        <field name="currency_id" column_invisible="1"/> <!-- For monetary field -->
+                                    </list>
+                                </field>
+                            </group>
+                            <group>
+                                <field name="target_commission_graph" widget="commission_graph" nolabel="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+
+                <xpath expr="//page/field[@name='target_ids']" position="replace">
+                    <field name="target_ids" readonly="state != 'draft'">
+                        <list create="0" delete="0" editable="bottom">
+                            <field name="name" force_save="1"/>
+                            <field name="date_from" optional="hide" force_save="1"/>
+                            <field name="date_to" optional="hide" force_save="1"/>
+                            <field name="kpi_type" column_invisible="1"/>
+                            <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                                   column_invisible="parent.kpi_type in ('msl_availability', 'journal_plan')"/>
+                            <field name="amount_percentage"
+                                   widget="percentage"
+                                   column_invisible="'msl_availability' != parent.kpi_type"/>
+                            <field name="target_plan" column_invisible="'journal_plan' != parent.kpi_type"/>
+                            <field name="currency_id" column_invisible="1"/> <!-- For monetary field -->
+                        </list>
+                    </field>
+
+                </xpath>
+                <xpath expr="//notebook[@name='main_book']/page[3]" position="replace">
+                    <page string="Achievements" invisible="kpi_type == 'msl_availability'">
+                        <field name="achievement_ids" readonly="state != 'draft'">
+                            <list editable="bottom">
+                                <control>
+                                    <create string="Add a new achievement"/>
+                                </control>
+                                <field name="type" required="1"/>
+                                <field name="product_id" placeholder="All products"/>
+                                <field name="product_categ_id" placeholder="All categories"/>
+                                <field name="rate" widget="percentage" column_invisible="1"/>
+                                <!--                                 column_invisible="parent.commission_kpi_id"/>-->
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+
+                <xpath expr="//notebook[@name='main_book']/page[5]" position="replace">
+                    <page string="Sales People">
+                        <field name="user_ids">
+                            <list editable="bottom">
+                                <control>
+                                    <create string="Add a new Sales Person"/>
+                                </control>
+                                <field name="user_id" column_invisible="1"/>
+                                <field name="partner_id"/>
+                                <field name="date_from" required="True"/>
+                                <field name="date_to"/>
+                                <field name="other_plans" widget="many2many_tags" readonly="True"/>
+                            </list>
+                        </field>
+                        <button string="Add Multiple Salespersons" type="action" name="%(sale_commission.sale_subscription_change_customer_wizard_action)d"
+                                groups="base.group_no_one"/>
+                    </page>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page string="MSL Commission Report Data" invisible="1">
+                        <field name="msl_commission_report_ids"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

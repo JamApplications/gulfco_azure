@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="stock_picking_form_inherit_task" model="ir.ui.view">
+    <field name="name">stock.picking.form.task</field>
+    <field name="model">stock.picking</field>
+    <field name="inherit_id" ref="stock.view_picking_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button invisible="task_count == 0" name="action_view_tasks" type="object"
+          class="oe_stat_button" icon="fa-pencil">
+          <field name="task_count" string="Tasks" widget="statinfo" />
+        </button>
+      </xpath>
+<!--      <xpath expr="//header" position="inside">-->
+<!--        <button invisible="picking_type_code != 'incoming'" string="Create Task" name="action_create_project_task" type="object" class="oe_link" />-->
+<!--      </xpath>-->
+    </field>
+  </record>
+
+</odoo>

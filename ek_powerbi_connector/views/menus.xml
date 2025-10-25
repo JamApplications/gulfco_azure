@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem name="PowerBI" id="menu_main_powerbi_connector"
+        sequence="1"/>
+
+    <menuitem name="Dashboard" id="menu_ek_powerbi_connector_dashboard_main"
+        action="action_ek_powerbi_connector_dashboard_main"
+        parent="menu_main_powerbi_connector"
+        groups="ek_powerbi_connector.group_powerbi_user_read_only"
+        sequence="1"/>
+
+    <menuitem name="PowerBI Dataset" id="menu_pb_dataset_configuration"
+        action="pb_dataset_configuration_action"
+        parent="menu_main_powerbi_connector"
+        sequence="10"/>
+
+    <menuitem name="Dashboard Configuration" id="menu_pb_dashboard_configuration"
+        action="pb_dashboard_configuration_action"
+        parent="menu_main_powerbi_connector"
+        sequence="15"/>
+        
+</odoo>

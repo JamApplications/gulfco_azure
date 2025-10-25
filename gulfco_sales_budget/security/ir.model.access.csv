@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_model_sales_budget,access.sales.budget,model_sales_budget,account.group_account_readonly,1,1,1,1
+access_model_sales_budget_line,access.sales.budget.line,model_sales_budget_line,account.group_account_readonly,1,1,1,1
+access_model_sale_budget_report,access.sale.budget.report,model_sale_budget_report,,1,1,1,1

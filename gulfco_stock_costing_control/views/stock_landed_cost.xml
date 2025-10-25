@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id='gulfco_view_stock_landed_cost_form_inherit' model='ir.ui.view'>
+        <field name="name">gulfco.view.stock.landed.cost.form.inherit</field>
+        <field name="model">stock.landed.cost</field>
+        <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='valuation_adjustment_lines']//list//field[@name='former_cost']" position="after">
+                <field name="excise_price"/>
+                <field name="excise_price_total"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Landed Cost View">
+                    <field name="summery_line_ids" readonly="1">
+                        <list editable="bottom">
+                            <field name="item_code"/>
+                            <field name="trx_qty"/>
+                            <field name="unit_price"/>
+                            <field name="currency_code"/>
+                            <field name="po_cost" sum="Total"/>
+                            <field name="po_cost_local" sum="Total"/>
+                            <field name="unit_excise_cost" sum="Total"/>
+                            <field name="excise_duty" sum="Total"/>
+                            <field name="hdr_charges" sum="Total"/>
+                            <field name="total_cost_aed" sum="Total"/>
+                            <button name="action_view_total_cost_breakdown" type="object" icon="fa-info-circle" readonly="not total_cost_aed"/>
+                            <field name="landed_cost_per_unit" sum="Total"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

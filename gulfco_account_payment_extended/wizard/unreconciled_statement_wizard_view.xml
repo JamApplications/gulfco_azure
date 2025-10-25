@@ -1,0 +1,26 @@
+<!-- views/unreconciled_statement_wizard.xml -->
+<odoo>
+    <record id="view_unreconciled_statement_wizard_form" model="ir.ui.view">
+        <field name="name">unreconciled.statement.wizard.form</field>
+        <field name="model">unreconciled.statement.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Unreconciled Bank Statement Lines">
+                <group>
+                    <p>There are still unreconciled bank statement lines in the period you want to lock.You should either reconcile or delete them.</p>
+                </group>
+                <footer>
+                    <button name="action_statement_line_ids" string="Show Unreconciled Bank Statement Line" type="object" class="btn-primary"/>
+                    <button name="action_postpone" string="Postpone" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Close" type="object" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_unreconciled_statement_wizard" model="ir.actions.act_window">
+        <field name="name">Unreconciled Statement Lines</field>
+        <field name="res_model">unreconciled.statement.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

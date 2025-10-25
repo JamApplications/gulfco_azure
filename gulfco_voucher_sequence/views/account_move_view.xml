@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_account_move_form_inherit_voucher_sequence" model="ir.ui.view">
+        <field name="name">account.move.inherit.voucher.sequence</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                <field name="voucher_number" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_account_payment_form_inherit_voucher_sequence" model="ir.ui.view">
+        <field name="name">account.payment.inherit.voucher.sequence</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='is_internal_transfer']" position="before">
+                <field name="voucher_number"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,20 @@
+{
+    "name": "Advance Payment Sale And Purchase",
+    "summary": "",
+    "version": "18.0.0.0.1",
+    'author': "Plennix Technologies",
+    'website': "https://www.plennix.com",
+    "category": "Accounting",
+    "license": "AGPL-3",
+    "depends": ['eg_advance_payment_in_purchase', 'eg_advance_payment_in_sale'],
+    "data": [
+        'views/account_payment_custom_view.xml',
+        'views/account_move.xml',
+        'views/res_partner_views.xml',
+        'views/account_journal.xml',
+        'views/advance_payment_action_xlsx.xml',
+    ],
+    'application': False,
+    'installable': True,
+    'auto_install': False,
+}

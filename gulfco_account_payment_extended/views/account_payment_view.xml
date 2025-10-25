@@ -1,0 +1,317 @@
+<odoo>
+     <record id="gulfco_account_payment_residual_tree_inherit" model="ir.ui.view">
+        <field name="name">gulfco.account.payment.residual.tree.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_company_currency_signed']" position="after">
+                <field name="payment_amount_residual"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_account_payment_form_inherit_custodian" model="ir.ui.view">
+        <field name="name">account.payment.form.custodian</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="plnx_gulfco_sales_commission.view_account_payment_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='responsible_id']" position="after">
+                <field name="custodian_id" domain="[('responsible_custodian','=',responsible_id)]" required="payment_type == 'inbound'"/>
+                <field name="payment_mode" widget="radio" options="{'horizontal': True}"/>
+                <field name="external_email" required="0" invisible="payment_type != 'inbound'"/>
+            </xpath>
+            <xpath expr="//field[@name='responsible_id']" position="attributes">
+                <attribute name="domain">['|',('contact_type','=','worker'),('employee_ids', '!=', False)]</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_account_payment_form_inherit_pdc_inherit_custom" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit.pdc.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_pdc.account_payment_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_open_pdc_receivable_re_cheque_wizard']" position="attributes">
+                <attribute name="invisible">is_pdc_payment == False or pdc_state not in ['bounced', 'returned'] or payment_type == 'inbound'</attribute>
+            </xpath>
+            <!-- <xpath expr="//label[@for='pdc_ref']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc'</attribute>
+            </xpath> -->
+            <!-- <xpath expr="//div//field[@name='pdc_ref']" position="attributes"> -->
+                <!-- <attribute name="invisible">payment_mode != 'pdc'</attribute> -->
+                <!-- <attribute name="required">payment_mode == 'pdc'</attribute> -->
+            <!-- </xpath> -->
+            <xpath expr="//field[@name='pdc_ref']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc'</attribute>
+                <attribute name="required">payment_mode == 'pdc'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='due_date']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc'</attribute>
+            </xpath>
+<!--            <xpath expr="//field[@name='cheque_owner_id']" position="attributes">-->
+<!--                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable</attribute>-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='cheque_owner_id']" position="after">
+                <field name="cheque_owner" invisible="payment_mode != 'pdc' or payment_type != 'inbound'"/>
+            </xpath>
+            <xpath expr="//field[@name='cheque_owner_id']" position="attributes">
+                <attribute name="invisible">payment_mode not in ['pdc','cdc'] or payment_type == 'inbound'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='beneficiary_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='beneficiary_name']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable</attribute>
+            </xpath>
+            <xpath expr="//field[@name='cheque_scanning']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='pdc_payable_note']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='pdc_bank_id']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable</attribute>
+            </xpath>
+            
+            <!-- Hide Cheque fields,buttons for Regular Bank Payments -->
+            <xpath expr="//button[@name='action_open_pdc_receivable_bounce_wizard']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable or pdc_state not in ['collected']</attribute>
+            </xpath>              
+            <xpath expr="//button[@name='action_create_pdc_receivable_collection_fees']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable or pdc_state not in ['collected']</attribute>
+            </xpath>            
+            <xpath expr="//button[@name='action_open_pdc_receivable_cashed_wizard']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable or state != 'in_process' or pdc_state not in ['registered', 'bounced']</attribute>
+            </xpath>            
+            <xpath expr="//button[@name='action_open_pdc_receivable_collect_wizard']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable or state != 'in_process' or pdc_state != 'deposit' or is_pdc_collected</attribute>
+            </xpath>                 
+            <xpath expr="//button[@name='action_draft_pdc_receivable']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable or state != 'in_process' or pdc_state != 'registered'</attribute>
+            </xpath>                 
+            <xpath expr="//widget[@data-id='pdc-registered']" position="attributes"> 
+                <attribute name="invisible">payment_mode != 'pdc' or state != 'in_process' or is_pdc_payable or pdc_state != 'registered'</attribute>
+            </xpath>               
+            <xpath expr="//widget[@data-id='pdc-payable-registered']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or state != 'in_process' or is_pdc_payable == False or pdc_payable_state != 'registered'</attribute>
+            </xpath>                      
+            <xpath expr="//widget[@data-id='cashed-pdc']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or pdc_state != 'cashed'</attribute>
+            </xpath>             
+            <xpath expr="//widget[@data-id='deposit-pdc']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or pdc_state != 'deposit'</attribute>
+            </xpath>            
+            <xpath expr="//widget[@data-id='collected-pdc']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or pdc_state != 'collected'</attribute>
+            </xpath>                    
+            <xpath expr="//widget[@data-id='pdc-payable-cleared']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or state != 'in_process' or is_pdc_payable == False or pdc_payable_state != 'cleared'</attribute>
+            </xpath>              
+            <xpath expr="//widget[@data-id='pdc-payable-delivered']" position="attributes">
+                <attribute name="invisible">payment_mode != 'pdc' or state != 'in_process' or is_pdc_payable == False or pdc_payable_state != 'delivered'</attribute>
+            </xpath>            
+        </field>
+    </record>
+
+    <record id="account_payment_cdc_form_inherit_custom_payment_mode_cdc_1" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_cdc.account_payment_cdc_form_inherit"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//label[@for='cdc_ref']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc'</attribute>
+            </xpath> -->
+            <!-- <xpath expr="//div//field[@name='cdc_ref']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc'</attribute>
+                <attribute name="required">payment_mode == 'cdc'</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='cheque_owner_id']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or payment_type == 'inbound'</attribute>
+            </xpath>
+             <xpath expr="//field[@name='cheque_owner_id']" position="after">
+                <field name="cheque_owner" invisible="is_cdc_payment == False or payment_type != 'inbound'" required="is_cdc_payment == True and payment_type == 'inbound'" />
+            </xpath>
+            <xpath expr="//field[@name='cdc_ref']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc'</attribute>
+                <attribute name="required">payment_mode == 'cdc'</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_cdc_receivable_bounce_wizard']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or cdc_state not in ['collected']</attribute>
+            </xpath>                        
+            <xpath expr="//button[@name='action_open_cdc_receivable_cashed_wizard']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or state != 'in_process' or cdc_state not in ['registered', 'bounced']</attribute>
+            </xpath>              
+            <xpath expr="//button[@name='action_cdc_receivable_deposit_wizard']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or state != 'in_process' or cdc_state not in ['registered', 'bounced']</attribute>
+            </xpath>              
+            <xpath expr="//button[@name='action_open_cdc_receivable_collect_wizard']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or cdc_state != 'deposit' or payment_type == 'inbound'</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_cdc_receivable_re_cheque_wizard']" position="attributes">
+                <attribute name="invisible">is_cdc_payable or is_cdc_payment == False or cdc_state not in ['bounced', 'returned'] or payment_type == 'inbound'</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_cdc_receivable_re_collect_wizard']" position="attributes">
+                <attribute name="invisible">is_cdc_payable or is_cdc_payment == False or cdc_state not in ['bounced','returned'] or ( payment_type == 'inbound' and cdc_state == 'returned')</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel_cdc']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or state != 'in_process' or cdc_state != 'registered'</attribute>
+            </xpath>              
+            <xpath expr="//button[@name='action_return_cdc']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or cdc_state != 'bounced'</attribute>
+            </xpath>              
+            <xpath expr="//button[@name='action_draft_cdc_receivable']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or state != 'in_process' or cdc_state != 'registered'</attribute>
+            </xpath>  
+            <xpath expr="//widget[@data-id='cdc-registered']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or state != 'in_process' or cdc_state != 'registered'</attribute>
+            </xpath>                    
+            <xpath expr="//widget[@data-id='cdc-payable-registered']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or state != 'in_process' or is_cdc_payable == False or cdc_payable_state != 'registered'</attribute>
+            </xpath>            
+            <xpath expr="//widget[@data-id='cdc-cashed']" position="attributes">
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable or cdc_state != 'cashed'</attribute>
+            </xpath>   
+        </field>
+    </record>    
+    <record id="account_payment_inherit_form_inherit_custom_payment_mode_cdc" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_cdc.account_payment_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_amount']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>            
+            <xpath expr="//field[@name='advance_amount']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>    
+    <record id="account_payment_inherit_form_inherit_custom_payment_mode_pdc" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_pdc.account_payment_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_amount']" position="attributes">
+                <attribute name="invisible">payment_mode in ['bank', 'cash']</attribute>
+            </xpath>            
+            <xpath expr="//field[@name='advance_amount']" position="attributes">
+                <attribute name="invisible">payment_mode in ['bank', 'cash']</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_payment_form_inherit_draft_journal" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit.draft.journal</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id'][1]" position="attributes">
+                <attribute name="context">{'is_vendor_payment':payment_type == 'outbound'}</attribute>
+            </xpath>
+               <xpath expr="//field[@name='partner_id'][2]" position="attributes">
+                <attribute name="context">{'is_vendor_payment':payment_type == 'outbound'}</attribute>
+            </xpath>
+            <xpath expr="//form" position="attributes">
+                <attribute name="js_class">is_readonly_payment</attribute>
+            </xpath>
+            <xpath expr="//group[@name='group2']//field[@name='payment_method_line_id']" position="after">
+                <field name="is_pay_by_link" invisible="1"/>
+                <field name="transaction_reference" invisible="not is_pay_by_link"/>
+                <field name="authorization_code" invisible="not is_pay_by_link" required="is_pay_by_link"/>
+                <field name="payment_method_payment" invisible="not is_pay_by_link" required="is_pay_by_link"/>
+                <field name="holder_card_name" invisible="not is_pay_by_link"/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <group invisible="state != 'draft' or not advance_sale_purchase">
+                    <!-- <separator string="Draft Journal Entry" colspan="4"/> -->
+                    <field name="move_id" string="Draft Entry" readonly="1" invisible="state != 'draft'" class="w-auto"/>
+                    <field name="draft_move_line_ids" invisible="state != 'draft' or not move_id" mode="list" readonly="0" no_label="1" context="{'default_currency_id': currency_id or move_id.currency_id or company_currency_id,}">
+                        <list editable="bottom" string="Draft Journal Items">
+                            <field name="account_id" readonly="0" domain="[('company_ids', 'parent_of', parent.company_id),
+                                                                          ('deprecated', '=', False), ('account_type', '!=', 'off_balance')]"/>
+                            <field name="debit" readonly="1" />
+                            <field name="credit" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+            <field name="partner_id" position="after">
+                <field name="customer_code"/>
+                <field name="vendor_code" invisible="payment_type != 'outbound'"/>
+                <field name="collector_name" readonly="0"/>
+                <field name="journal_type" invisible="1"/>
+                <field name="payment_method_code" invisible="1"/>
+            </field>
+            <xpath expr="//div[@name='amount_div']/field[@name='currency_id']" position="attributes">
+                <attribute name="readonly">(journal_type != 'bank' or payment_method_code != 'manual') and payment_type == 'inbound'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_supplier_payment_tree_inherit_gulfco" model="ir.ui.view">
+        <field name="name">account.supplier.payment.list.inherit.gulfco</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="vendor_code"/>
+            </field>
+        </field>
+    </record>
+    
+    <record id="account_payment_search_inherit_vendor_code" model="ir.ui.view">
+        <field name="name">account.payment.search.inherit.vendor.code</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search//field[@name='partner_id']" position="after">
+                <field name="vendor_code" string="Vendor Code"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Form View to Modify it -->
+    <!--    <record id="account_payment_cdc_form_inherit_custom_payment_mode_cdc_1" model="ir.ui.view">-->
+    <!--        <field name="name">account.payment.form.inherit</field>-->
+    <!--        <field name="model">account.payment</field>-->
+    <!--        <field name="inherit_id" ref="account_cdc.account_payment_inherit_form"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--                <xpath expr="//label[@for='cdc_ref']" position="attributes">-->
+    <!--                    <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--                </xpath>-->
+    <!--                <xpath expr="//div//field[@name='cdc_ref']" position="attributes">-->
+    <!--                    <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--                    <attribute name="required">payment_mode == 'cdc'</attribute>-->
+    <!--                </xpath>-->
+    <!--                <xpath expr="//field[@name='cdc_ref']" position="attributes">-->
+    <!--                    <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--                    <attribute name="required">payment_mode == 'cdc'</attribute>-->
+    <!--                </xpath>-->
+    <!--            <xpath expr="//field[@name='cdc_payable_note']" position="attributes">-->
+    <!--                <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--            </xpath>-->
+    <!--            <xpath expr="//field[@name='cdc_bank_id']" position="attributes">-->
+    <!--                <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--                <attribute name="required">payment_mode != 'cdc'</attribute>-->
+    <!--            </xpath>-->
+    <!--            <xpath expr="//field[@name='due_date'][1]" position="attributes">-->
+    <!--                <attribute name="invisible">1</attribute>-->
+    <!--            </xpath>-->
+    <!--            <xpath expr="//field[@name='due_date'][2]" position="attributes">-->
+    <!--                <attribute name="invisible">1</attribute>-->
+    <!--            </xpath>-->
+    <!--            <xpath expr="//field[@name='cheque_owner_id']" position="attributes">-->
+    <!--                <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--            </xpath>-->
+    <!--            <xpath expr="//field[@name='cheque_scanning']" position="attributes">-->
+    <!--                <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--            </xpath>-->
+    <!--            <xpath expr="//field[@name='beneficiary_id']" position="attributes">-->
+    <!--                <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--            </xpath>-->
+    <!--            <xpath expr="//field[@name='cdc_state']" position="attributes">-->
+    <!--                <attribute name="invisible">payment_mode != 'cdc'</attribute>-->
+    <!--            </xpath>-->
+    <!--        </field>-->
+    <!--    </record>-->
+</odoo>

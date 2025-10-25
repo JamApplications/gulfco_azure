@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+            <record model="ir.ui.view" id="view_product_category_form_inherit">
+                <field name="name">view.product.category.form.inherit</field>
+                <field name="model">product.category</field>
+                <field name="inherit_id" ref="product.product_category_form_view"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='parent_id']" position="after">
+                        <field name="is_it"/>
+                    </xpath>
+                </field>
+            </record>
+
+
+            <record model="ir.ui.view" id="view_purchase_order_form_inherit">
+                <field name="name">view.purchase.order.form.inherit</field>
+                <field name="model">purchase.order</field>
+                <field name="inherit_id" ref="purchase.purchase_order_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='partner_id']" position="after">
+                        <field name="sdk_ref" required="it_check"/>
+                        <field name="it_check" invisible="1"/>
+                    </xpath>
+
+                    <xpath expr="//button[@name='button_confirm']" position="after">
+                        <button name="action_gosm" type="object" string="Group OSM IT Approve"
+                                groups="jam_purchase.group_purchase_approval_gosm"
+                                invisible="state != 'submitted'"/>
+
+                        <button name="action_gcio" type="object" string="Group CIO Approve"
+                                groups="jam_purchase.group_purchase_approval_gcio"
+                                invisible="state != 'osm_it'"/>
+                    </xpath>
+
+                </field>
+            </record>
+    </data>
+</odoo>

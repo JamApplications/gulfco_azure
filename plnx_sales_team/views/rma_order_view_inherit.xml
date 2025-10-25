@@ -1,0 +1,29 @@
+<odoo>
+    <record id="plnx_rma_form_view_inherit" model="ir.ui.view">
+        <field name="name">rma.form.view.fieldservice</field>
+        <field name="model">rma</field>
+<!--        <field name="inherit_id" ref="plnx_rma_order.plnx_rma_order_form_view"/>-->
+        <field name="inherit_id" ref="rma.rma_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="responsible_worker_id"  readonly="state in ['locked', 'cancelled']" domain="[('internal_user','=',user_id),('fsm_person', '=', True)]"/>
+            </xpath>
+            <xpath expr="//field[@name='priority']" position="after">
+                <field name="project_id"  readonly="state in ['locked', 'cancelled']"/>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="visit_id"  readonly="state in ['locked', 'cancelled']"/>
+            </xpath>
+
+            <xpath expr="//field[@name='procurement_group_id']" position="replace">
+                <field name="procurement_group_id" readonly="state not in ['draft', 'confirmed', 'received']" invisible="visit_id != False"/>
+            </xpath>
+
+            <xpath expr="//field[@name='team_id']" position="replace">
+                 <field name="team_id" readonly="state in ['locked', 'cancelled']" invisible="1"/>
+                 <field name="crm_team_id"  force_save="1" readonly="state in ['locked', 'cancelled']" required="1"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="view_move_form_inherit_references_tab" model="ir.ui.view">
+    <field name="name">account.move.form.inherit.references.tab</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form" />
+    <field name="arch" type="xml">
+      <!-- Insert after Payment tab -->
+      <xpath expr="//page[@name='other_info']" position="after">
+        <page string="References" name="references_tab" invisible = "move_type != 'in_invoice'">
+          <group>
+            <group>
+              <field name="prepaid_account"/>
+              <field name="original_value"/>
+              <field name="asset_number"/>
+              <field name="ytd_amortization"/>
+              <field name="prepaid_account_2"/>
+              <field name="previous_bill_no_ref"/>
+              <field name="payment_terms_ref"/>
+              <field name="property_type"/>
+            </group>
+            <group>
+              <field name="contract_no"/>
+              <field name="lessor_name_contract"/>
+              <field name="lessee_name_contract"/>
+              <field name="property_location"/>
+              <field name="unit_details"/>
+              <field name="other_details"/>
+              <field name="contract_start_date"/>
+              <field name="contract_end_date"/>
+              <field name="lessor_type"/>
+            </group>
+          </group>
+        </page>
+      </xpath>
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_tax_vat_code" model="ir.ui.view">
+        <field name="name">sale.order.form.view.tax_vat_code</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/list/field[@name='tax_id']" position="after">
+                <field name="tax_vat_code_ids" widget="many2many_tags" options="{'no_create': True}" 
+                       domain="[('id', 'in', parent.allowed_tax_ids)]" 
+                       context="{'show_vat_code': True ,'active_test': True}" readonly="qty_invoiced &gt; 0 or is_downpayment" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list/field[@name='tax_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', parent.allowed_tax_ids)]</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

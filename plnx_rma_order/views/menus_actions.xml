@@ -1,0 +1,11 @@
+<odoo>
+    <data>
+        <record model="ir.actions.act_window" id="action_rma_order">
+            <field name="name">RMA Order</field>
+            <field name="res_model">rma.order</field>
+            <field name="view_mode">list,form</field>
+            <field name="target">current</field>
+        </record>
+        <menuitem id="rma_order_menu" name="RMA Order" parent="rma.rma_menu" action="plnx_rma_order.action_rma_order" sequence="11"/>
+    </data>
+</odoo>

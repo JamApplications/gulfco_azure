@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="view_account_move_line_reconcile_search_gulfco_reconciled" model="ir.ui.view">
+        <field name="name">account.move.line.reconcile.search.gulfco.reconciled</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account_accountant.view_account_move_line_reconcile_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='reconcilable_account']" position="before">
+               <filter string="Reconciled" domain="[('full_reconcile_id', '!=', False)]" name="reconciled_move_lines" />
+            </xpath>
+        </field>
+    </record>
+    <record id="account_accountant.action_move_line_posted_unreconciled" model="ir.actions.act_window">
+        <field name="domain">[('display_type', 'not in', ('line_section', 'line_note')), ('account_id.reconcile', '=', True), ('parent_state', '=', 'posted')]</field>
+<!--        <field name="context">{'journal_type': 'general', 'search_default_unreconciled': True, 'search_default_group_by_account': True, 'search_default_group_by_partner': True,'search_default_reconciled_move_lines':1}</field>-->
+    </record>
+</odoo>

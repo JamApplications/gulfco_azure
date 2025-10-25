@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="assessment_vendor_result_view_list" model="ir.ui.view">
+        <field name="name">assessment_vendor_result_view_list</field>
+        <field name="model">assessment.vendor.result</field>
+        <field name="arch" type="xml">
+            <list>
+<!--                <field name="sequence" widget="handle"/>-->
+                <field name="name"/>
+                <field name="criteria_id" />
+                <field name="note" />
+                <field name="criteria_domain"/>
+
+<!--                <field name="status"/>-->
+<!--                <field name="score"/>-->
+<!--                <field name="weightage_point"/>-->
+<!--                <field name="point_scored"/>-->
+            </list>
+        </field>
+    </record>
+    <record id="assessment_vendor_result_view_filter" model="ir.ui.view">
+        <field name="name">assessment_vendor_result_view_filter</field>
+        <field name="model">assessment.vendor.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="criteria_id"/>
+<!--                <field name="status"/>-->
+            </search>
+        </field>
+    </record>
+    <record id="assessment_vendor_result_view_form" model="ir.ui.view">
+        <field name="name">assessment_vendor_result_view_form</field>
+        <field name="model">assessment.vendor.result</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+<!--                            <field name="sequence" />-->
+                            <field name="name" />
+                            <field name="criteria_id" />
+<!--                            <field name="criteria_domain" widget="domain" options="{'model':'assessment.vendor.domain'}"/>-->
+                            <field name="criteria_domain" widget="domain" options="{'model':'assessment.purchase'}"/>
+<!--                            <field name="decision" widget="radio"/>-->
+                            <field name="note" />
+
+
+<!--                            <field name="status"/>-->
+<!--                            <field name="score"/>-->
+<!--                            <field name="weightage_point"/>-->
+<!--                            <field name="point_scored"/>-->
+                        </group>
+                    </group>
+<!--                    <group>-->
+<!--                        <div>-->
+<!--                            <p>-->
+<!--                                Each assessment has only one result.-->
+<!--                                The result will be searched by the domain, prioritized by their sequence.-->
+<!--                            </p>-->
+<!--                            <p>-->
+<!--                                If there are more than one result found, the first one will be selected.-->
+<!--                            </p>-->
+<!--                        </div>-->
+<!--                    </group>-->
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="assessment_vendor_result_action" model="ir.actions.act_window">
+        <field name="name">Vendor Result</field>
+        <field name="res_model">assessment.vendor.result</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="view_id" eval="False" />
+    </record>
+</odoo>

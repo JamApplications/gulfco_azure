@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_pending_advanced_payment_tree" model="ir.ui.view">
+        <field name="name">po.advanced.pending.payments.tree</field>
+        <field name="model">account.payment</field>
+        <field name="arch" type="xml">
+            <list create="True">
+                <field name="sale_id" widget="many2one_clickable"/>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="payment_method_line_id"/>
+                <field name="partner_id"/>
+                <field name="amount_signed"/>
+                <field name="currency_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pending_advanced_payment_vendor_tree" model="ir.ui.view">
+        <field name="name">po.advanced.pending.payments.vendor.tree</field>
+        <field name="model">account.payment</field>
+        <field name="arch" type="xml">
+            <list create="True">
+                <field name="purchase_id" widget="many2one_clickable"/>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="payment_method_line_id"/>
+                <field name="partner_id"/>
+                <field name="amount_signed"/>
+                <field name="currency_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record  model="ir.ui.view" id="view_account_payment_form_inherit" >
+        <field name="name">account.payment.view.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='partner_bank_id']" position="after">
+                 <field name="advance_sale_purchase" invisible="not advance_sale_purchase"/>
+                 <field name="purchase_id" invisible="payment_type == 'inbound' and advance_sale_purchase == 'sale' or advance_sale_purchase == False"/>
+                 <field name="sale_id" invisible="payment_type == 'outbound' and advance_sale_purchase == 'purchase' or advance_sale_purchase == False"/>
+                 <field name="prepayment_type" invisible="not advance_sale_purchase"/>
+             </xpath>
+        </field>
+     </record>
+
+
+    <record id="action_advance_payment_menu" model="ir.actions.act_window">
+        <field name="name">Advance Payments</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_id" ref="view_pending_advanced_payment_tree"/>
+        <field name="context">{
+                'default_payment_type': 'inbound',
+                'default_partner_type': 'customer',
+                'default_advance_sale_purchase': 'sale'
+            }</field>
+        <field name="domain">['|',
+            ('sale_id', '!=', False),
+            ('advance_sale_purchase', '=', 'sale'),
+        ]</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_advance_payment_vendor_menu" model="ir.actions.act_window">
+        <field name="name">Advance Payments</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_id" ref="view_pending_advanced_payment_vendor_tree"/>
+        <field name="context">{
+                'default_payment_type': 'outbound',
+                'default_partner_type': 'supplier',
+                'default_advance_sale_purchase': 'purchase'
+            }</field>
+        <field name="domain">['|',
+            ('purchase_id', '!=', False),
+            ('advance_sale_purchase', '=', 'purchase'),
+        ]</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="account.action_account_payments" model="ir.actions.act_window">
+        <field name="domain">[('advance_sale_purchase', '=', False)]</field>
+    </record>
+
+    <record id="account.action_account_payments_payable" model="ir.actions.act_window">
+        <field name="domain">[('advance_sale_purchase', '=', False)]</field>
+    </record>
+
+    <!-- Define menu item under Accounting -> Customers -> Payments -->
+    <menuitem id="menu_account_payment_advance_action" name="Advance Payments" action="action_advance_payment_menu"
+              parent="account.menu_finance_receivables" sequence="10"/>
+
+    <menuitem id="menu_account_payment_advance_vendor_action" name="Advance Payments" action="action_advance_payment_vendor_menu"
+               parent="account.menu_finance_payables" sequence="10"/>
+
+
+</odoo>

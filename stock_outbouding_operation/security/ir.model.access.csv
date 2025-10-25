@@ -1,0 +1,3 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_valuation_wizard,stock.valuation.wizard,model_stock_valuation_wizard,"",1,1,1,1
+stock_outbouding_operation.access_stock_quant_history,access_stock_quant_history,stock_outbouding_operation.model_stock_quant_history,base.group_user,1,1,1,1

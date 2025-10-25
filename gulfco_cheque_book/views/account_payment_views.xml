@@ -1,0 +1,32 @@
+<odoo>
+    <record id="view_account_payment_form_pdc_payable_inheir" model="ir.ui.view">
+        <field name="name">account.payment.form.pdc.payable.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_pdc.account_payment_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='pdc_ref']" position="after">
+                <field name="cheque_book_line_id" options="{'no_create': True}" readonly="payment_type == 'outbound'" required="payment_mode == 'pdc' and is_pdc_payable and payment_type != 'outbound'" invisible="not is_pdc_payable or payment_mode != 'pdc'"/>
+                <!-- required="is_pdc_payable and payment_mode == 'pdc' and not pdc_ref"/> -->
+            </xpath>
+            <xpath expr="//field[@name='pdc_ref']" position="attributes">
+                <attribute name="required">payment_mode == 'pdc' and not is_pdc_payable</attribute>
+                <attribute name="invisible">payment_mode != 'pdc' or is_pdc_payable</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_account_payment_form_cdc_payable_inheir" model="ir.ui.view">
+        <field name="name">account.payment.form.cdc.payable.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_cdc.account_payment_cdc_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='cdc_ref']" position="after">
+                <field name="cheque_book_line_id" options="{'no_create': True}" readonly="payment_type == 'outbound'" required="payment_mode == 'cdc' and is_cdc_payable and payment_type != 'outbound'" invisible="not is_cdc_payable or payment_mode != 'cdc'"/>
+                <!-- required="is_pdc_payable and payment_mode == 'pdc' and not pdc_ref"/> -->
+            </xpath>
+            <xpath expr="//field[@name='cdc_ref']" position="attributes">
+                <attribute name="required">payment_mode == 'cdc' and not is_cdc_payable</attribute>
+                <attribute name="invisible">payment_mode != 'cdc' or is_cdc_payable</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

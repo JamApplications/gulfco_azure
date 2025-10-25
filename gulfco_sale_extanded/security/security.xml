@@ -1,0 +1,6 @@
+<odoo>
+    <record id="discount_approvel_group" model="res.groups">
+        <field name="name">Discount Approvel</field>
+        <field name="category_id" ref="plnx_sales_team.module_fsm_sales_team_category"/>
+    </record>
+</odoo>

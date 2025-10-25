@@ -1,0 +1,171 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="fmcg_gulfco_rma_form_view">
+            <field name="name">RMA Form</field>
+            <field name="model">rma</field>
+            <field name="inherit_id" ref="rma.rma_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="statusbar_visible">draft,submit,confirmed,received</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="invisible">state != 'submit'</attribute>
+                    <attribute name="context">{'from_rma_extended':1}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="before">
+                    <button type="object" string="Submit" name="action_submit_rma" invisible="state != 'draft'" class="btn-primary"/>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="outlet_short_name"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date']" position="after">
+                    <field name="delivery_required"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                     <field name="division"/>
+                     <field name="customer_account"/>
+                    <field name="partner_channel_id"/>
+                    <field name="emirate"/>
+                </xpath>
+                <xpath expr="//field[@name='date']" position="attributes">
+                     <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='picking_id']" position="before">
+                    <field name="rma_type" readonly="state != 'draft'" widget="selection" invisible="rma_type == 'base_on_delivery'"/>
+                    <field name="invoice_id" invisible="rma_type != 'base_on_invoice'"/>
+                </xpath>
+                <xpath expr="//field[@name='picking_id']" position="attributes">
+                    <attribute name="invisible">rma_type != 'base_on_delivery'</attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+<!--                    <attribute name="invisible">rma_type != 'base_on_product'</attribute>-->
+                </xpath>
+                <xpath expr="//label[@for='product_uom_qty']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+<!--                    <attribute name="invisible">rma_type != 'base_on_product'</attribute>-->
+                </xpath>
+                 <xpath expr="//field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+<!--                    <attribute name="invisible">rma_type != 'base_on_product'</attribute>-->
+                </xpath>
+                <xpath expr="//field[@name='product_uom']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+<!--                    <attribute name="invisible">rma_type != 'base_on_product'</attribute>-->
+                </xpath>
+                <xpath expr="//button[@name='action_refund']" position="attributes">
+                    <attribute name="invisible">not can_be_refunded or operation_type != 'refund'</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_replace']" position="attributes">
+                    <attribute name="invisible">not can_be_replaced or state in ('replaced','waiting_replacement') or operation_type != 'replace'</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_return']" position="attributes">
+                    <attribute name="invisible">not can_be_returned or operation_type != 'return'</attribute>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button name="action_set_to_draft_button" string="Set To Draft" type="object" class="btn btn-primary" invisible="state != 'confirmed'"/>
+                </xpath>
+                <field name="move_id" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                    <attribute name="domain">[('picking_id.picking_type_code', '=', 'outgoing')]</attribute>
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="operation_id" position="before">
+                    <field name="barcode"/>
+<!--                    <field name="return_reason_id" invisible="rma_type != 'base_on_product'" required="rma_type == 'base_on_product'"/>-->
+<!--                    <field name="return_reason_type_id" invisible="rma_type != 'base_on_product'"/>-->
+                </field>
+                <group position="inside">
+                    <group>
+<!--                        <field name="outlet_name"/>-->
+                        <field name="grv_no"/>
+                        <field name="grv_amount"/>
+                        <field name="expiry_date" string="GRV Date"/>
+                    </group>
+                    <group>
+                        <field name="collection_request_date" required="1"/>
+<!--                        <field name="return_caused_by_ids" invisible="1"/>-->
+                        <field name="return_caused_by_id" invisible="1"/>
+                    </group>
+                    <label for="remarks" string="Remarks"/>
+                    <field name="remarks"/>
+                </group>
+                <xpath expr="//page[@name='page_other']" position="before">
+                    <page name="product_details" string="Product Lines" invisible="rma_type != 'base_on_product'">
+                        <field name="product_line_ids">
+                            <list editable="bottom">
+                                <field name="rma_id" column_invisible="1"/>
+                                <field name="partner_id" column_invisible="1"/>
+                                <field name="product_id" options="{'no_create': True}"  context="{'default_rma_id': True, 'context_rma_id':rma_id, 'context_partner_id_id': partner_id}" force_save="1"/>
+                                <field name="lot_number" readonly="0" force_save="1"/>
+                                <field name="production_date"/>
+                                <field name="lot_ids" widget="many2many_tags" column_invisible="1"/>
+                                <field name="product_packaging_id" options="{'no_create': True}"/>
+                                <field name="product_packaging_qty" sum="Total"/>
+                                <field name="product_uom_id"  force_save="1"/>
+                                <field name="price_unit" sum="Total"/>
+                                <field name="product_uom_qty"  force_save="1" sum="Total"/>
+                                <field name="excise_tax" sum="Total"/>
+                                <field name="total" sum="Total"/>
+                                <field name="quant_package_id" options="{'no_create': True}" required="0"/>
+                                <field name="return_reason_id" options="{'no_create': True}" required="1"/>
+                                <field name="return_reason_type_id"/>
+                                <field name="return_caused_by_id" options="{'no_create': True}"/>
+
+                            </list>
+                        </field>
+                    </page>
+
+                    <page name="product_details" string="Product" invisible="rma_type not in ['base_on_delivery','base_on_invoice']">
+                        <field name="line_ids">
+                            <list editable="bottom" create="0" delete="1">
+                                <field name="item_code" readonly="1"/>
+                                <field name="move_line_id" readonly="1" force_save="1"/>
+                                <field name="move_id" readonly="1" force_save="1"/>
+                                <field name="product_id" readonly="1" force_save="1"/>
+                                <field name="lot_number" readonly="1" force_save="1" column_invisible="1"/>
+                                <field name="lot_ids" widget="many2many_tags" column_invisible="1"/>
+                                <field name="brand_id" readonly="1" force_save="1"/>
+                                <field name="product_packaging_id"/>
+                                <field name="product_packaging_qty" sum="Total"/>
+                                <field name="product_uom_qty" sum="Total"/>
+                                <field name="product_packaging_price" sum="Total"/>
+                                <field name="price_unit" sum="Total"/>
+                                <field name="system_unit_price" sum="Total"/>
+                                <field name="product_uom_id"/>
+                                <field name="analytic_distribution" widget="analytic_distribution"/>
+                                <field name="exercise_price"/>
+                                <field name="discount"/>
+                                <field name="tax_id" widget="many2many_tags"/>
+                                <field name="amount_tax" sum="Total"/>
+                                <field name="total" sum="Total"/>
+                                <field name="currency_id" column_invisible="1"/>
+                                <field name="quant_package_id" required="0"/>
+                                <field name="return_reason_id" required="1"/>
+                                <field name="return_reason_type_id"/>
+<!--                                <field name="return_caused_by"/>-->
+                                <field name="return_caused_by_id"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        <record id="rma_form_view_inherit_sales_person_id" model="ir.ui.view">
+            <field name="name">rma.form.view.inherit.sales.person</field>
+            <field name="model">rma</field>
+            <field name="inherit_id" ref="plnx_sales_team.plnx_rma_form_view_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='project_id']" position="after">
+                    <field name="customer_worker_ids" invisible="1"/>
+                    <field name="sales_person_id" domain="[('id','in',customer_worker_ids)]"/>
+<!--                    <field name="sales_person_id" invisible="rma_type != 'base_on_product'" domain="[('id','in',customer_worker_ids)]"/>-->
+<!--                    <field name="sales_person_id" invisible="rma_type == 'base_on_product'" readonly="1" force_save="1"/>-->
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

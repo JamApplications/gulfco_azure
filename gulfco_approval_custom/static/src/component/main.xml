@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="gulfco_demand_planning.demand_planning" t-inherit-mode="extension">
+        <!-- remove background url to not trigger 404 error during tests -->
+        <xpath expr="//button[hasclass('order_button')]" position="attributes">
+            <attribute name="t-att-class">show_order_button?'':'d-none'</attribute>
+        </xpath>
+    </t>
+</templates>

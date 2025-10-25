@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <function model="mail.template" name="write">
+        <value eval="[ref('purchase.email_template_edi_purchase')]"/>
+        <value eval="{'report_template_ids':[(6, 0, [ref('purchase_line_views.action_report_rfq_purchase_order')])]}"/>
+    </function>
+
+     <function model="mail.template" name="write">
+        <value eval="[ref('purchase.email_template_edi_purchase_done')]"/>
+        <value eval="{'report_template_ids':[(6, 0, [ref('purchase_line_views.action_report_rfq_purchase_order')])]}"/>
+    </function>
+
+
+     <function model="ir.actions.report" name="write">
+        <value eval="[ref('purchase.action_report_purchase_order')]"/>
+        <value eval="{'binding_model_id':False}"/>
+    </function>
+
+    <function model="ir.actions.report" name="write">
+        <value eval="[ref('purchase.report_purchase_quotation')]"/>
+        <value eval="{'binding_model_id':False}"/>
+    </function>
+</odoo>

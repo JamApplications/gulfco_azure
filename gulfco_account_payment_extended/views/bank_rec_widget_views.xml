@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_move_line_list_bank_rec_widget_inherit_gulfco" model="ir.ui.view">
+        <field name="name">account.move.line.list.bank_rec_widget.inherit.gulfco</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account_accountant.view_account_move_line_list_bank_rec_widget"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='ref']" position="after">
+                <field name="cheque_number" optional="hidden" readonly="1"/>
+                <field name="payment_memo" optional="hidden" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

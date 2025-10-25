@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_partner_registration_inherit_form" model="ir.ui.view">
+        <field name="name">res.partner.registration.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="js_class">contact_not_unarchive</attribute>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <!--      Vendor Approval              -->
+                    <button name="submit_registration_button" string="Submit for Registration" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'customer_registration' or
+                            vendor_state != 'draft'" context="{'active_test': True}"/>
+
+
+                    <button name="action_reject_button" string="Reject" type="object"
+                            invisible="active == True or registration_type == 'customer_registration' or
+                            vendor_state == 'draft'" context="{'active_test': True}"/>
+
+                    <button name="scm_approve_button" string="SCM Approve" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'customer_registration' or
+                            vendor_state != 'supplier_create_request'" context="{'active_test': True}"
+                            groups="gulfco_contact_registration_custom.group_scm_approval"/>
+
+                    <button name="finance_approve_button" string="Finance Approve" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'customer_registration' or
+                             vendor_state != 'scm_approved'"  context="{'active_test': True}"
+                            groups="account.group_account_manager"/>
+
+                    <button name="director_approve_button" string="Director Approve" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'customer_registration' or
+                             vendor_state != 'finance_approved'" context="{'active_test': True}"
+                            groups="stock_inventory_adjustment.group_director_approval"/>
+
+                    <button name="vendor_scd_approve_button" string="SCD Approval" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'customer_registration' or
+                             vendor_state != 'director_approved'"  context="{'active_test': True}"
+                            groups="stock_inventory_adjustment.group_scd_approval"/>
+
+                    <button name="scd_manager_approve_button" string="SCD Manager Approval" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'customer_registration' or
+                             vendor_state != 'vendor_scd_approved' or scd_manager_id != uid"
+                            context="{'active_test': True}"/>
+
+                    <field name="vendor_state"
+                           widget="statusbar"
+                           statusbar_visible="draft,supplier_create_request,scm_approved,vendor_scd_approved,manager_scd_approved,director_approved,finance_approved"
+                           invisible="active == True or registration_type == 'customer_registration'"
+                           />
+
+                    <!--      Customer Cash Approval              -->
+
+                    <button name="action_submit_cash_customer_creation_button" string="Submit Request" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'vendor_registration' or
+                            customer_type == 'credit' or customer_cash_state != 'customer_create_request'"
+                            groups="gulfco_contact_registration_custom.group_submit_cash_customer"/>
+
+                    <button name="manager_cash_approve_button" string="Manager Approve cash" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'vendor_registration' or
+                            customer_type == 'credit' or customer_cash_state != 'waiting_manager_approval'"
+                            groups="gulfco_contact_registration_custom.group_manager_cash_approval"/>
+
+                    <button name="action_draft_cash_customer_creation" string="Reset to Draft" type="object" class="oe_highlight"
+                            invisible="registration_type == 'vendor_registration' or
+                            customer_type == 'credit' or customer_cash_state != 'waiting_manager_approval'"
+                            groups="gulfco_contact_registration_custom.group_reset_cash_customer"/>
+
+                    <field name="customer_cash_state"
+                           widget="statusbar"
+                           statusbar_visible="customer_create_request,waiting_manager_approval,manager_approved"
+                           invisible="active == True or registration_type == 'vendor_registration' or
+                           customer_type == 'credit'"/>
+
+
+                    <!-- changed -->
+
+                    <button name="action_submit_credit_customer_creation_button" string="Submit Request" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'vendor_registration' or
+                            customer_type == 'cash' or customer_credit_state != 'customer_create_request'"
+                            groups="gulfco_contact_registration_custom.group_submit_credit_customer"/>
+                    
+                    <button name="credit_officer_approve_button" string="Credit Officer Approve" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'vendor_registration' or
+                            customer_type == 'cash' or customer_credit_state != 'waiting_ccd_officer_approval'"
+                            groups="gulfco_contact_registration_custom.group_credit_officer_approval"/>
+
+                    <button name="ccd_credit_approve_button" string="CCD Approve" type="object" class="oe_highlight"
+                            invisible="active == True or registration_type == 'vendor_registration' or
+                            customer_type == 'cash' or customer_credit_state != 'credit_officer_approved'"
+                            groups="gulfco_contact_registration_custom.group_ccd_credit_approval"/>
+
+                    <button name="action_draft_credit_customer_creation" string="Reset To Draft" type="object" class="oe_highlight"
+                            invisible="registration_type == 'vendor_registration' or
+                                customer_type == 'cash' or customer_credit_state != 'waiting_ccd_officer_approval' or
+                                    customer_credit_state != 'credit_officer_approved'"
+                                    groups="gulfco_contact_registration_custom.group_reset_credit_customer"/>
+                            
+                    <field name="customer_credit_state"
+                           widget="statusbar"
+                           statusbar_visible="customer_create_request,waiting_ccd_officer_approval,credit_officer_approved,ccd_approved"
+                           invisible="active == True or registration_type == 'vendor_registration' or customer_type == 'cash'"/>
+
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='title']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='function']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='mobile']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="registration_type" invisible="1"/>
+                <field name="is_auth_manager" invisible="1"/>
+                <field name="manager_id" invisible="1"/>
+                <field name="is_scd_user" invisible="1"/>
+                <field name="scd_manager_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_partner_property_form_cash_limit_base" model="ir.ui.view">
+        <field name="name">res.partner.form.cash.limit.base</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bank_ids']" position="after">
+                <field name="unregistered_bank"/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <!--  Customer Registration Menu  -->
+    <record id="action_contacts_customer_registration" model="ir.actions.act_window">
+        <field name="name">Customer Registration</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="search_view_id" ref="base.view_res_partner_filter"/>
+        <field name="context">{'default_is_company': True, 'default_registration_type':'customer_registration',
+            'default_active': False, 'default_contact_type': 'customer'}
+        </field>
+        <field name="domain">[('active', '=', False), '|', ('registration_type', '=', 'customer_registration'), ('customer_rank', '>', 0)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Contact in your Customer Registration book
+            </p>
+            <p>
+                Odoo helps you track all activities related to your contacts.
+            </p>
+        </field>
+    </record>
+
+
+    <!--  Vendor Registration Menu  -->
+    <record id="action_contacts_vendor_registration" model="ir.actions.act_window">
+        <field name="name">Vendor Registration</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="search_view_id" ref="base.view_res_partner_filter"/>
+        <field name="context">{'default_is_company': True, 'default_registration_type':'vendor_registration',
+            'default_active': False, 'default_contact_type': 'supplier'}
+        </field>
+        <field name="domain">[('active', '=', False), '|', ('registration_type', '=', 'vendor_registration'), ('supplier_rank', '>', 0)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Contact in your Vendor Registration book
+            </p>
+            <p>
+                Odoo helps you track all activities related to your contacts.
+            </p>
+        </field>
+    </record>
+
+
+
+    <!-- Inherit customer details   -->
+    <record id="res_partner_customer_detailed_data_inherit_form_1" model="ir.ui.view">
+        <field name="name">res.partner.customer.detailed.test.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="priority">100</field>
+        <field name="inherit_id" ref="gulfco_customer_customized_data.res_partner_customer_detailed_data_inherit_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='customer_group']" position="before">
+                 <field name="registration_type" invisible="1"/>
+                 <field name="customer_type" required="contact_type in ('customer', 'both') or registration_type == 'customer_registration'"/>
+            </xpath>
+            <xpath expr="//field[@name='channel']" position="attributes">
+                <attribute name="required">contact_type in ['customer', 'both'] and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_mt']" position="attributes">
+                <attribute name="required">current_chanel == 'MT' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt']" position="attributes">
+                <attribute name="required">current_chanel == 'GT' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_horeca']" position="attributes">
+                <attribute name="required">current_chanel == 'HORECA' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_ecom']" position="attributes">
+                <attribute name="required">current_chanel == 'E-Com' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_3pl']" position="attributes">
+                <attribute name="required">current_chanel == '3PL' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt']" position="attributes">
+                <attribute name="required">current_chanel == 'GT' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_mt_hyper']" position="attributes">
+                <attribute name="required">current_sub_channel == 'HyperMarket' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_mt_super']" position="attributes">
+                <attribute name="required">current_sub_channel == 'SuperMarket' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt_grocery']" position="attributes">
+                <attribute name="required">current_sub_channel == 'Grocery' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt_cs']" position="attributes">
+                <attribute name="required">current_sub_channel == 'ConvenienceStore' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt_super']" position="attributes">
+                <attribute name="required">current_sub_channel == 'Supermarket' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt_petrol']" position="attributes">
+                <attribute name="required">current_sub_channel == 'PetrolStation' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt_discount']" position="attributes">
+                <attribute name="required">current_sub_channel == 'DiscountCenter' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt_wholesale']" position="attributes">
+                <attribute name="required">current_sub_channel == 'Wholesale' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt_tc']" position="attributes">
+                <attribute name="required">current_sub_channel == 'TradingCompany' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_gt_sc']" position="attributes">
+                <attribute name="required">current_sub_channel == 'SpecialAccounts' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_horeca_hr']" position="attributes">
+                <attribute name="required">current_sub_channel == 'HotelsandResorts' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_horeca_rc']" position="attributes">
+                <attribute name="required">current_sub_channel == 'RestaurantandCafe' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_horeca_sa']" position="attributes">
+                <attribute name="required">current_sub_channel == 'SpecialAccount' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_horeca_caterings']" position="attributes">
+                <attribute name="required">current_sub_channel == 'Caterings' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_horeca_tc']" position="attributes">
+                <attribute name="required">current_sub_channel == 'HORECATradingCompany' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_horeca_pc']" position="attributes">
+                <attribute name="required">current_sub_channel == 'PubsandClubs' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+             <xpath expr="//field[@name='channel_ecom_mp']" position="attributes">
+                <attribute name="required">current_sub_channel == 'OnlineMarketPlace' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='channel_ecom_app']" position="attributes">
+                <attribute name="required">current_sub_channel == 'DeliveryApps' and (customer_cash_state == 'channel_head_approved' or customer_credit_state == 'div_head_approved')</attribute>
+            </xpath>
+             <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="required">contact_type == 'customer' and customer_type == 'credit'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='emirate']" position="attributes">
+                <attribute name="required">contact_type in ['customer', 'both'] and customer_type == 'credit'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tl_issued_emirate']" position="attributes">
+                <attribute name="required">contact_type in ['customer', 'both'] and customer_type == 'credit'</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

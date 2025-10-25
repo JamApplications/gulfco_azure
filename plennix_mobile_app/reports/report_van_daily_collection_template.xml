@@ -1,0 +1,76 @@
+<odoo>
+
+    <record id="action_report_van_daily_collection" model="ir.actions.report">
+        <field name="name">Van Daily Collection Report</field>
+        <field name="model">van.daily.collection.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">plennix_mobile_app.report_van_daily_collection</field>
+        <field name="report_file">plennix_mobile_app.report_van_daily_collection</field>
+        <field name="binding_model_id" ref="model_van_daily_collection_wizard"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Van Collection Report - %s' % (object.user_id.name)</field>
+    </record>
+
+
+    <template id="report_van_daily_collection">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Van Daily Collection Report</h2>
+                    <p>
+                        <strong>User:</strong>
+                        <t t-esc="docs and docs[0].responsible_id.name or ''"/>
+                    </p>
+                    <p>
+                        <strong>Period:</strong>
+                        <t t-esc="start_date"/>
+                        to
+                        <t t-esc="end_date"/>
+                    </p>
+                    <table class="table table-lg m-0 table-borderless border border-end-0 border-start-0 border-info">
+                        <thead>
+                            <tr>
+                                <th>Customer Name</th>
+                                <th>Code</th>
+                                <th>Receipt No.</th>
+                                <th>Invoice No.</th>
+                                <th>Payment Type</th>
+                                <th>Amount</th>
+                                <th>Receipt Voucher</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="payment">
+                                <tr>
+                                    <td>
+                                        <t t-esc="payment.partner_id.name"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="payment.partner_id.customer_code or ''"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="payment.move_id.name"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="payment.memo or ''"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="payment.journal_id.type.title()"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="payment.payment_type == 'outbound' and -payment.amount or payment.amount"/>
+                                    </td>
+                                    <td>
+                                        <a t-att-href="f'{base_url}/my/receipt_voucher_4inch_pdf/{payment.id}?access_token={payment._ensure_portal_token()}&amp;report_type=pdf&amp;download=true'" target="_blank">
+                                            Download
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

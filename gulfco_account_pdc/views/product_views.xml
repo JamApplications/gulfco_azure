@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <record id="view_product_package_enhancement_form" model="ir.ui.view">-->
+<!--        <field name="name">product.package.enhancement.form</field>-->
+<!--        <field name="model">product.template</field>-->
+<!--        <field name="inherit_id" ref="gulfco_product_customized_data.product_detailed_data_inherit_simple_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='packaging_ids']" position="before">-->
+<!--                <button name="open_packaging_wizard" string="Add Package" type="object"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="view_product_package_save_tree" model="ir.ui.view">
+            <field name="name">product.package.save.tree</field>
+            <field name="model">product.packaging</field>
+            <field name="inherit_id" ref="gulfco_product_customized_data.view_product_package_tree_view_inherit_custom"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="p_domain" invisible="1"/>
+                </field>
+            </field>
+        </record>
+
+</odoo>

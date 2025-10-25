@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            <record id="view_crm_team_form_inherit" model="ir.ui.view">
+                <field name="model">crm.team</field>
+                <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//group/group[@name='left']" position="after">
+                        <group name="new_right" string="Team Type">
+                            <field name="team_type"/>
+                        </group>
+                    </xpath>
+
+                    <xpath expr="//notebook/page[@name='members_users']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+
+                    <xpath expr="//notebook" position="inside">
+                        <page string="Members">
+                            <field name="partner_member_ids" mode="kanban"
+                                   context="{'default_contact_type': 'worker',
+                                    'default_fsm_person': 'True',
+                                    'default_company_type': 'person',
+                                    'default_type': 'contact'}">
+
+                                class="w-100">
+                                <kanban>
+                                    <templates>
+                                        <t t-name="card" class="flex-row">
+                                            <aside>
+                                                <field name="avatar_128" widget="image" class="o_image_64_cover" alt="Avatar"/>
+                                            </aside>
+                                            <main class="ms-3">
+                                                <field name="name" class="fw-bold fs-5"/>
+                                                <div class="d-flex align-items-baseline text-break">
+                                                    <i class="fa fa-envelope me-1" role="img" aria-label="Email" title="Email"/><field name="email"/>
+                                                </div>
+                                            </main>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+
+
+                            <field name="crm_team_member_ids" mode="kanban" class="w-100" invisible="is_membership_multi or not is_membership_multi"
+                                   context="{'kanban_view_ref': 'sales_team.crm_team_member_view_kanban_from_team',
+                                    'form_view_ref': 'sales_team.crm_team_member_view_form_from_team',
+                                    'list_view_ref': 'sales_team.crm_team_member_view_tree_from_team',
+                                    'default_crm_team_id': id,}"/>
+                        </page>
+                    </xpath>
+                </field>
+            </record>
+    </data>
+</odoo>
+
+
+
+<!--    <field name="member_ids" mode="kanban" class="w-100">-->
+<!--                                <kanban>-->
+<!--                                    <templates>-->
+<!--                                        <t t-name="card" class="flex-row">-->
+<!--                                            <aside>-->
+<!--                                                <field name="avatar_128" widget="image" class="o_image_64_cover" alt="Avatar"/>-->
+<!--                                            </aside>-->
+<!--                                            <main class="ms-3">-->
+<!--                                                <field name="name" class="fw-bold fs-5"/>-->
+<!--                                                <div class="d-flex align-items-baseline text-break">-->
+<!--                                                    <i class="fa fa-envelope me-1" role="img" aria-label="Email" title="Email"/><field name="email"/>-->
+<!--                                                </div>-->
+<!--                                            </main>-->
+<!--                                        </t>-->
+<!--                                    </templates>-->
+<!--                                </kanban>-->
+<!--                            </field>-->
+<!--                            <field name="crm_team_member_ids" mode="kanban" class="w-100" invisible="is_membership_multi or not is_membership_multi" context="{                                     'kanban_view_ref': 'sales_team.crm_team_member_view_kanban_from_team',                                     'form_view_ref': 'sales_team.crm_team_member_view_form_from_team',                                     'list_view_ref': 'sales_team.crm_team_member_view_tree_from_team',                                     'default_crm_team_id': id,                                 }"/>-->
+<!--                        </page>-->

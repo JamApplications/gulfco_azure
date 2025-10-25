@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    
+    <record id="vpicktree_view_tree_inherited_accrued" model="ir.ui.view">
+        <field name="name">stock.picking.list.inherit.accrued</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_outbouding_operation.fsm_stock_picking_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='status_label']" position="after">
+                <field name="grn_state" optional="show" widget="badge" 
+                       decoration-danger="grn_state=='cancel'" 
+                       decoration-muted="grn_state == 'draft'" 
+                       decoration-success="grn_state == 'done'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_form_stock_picking_inherited" model="ir.ui.view">
+        <field name="name">view.stock.form.stock.picking.inherited.stock.outbound.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_outbouding_operation.view_picking_form_view_inherit_outbound"/>
+        <field name="arch" type="xml">    
+            <xpath expr="//field[@name='state'][1]" position="attributes">
+                <attribute name="invisible">picking_type_code != 'outgoing' or state in ['delivered_partial', 'rescheduled','returned', 'rescheduled_item_offload_in_warehouse','wh_d_return','wh_return'] or is_service_only_grn</attribute>
+            </xpath>           
+            <xpath expr="//field[@name='state'][2]" position="attributes">
+                <attribute name="invisible">picking_type_code != 'outgoing' or state in ['draft','loaded_dispatched', 'scheduled','confirmed','planned', 'delivered', 'assigned', 'done'] or is_service_only_grn</attribute>
+            </xpath>         
+            <xpath expr="//field[@name='state'][3]" position="attributes">
+                <attribute name="invisible">picking_type_code in ['incoming', 'outgoing'] or is_service_only_grn</attribute>
+            </xpath>
+        </field>
+    </record>
+            
+    <record id="view_stock_form_stock_picking_inherit" model="ir.ui.view">
+        <field name="name">view.stock.form.stock.picking.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='operations']" position="after">
+                <page name="services" invisible="not services_ids" string="Services">
+                    <field name="services_ids">
+                        <list>
+                            <field name="product_id"/>
+                            <field name="product_uom_qty"/>
+                            <field name="product_qty"/>
+                            <field name="product_uom_id"/>
+                        </list>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <field name="product_id"/>
+                                </group>
+                                <group>
+                                    <field name="product_qty"/>
+                                    <field name="product_uom_id"/>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//button[@name='action_confirm']" position="attributes">
+                <attribute name="invisible">state != 'draft' or picking_type_code == 'outgoing' or is_service_only_grn</attribute>
+            </xpath>            
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="invisible">state not in ('assigned', 'confirmed', 'draft', 'waiting') or is_service_only_grn</attribute>
+            </xpath>
+            <button name="%(stock.act_stock_return_picking)d" position="attributes">
+                <attribute name="invisible">state != 'done' or is_service_only_grn</attribute>
+            </button>
+            <xpath expr="//button[@name='action_confirm']" position="after">
+                <button name="button_validate_grn" invisible="not is_service_only_grn or grn_state in ('done', 'cancelled')" string="Validate GRN" type="object" class="oe_highlight" groups="stock.group_stock_user" data-hotkey="v"/>
+            </xpath>            
+
+            <!-- HIDE native state field if it's service only -->        
+            <!-- <xpath expr="//field[@name='state'][1]" position="attributes">
+                <attribute name="invisible">picking_type_code != 'incoming' or is_service_only_grn</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state'][2]" position="attributes">
+                <attribute name="invisible">picking_type_code == 'incoming' or is_service_only_grn</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state'][2]" position="after">
+                <field name="grn_state" widget="statusbar" invisible="not is_service_only_grn" statusbar_visible="draft,done,cancelled"/>
+            </xpath>  -->
+
+
+            <!-- Add GRN ribbon -->
+            <xpath expr="//div[hasclass('oe_button_box')]" position="after">
+                <!-- CDC Receivable Ribbons -->
+                <widget name="web_ribbon" bg_color="bg-success" title="GRN Validated" data-id="grn-validated" invisible="grn_state != 'done'"/>
+                <widget name="web_ribbon" bg_color="bg-danger" title="GRN Cancelled" data-id="grn-validated" invisible="grn_state != 'cancelled'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Add button to sale order form view -->
+        <record id="view_order_form_inherit_regenerate_invoices" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.regenerate.invoices</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_regenerate_invoices"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-refresh"
+                            string="Re-Generate Invoices"
+                            help="Regenerate invoices by adding missing products"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Add menu item for easy access -->
+        <record id="menu_invoice_regeneration" model="ir.ui.menu">
+            <field name="name">Invoice Regeneration</field>
+            <field name="parent_id" ref="sale.sale_menu_root"/>
+            <field name="sequence">50</field>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+        </record>
+
+        <!-- Action for the menu -->
+        <record id="action_sale_order_regenerate_invoices" model="ir.actions.act_window">
+            <field name="name">Sales Orders - Invoice Issues</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('invoice_status', '=', 'invoiced')]</field>
+            <field name="context">{
+                'search_default_invoiced': 1,
+                'search_default_my_sale_orders_filter': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No sales orders found!
+                </p>
+                <p>
+                    This view shows sales orders that have been invoiced.
+                    Use the "Re-Generate Invoices" action to fix any missing products in invoices.
+                </p>
+            </field>
+        </record>
+
+        <record id="menu_sale_order_regenerate_invoices" model="ir.ui.menu">
+            <field name="name">Fix Invoice Issues</field>
+            <field name="parent_id" ref="menu_invoice_regeneration"/>
+            <field name="action" ref="action_sale_order_regenerate_invoices"/>
+            <field name="sequence">10</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,61 @@
+<!--<odoo>-->
+<!--    <record id="view_rma_analysis_excel_wizard_form" model="ir.ui.view">-->
+<!--        <field name="name">rma.analysis.excel.wizard.form</field>-->
+<!--        <field name="model">rma.analysis.excel.wizard</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="RMA Analysis - Excel" create="false" edit="false">-->
+<!--                <group>-->
+<!--                    <group>-->
+<!--                        <field name="date_from"/>-->
+<!--                        <field name="date_to"/>-->
+<!--                    </group>-->
+<!--                </group>-->
+<!--                <footer>-->
+<!--                    <button name="action_export_excel" string="Export Excel" type="object" class="btn-primary"/>-->
+<!--                    <button string="Close" special="cancel" class="btn-secondary"/>-->
+<!--                </footer>-->
+<!--                <separator string="Output"/>-->
+<!--                <group>-->
+<!--                    <field name="file_name" readonly="1"/>-->
+<!--                    <field name="file_data" filename="file_name" readonly="1"/>-->
+<!--                </group>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+<!--</odoo>-->
+
+
+<odoo>
+    <record id="view_rma_analysis_excel_wizard_form" model="ir.ui.view">
+        <field name="name">rma.analysis.excel.wizard.form</field>
+        <field name="model">rma.analysis.excel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="RMA Analysis - Excel" create="false" edit="false">
+                <group>
+                    <!-- فلترة Receipt Date (Effective picking date_done) -->
+                    <group string="Filter by Receipt Date">
+                        <field name="receipt_date_from"/>
+                        <field name="receipt_date_to"/>
+                    </group>
+
+                    <!-- فلترة RMA Date (قديمة) -->
+                    <group string="Filter by RMA Date">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button name="action_export_excel" string="Export Excel" type="object" class="btn-primary"/>
+                    <button string="Close" special="cancel" class="btn-secondary"/>
+                </footer>
+
+                <separator string="Output"/>
+                <group>
+                    <field name="file_name" readonly="1"/>
+                    <field name="file_data" filename="file_name" readonly="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>

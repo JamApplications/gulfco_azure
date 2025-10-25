@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="rma_return_reason_view_search" model="ir.ui.view">
+        <field name="model">rma.return.reason</field>
+        <field name="arch" type="xml">
+            <search string="RMA Return Reasons">
+                <field name="name" />
+                <filter
+                    string="Archived"
+                    name="inactive"
+                    domain="[('active','=',False)]"
+                />
+                <filter
+                    string="Active"
+                    name="active"
+                    domain="[('active','!=',False)]"
+                />
+            </search>
+        </field>
+    </record>
+    <record id="view_rma_return_reason_list" model="ir.ui.view">
+        <field name="name">RMA Return Reasons</field>
+        <field name="model">rma.return.reason</field>
+        <field eval="6" name="priority"/>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="name" />
+                <field name="type" />
+                <field name="is_salable" />
+            </list>
+        </field>
+    </record>
+    <record id="action_rma_return_reason" model="ir.actions.act_window">
+        <field name="name">RMA Return Reasons</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rma.return.reason</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new RMA Return Reason
+            </p>
+            <p>
+            Manage RMA Return reasons.
+            </p>
+        </field>
+    </record>
+    <menuitem
+        id="rma_configuration_rma_return_reason_menu"
+        name="RMA Return Reasons"
+        parent="rma.rma_configuration_menu"
+        action="action_rma_return_reason"
+    />
+</odoo>

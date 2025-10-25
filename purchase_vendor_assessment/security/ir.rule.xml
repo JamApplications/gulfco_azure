@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Company restrict -->
+<!--    <record id="company_template_assessment_rule" model="ir.rule">-->
+<!--        <field name="name">Template Assessment by Company</field>-->
+<!--        <field name="model_id" ref="model_assessment_purchase_template"/>-->
+<!--        <field name="domain_force">['|', ('company_id', 'in', company_ids), ('company_id', '=', False)]</field>-->
+<!--    </record>-->
+<!--    <record id="company_purchase_assessment_rule" model="ir.rule">-->
+<!--        <field name="name">Purchase Assessment by Company</field>-->
+<!--        <field name="model_id" ref="model_assessment_purchase"/>-->
+<!--        <field name="domain_force">['|', ('company_id', 'in', company_ids), ('company_id', '=', False)]</field>-->
+<!--    </record>-->
+    <record id="company_vendor_assessment_rule" model="ir.rule">
+        <field name="name">Vendor Assessment by Company</field>
+        <field name="model_id" ref="model_assessment_vendor"/>
+        <field name="domain_force">['|', ('company_id', 'in', company_ids), ('company_id', '=', False)]</field>
+    </record>
+<!--    <record id="unlink_vendor_purchase_rule" model="ir.rule">-->
+<!--        <field name="name">Remove Purchase Assessment</field>-->
+<!--        <field name="model_id" ref="model_assessment_purchase"/>-->
+<!--        <field name="domain_force">[('state', 'not in', ('done', 'refused'))]</field>-->
+<!--        <field name="perm_create" eval="False"/>-->
+<!--        <field name="perm_read" eval="False"/>-->
+<!--        <field name="perm_write" eval="False"/>-->
+<!--    </record>-->
+<!--    <record id="unlink_vendor_assessment_rule" model="ir.rule">-->
+<!--        <field name="name">Remove Vendor Assessment</field>-->
+<!--        <field name="model_id" ref="model_assessment_vendor"/>-->
+<!--        <field name="domain_force">[('state', 'not in', ('done', 'refused'))]</field>-->
+<!--        <field name="perm_create" eval="False"/>-->
+<!--        <field name="perm_read" eval="False"/>-->
+<!--        <field name="perm_write" eval="False"/>-->
+<!--    </record>-->
+<!--    <record id="unlink_vendor_assessment_rule" model="ir.rule">-->
+<!--        <field name="name">Remove Vendor Assessment</field>-->
+<!--        <field name="model_id" ref="model_assessment_vendor"/>-->
+<!--        <field name="domain_force">[('state', 'not in', ('done', 'refused'))]</field>-->
+<!--        <field name="perm_create" eval="False"/>-->
+<!--        <field name="perm_read" eval="False"/>-->
+<!--        <field name="perm_write" eval="False"/>-->
+<!--    </record>-->
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="rma_redelivery_wizard_view_form_inherit" model="ir.ui.view">
+        <field name="name">rma.redelivery.wizard.view.form.inherit</field>
+        <field name="model">rma.delivery.wizard</field>
+        <field name="inherit_id" ref="rma.rma_redelivery_wizard_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_uom']" position="attributes">
+                <attribute name="invisible">is_delivery_type</attribute>
+                <attribute name="required">rma_count == 1 and not is_delivery_type</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

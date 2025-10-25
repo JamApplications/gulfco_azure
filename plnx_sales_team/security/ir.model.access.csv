@@ -1,0 +1,9 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+plnx_sales_team.access_customer_mapping,access_customer_mapping,plnx_sales_team.model_customer_mapping,base.group_user,1,1,1,1
+plnx_sales_team.access_customer_mapping_line,access_customer_mapping_line,plnx_sales_team.model_customer_mapping_line,base.group_user,1,1,1,1
+
+plnx_sales_team.access_team_password_config,access_team_password_config,plnx_sales_team.model_team_password_config,base.group_user,1,1,1,1
+
+plnx_sales_team.access_channel_channel,access_channel_channel,model_channel_channel,base.group_user,1,1,1,1
+plnx_sales_team.access_outlet_channel,access_outlet_channel,model_outlet_channel,base.group_user,1,1,1,1
+plnx_sales_team.access_sub_outlet_channel,access_sub_outlet_channel,model_sub_outlet_channel,base.group_user,1,1,1,1

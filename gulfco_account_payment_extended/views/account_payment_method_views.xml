@@ -1,0 +1,53 @@
+<odoo>
+    <record id="view_account_payment_method_custom_tree" model="ir.ui.view">
+        <field name="name">account.payment.method.custom.tree</field>
+        <field name="model">account.payment.method</field>
+        <field name="arch" type="xml">
+            <list string="Payment Methods">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="payment_type"/>
+                <field name="type"/>
+                <field name="is_pay_by_link"/>
+                <field name="is_pdc_method"/>
+                <field name="is_cdc_method"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_account_payment_method_form_custom" model="ir.ui.view">
+        <field name="name">account.payment.method.form.custom</field>
+        <field name="model">account.payment.method</field>
+        <field name="arch" type="xml">
+            <form string="Payment Method">
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                        <field name="payment_type"/>
+                        <field name="type"/>
+                        <field name="is_pay_by_link"/>
+                        <field name="is_pdc_method" readonly="is_cdc_method"/>
+                        <field name="is_cdc_method" readonly="is_pdc_method"/>
+                        <field name="is_monthly_pdc" invisible="not is_pdc_method"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_account_payment_method_custom" model="ir.actions.act_window">
+        <field name="name">Account Payment Methods</field>
+        <field name="res_model">account.payment.method</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new payment methods
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_account_payment_method_custom"
+              name="Account Payment Methods"
+              parent="account.account_account_menu"
+              action="action_account_payment_method_custom"
+              sequence="10"/>
+</odoo>

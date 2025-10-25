@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<templates xml:space="preserve">
+
+    <t t-name="plnx_barcode_employee_pin.KanbanRenderer_model_pop" t-inherit="stock_barcode.KanbanRenderer" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_kanban_tip_filter')]" position="after">
+
+
+
+
+            <div class="text-center">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Launch Modal
+                </button>
+             </div>
+            <!--  Model PUP UP          -->
+            <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Barcode Employee PIN</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+<!--                            Enter Barcode Employee PIN-->
+                             <div class="mt-2 col-12 row">
+                                 <div class="col-4" for="barcode_emp_pin" >Barcode PIN </div>
+                                 <div class="col-8">
+                                    <input type="text" name="barcode_emp_pin" id="barcode_emp_pin_id" class="barcode_pin_class"/>
+                                 </div>
+                             </div>
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="confirm_popup"
+                                    t-on-click="ConfirmManualBarcodeDialog">Confirm</button>
+                            <button type="button" class="btn btn-secondary" id="close_popup"
+                                    data-bs-dismiss="modal" t-on-click="CloseManualBarcodeDialog">Close</button>
+                        </div>
+                    </div>q
+                </div>
+            </div>
+
+        </xpath>
+    </t>
+
+</templates>

@@ -1,0 +1,24 @@
+<odoo>
+    <record id="view_barcode_pin_wizard" model="ir.ui.view">
+        <field name="name">barcode.pin.wizard.form</field>
+        <field name="model">barcode.pin.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Enter Employee PIN" style="width:30%;">
+                <group>
+                    <field name="pin" string="Barcode PIN"/>
+                </group>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm_pin" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_barcode_employee_pin_wiz" model="ir.actions.act_window">
+        <field name="name">Barcode Employee PIN</field>
+        <field name="res_model">barcode.pin.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

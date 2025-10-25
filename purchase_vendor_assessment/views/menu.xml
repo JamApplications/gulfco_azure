@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Purchase | Assessment -->
+    <menuitem id="menu_purchase_assessment" name="Assessment"
+        parent="purchase.menu_purchase_root"
+        sequence="3"/>
+    <menuitem id="menu_purchase_assessment_purchase" name="Purchase"
+        parent="menu_purchase_assessment"
+        sequence="10" active="False"
+        action="assessment_purchase_action"/>
+    <menuitem id="menu_purchase_assessment_vendor" name="Vendor Evaluation"
+        parent="menu_purchase_assessment"
+        sequence="20"
+        action="assessment_vendor_action"/>
+
+    <!-- Purchase | Configuration | Assessment -->
+    <menuitem id="menu_purchase_config_assessment" name="Assessment"
+        parent="purchase.menu_purchase_config"
+        sequence="20"/>
+<!--    <menuitem id="menu_purchase_config_assessment_template" name="Template"-->
+<!--        parent="menu_purchase_config_assessment"-->
+<!--        sequence="10"-->
+<!--        action="assessment_purchase_template_action"/>-->
+    <menuitem id="menu_purchase_config_assessment_criteria" name="Criteria"
+        parent="menu_purchase_config_assessment"
+        sequence="20"
+        action="assessment_criteria_action"/>
+
+    <menuitem id="menu_purchase_config_assessment_criteria_group" name="Criteria Group"
+        parent="menu_purchase_config_assessment"
+        sequence="30"
+        action="assessment_criteria_group_action"/>
+<!--    <menuitem id="menu_purchase_config_assessment_po_result" name="Purchase Result"-->
+<!--        parent="menu_purchase_config_assessment"-->
+<!--        sequence="30"-->
+<!--        action="assessment_purchase_result_action"/>-->
+    <menuitem id="menu_purchase_config_assessment_vendor_result" name="Vendor Result"
+        parent="menu_purchase_config_assessment"
+        sequence="40"
+        action="assessment_vendor_result_action"/>
+</odoo>

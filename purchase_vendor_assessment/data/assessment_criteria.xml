@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="demo_assessment_criteria_rdd" model="assessment.criteria">
+        <field name="sequence" eval="1"/>
+        <field name="name">RDD</field>
+        <field name="description">RDD Criteria Code</field>
+        <field name="python_code">result_day = 0
+for poline in purchase_line:
+    for asn in poline.order_id.asn_ids:
+        for asnline in asn.line_ids:
+            if poline == asnline.purchase_order_line_id and asnline.asn_request_id.dispatched_date and  poline.rdd :
+                diff = (asnline.asn_request_id.dispatched_date - poline.rdd.date())
+                result_day = diff.days
+
+result = result_day
+
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+    <record id="demo_assessment_criteria_eta" model="assessment.criteria">
+        <field name="sequence" eval="2"/>
+        <field name="name">ETA</field>
+        <field name="description">ETA Criteria Code</field>
+         <field name="python_code">result_day = 0
+for poline in purchase_line:
+    for asn in poline.order_id.asn_ids:
+        for asnline in asn.line_ids:
+            if poline == asnline.purchase_order_line_id and asnline.asn_request_id.actual_arrived_port_date and poline.date_planned:
+                diff = (asnline.asn_request_id.actual_arrived_port_date - poline.date_planned.date())
+                result_day += diff.days
+
+result = result_day
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+    <record id="demo_assessment_criteria_case_to_fill" model="assessment.criteria">
+        <field name="sequence" eval="3"/>
+        <field name="name">Case to Fill</field>
+        <field name="description">Case to Fill</field>
+        <field name="python_code">result_qty = 0
+for poline in purchase_line:
+    result_qty = poline.qty_received / poline.product_qty
+
+result = result_qty
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+    <record id="demo_assessment_criteria_price_diff" model="assessment.criteria">
+        <field name="sequence" eval="4"/>
+        <field name="name">Price Difference</field>
+        <field name="description">Price Difference</field>
+        <field name="python_code">result = purchase.no_price_diff
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+    <record id="demo_assessment_criteria_damage" model="assessment.criteria">
+        <field name="sequence" eval="5"/>
+        <field name="name">Damage</field>
+        <field name="description">Damage </field>
+        <field name="python_code">result = purchase.has_return_receipt
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+
+    <record id="demo_assessment_criteria_shortage_excess" model="assessment.criteria">
+        <field name="sequence" eval="5"/>
+        <field name="name">Shortage/Excess</field>
+        <field name="description">Shortage/Excess </field>
+        <field name="python_code">result = purchase.received_less_qty
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+
+
+    <record id="demo_assessment_criteria_quality_issue" model="assessment.criteria">
+        <field name="sequence" eval="5"/>
+        <field name="name">Quality Issue</field>
+        <field name="description">Quality Issue</field>
+        <field name="python_code">result = purchase.quality_check_fail
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+
+    <record id="demo_assessment_criteria_late_receipt_of_document" model="assessment.criteria">
+        <field name="sequence" eval="5"/>
+        <field name="name">Late Receipt of Document</field>
+        <field name="description">Late Receipt of Document </field>
+        <field name="python_code">result_day = 0
+for asnline in asn_line:
+    if asnline.asn_request_id.actual_arrived_port_date and asnline.asn_request_id.document_receipt_date:
+        diff = asnline.asn_request_id.actual_arrived_port_date  - asnline.asn_request_id.document_receipt_date
+        result_day += diff.days
+
+result = result_day
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+
+    <record id="demo_assessment_criteria_demurrage_storage" model="assessment.criteria">
+        <field name="sequence" eval="5"/>
+        <field name="name">Demurrage &amp; Storage</field>
+        <field name="description">Demerge &amp; Storage</field>
+        <field name="python_code">result = sum([asnline.asn_request_id.demurrage_amount for asnline in asn_line])
+        </field>
+        <field name="weightage_point">100</field>
+    </record>
+</odoo>

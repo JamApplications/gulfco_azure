@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_request_percentage_form_view" model="ir.ui.view">
+        <field name="name">stock.request.percentage.form.view</field>
+        <field name="model">stock.request.percentage</field>
+        <field name="arch" type="xml">
+            <form string="Internal Transfer Percentage">
+                <header>
+                    <button name="action_deactive" string="De-Active" type="object"/>
+                    <button name="action_active" string="Active" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,deactive"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                    <field name="active" invisible="1"/>
+                    <field name="line_ids">
+                        <list string="Lines" editable="bottom">
+                            <field name="warehouse_id"/>
+                            <field name="category_id"/>
+                            <field name="percentage"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="stock_request_percentage_list_view" model="ir.ui.view">
+        <field name="name">stock.request.percentage.list.view</field>
+        <field name="model">stock.request.percentage</field>
+        <field name="arch" type="xml">
+            <list string="Internal Transfer Percentage">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_stock_request_percentage" model="ir.actions.act_window">
+        <field name="name">Internal Transfer Percentage Setup</field>
+        <field name="res_model">stock.request.percentage</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock_request_percentage_list_view"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new internal transfer percentage setup
+          </p><p>
+            A internal transfer percentage setup is important for your internal
+            transfer stock.
+            Base on this setup when a user create stock request with type warehouse
+            transfer the system will filter the SKU's in delivery slip to show only
+            SKU's that match the shelf life percentage from setup screen.
+          </p>
+        </field>
+    </record>
+
+
+
+    <menuitem
+        id="menu_stock_request_setting"
+        name="Configuration"
+        parent="stock_request.menu_stock_request_root"
+        sequence="999"
+        groups="base.group_system"
+    />
+
+    <menuitem
+        id="menu_stock_request_percentage"
+        name="Internal Transfer Percentage Setup"
+        parent="stock_request.menu_stock_request_config"
+        sequence="20"
+        action="action_stock_request_percentage"
+        groups="base.group_system"
+    />
+
+
+
+
+
+    <record id="stock_request_percentage_load_form_view" model="ir.ui.view">
+        <field name="name">stock.request.percentage.load.form.view</field>
+        <field name="model">stock.request.percentage.load</field>
+        <field name="arch" type="xml">
+            <form string="Van Load Percentage">
+                <header>
+                    <button name="action_deactive" string="De-Active" type="object"/>
+                    <button name="action_active" string="Active" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,deactive"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                    <field name="active" invisible="1"/>
+                    <field name="line_ids">
+                        <list string="Lines" editable="bottom">
+                            <field name="warehouse_id"/>
+                            <field name="category_id"/>
+                            <field name="percentage"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="stock_request_percentage_load_list_view" model="ir.ui.view">
+        <field name="name">stock.request.percentage.load.list.view</field>
+        <field name="model">stock.request.percentage.load</field>
+        <field name="arch" type="xml">
+            <list string="Van Load Percentage">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_stock_request_percentage_load" model="ir.actions.act_window">
+        <field name="name">Van Load Percentage Setup</field>
+        <field name="res_model">stock.request.percentage.load</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="stock_request_percentage_load_list_view"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a new internal transfer percentage setup
+          </p><p>
+            A internal transfer percentage setup is important for your internal
+            transfer stock.
+            Base on this setup when a user create stock request with type warehouse
+            transfer the system will filter the SKU's in delivery slip to show only
+            SKU's that match the shelf life percentage from setup screen.
+          </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_stock_request_percentage_load"
+        name="Van Load Percentage Setup"
+        parent="stock_request.menu_stock_request_config"
+        sequence="20"
+        action="action_stock_request_percentage_load"
+        groups="base.group_system"
+    />
+</odoo>

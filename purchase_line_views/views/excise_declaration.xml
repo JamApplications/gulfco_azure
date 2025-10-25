@@ -1,0 +1,36 @@
+<odoo>
+    <record id="view_excise_declaration_tree" model="ir.ui.view">
+        <field name="name">excise.declaration.tree</field>
+        <field name="model">excise.declaration</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sr"/>
+                <field name="product_id"/>
+                <field name="gulfo_code"/>
+                <field name="hs_code"/>
+                <field name="nestle_code"/>
+                <field name="packing"/>
+                <field name="pallets"/>
+                <field name="conversion"/>
+                <field name="pallate_case"/>
+                <field name="qty_cs"/>
+                <field name="qty_pcs"/>
+                <field name="barcode"/>
+                <field name="fta_price"/>
+                <field name="fta_percentage"/>
+                <field name="fta_total"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_excise_declaration" model="ir.actions.act_window">
+        <field name="name">Excise Declarations</field>
+        <field name="res_model">excise.declaration</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first Excise Declaration</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_excise_declaration" name="Excise Declaration" parent="account.account_reports_legal_statements_menu" action="action_excise_declaration"/>
+</odoo>

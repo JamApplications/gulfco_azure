@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="vpicktree_list_inherit_barcode" model="ir.ui.view">
+            <field name="name">stock.picking.list.barcode.employee</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="employee_ids" widget="many2many_tags"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_picking_form_inherit_barcode" model="ir.ui.view">
+            <field name="name">stock.picking.form.barcode.employee</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet//group/group[2]" position="inside">
+                    <field name="forklift_partner_id" invisible="picking_type_code not in ('incoming', 'outgoing', 'internal')"/>
+                    <field name="employee_ids" widget="many2many_tags"  readonly="1" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page string="Employee History">
+                        <field name="employee_history_line" nolabel="1">
+                            <list editable="bottom" create="0" edit="0" delete="0">
+                                <field name="picking_id" column_invisible="1"/>
+                                <field name="employee_id" width="30%"/>
+                                <field name="access_date"/>
+                            </list>
+                        </field>
+                    </page>
+
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="view_picking_internal_search_inherit_barcode" model="ir.ui.view">
+            <field name="name">stock.picking.search.view.barcode.employee</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="employee_ids"/>
+                </xpath>
+
+                <xpath expr="//filter[@name='origin']" position="after">
+                    <filter string="Employee" name="employee_ids" domain="[]" context="{'group_by': 'employee_ids'}"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="stock_picking_view_kanban_inherit" model="ir.ui.view">
+            <field name="name">stock.picking.view.kanban.barcode.picking.batch</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock_barcode.stock_picking_view_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_open_picking_client_action']" position="replace">
+                    <div style="margin-top: 2px;">
+                        <b>
+                            <span style="margin-right: 5px;"/>
+                            <field name="name"/>
+                        </b>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+
+
+     <record id="stock_barcode.stock_picking_action_kanban" model="ir.actions.act_window">
+        <field name="name">Operations</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="stock_barcode.stock_picking_view_kanban"/>
+        <field name="path">barcode-operations</field>
+        <field name="target">fullscreen</field>
+         <field name="domain">[]</field>
+        <field name="context">{
+            'contact_display': 'partner_address',
+            'search_default_available': 1,
+            'search_default_to_do_transfers': 1,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new transfer
+            </p><p>
+                Transfers allow you to move products from one location to another.
+            </p>
+        </field>
+    </record>
+
+</odoo>

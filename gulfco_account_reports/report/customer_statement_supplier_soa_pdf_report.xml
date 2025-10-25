@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- supplier_soa_report_template.xml -->
+
+      <record id="action_supplier_soa_pdf" model="ir.actions.report">
+        <field name="name">Supplier SOA PDF</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="print_report_name">'Supplier SOA - %s' % (object.name)</field>
+        <field name="report_name">gulfco_account_reports.report_supplier_soa_pdf</field>
+        <field name="report_file">gulfco_account_reports.report_supplier_soa_pdf</field>
+    </record>
+
+        <template id="report_supplier_soa_pdf">
+            <t t-call="web.html_container">
+            <style>
+                .page-break {
+                page-break-before: always;
+                break-before: always;
+                }
+
+                /* Optionally reset first page */
+                .page-break:first-child {
+                page-break-before: auto;
+                break-before: auto;
+                }
+                .custom_table, td, th {
+                  border: 1px solid;
+                }
+                .custom_table {
+                  border-collapse: collapse;
+                }
+                .due-date-col {
+                    width: 80px;
+                    white-space: nowrap;
+                }
+                .balance-section {
+                    page-break-inside: avoid;
+                }
+            </style>
+            <t t-foreach="docs" t-as="doc">
+                <div class="page-break">
+                   <table class="table table-sm" style="width:100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="width:50%; vertical-align: top; padding: 5px;">
+                                <p><strong>Supplier Name:</strong> <span t-field="doc.get('partner').name"/></p>
+                                <p><strong>Supplier Number:</strong> <span t-field="doc.get('partner').vendor_code"/></p>
+                                <p><strong>Address:</strong> <span t-field="doc.get('partner').contact_address"/></p>
+                                <p><strong>Telephone:</strong> <span t-field="doc.get('partner').phone"/></p>
+                            </td>
+                            <td style="width:50%; vertical-align: top; padding: 5px;">
+                                <p><strong>Payment Term:</strong> <span t-field="doc.get('partner').property_supplier_payment_term_id"/></p>
+                                <p><strong>System Date:</strong> <span t-esc="doc.get('date_from')"/></p>
+                                <p><strong>As Of Date:</strong> <span t-esc="doc.get('date_to')"/></p>
+                                <p><strong>Legal Entity:</strong> <span t-esc="doc.get('company')"/></p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br/>
+                    <table class="custom_table table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                 <th>Transaction Date</th>
+                                <th>Trx Type</th>
+                                <th>Invoice No</th>
+                                <th>Receipt Date</th>
+                                <th>Doc Number</th>
+                                <th>Po Rev</th>
+                                <th class="due-date-col">Due Date</th>
+<!--                                <th>Pay Group</th>-->
+                                <th>Balance</th>
+                                <th>Currency</th>
+                                <th>Balance AED</th>
+                                <th>Original Remaining</th>
+                                <th>Remaining in AED</th>
+                                <th>Payment Terms</th>
+                                <th>Div Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.get('lines')" t-as="line">
+                                <tr>
+                                    <td>
+                                        <t t-esc="line.get('date')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('journal')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('name')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('receipt_date')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('ref')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('po_rev')"/>
+                                    </td>
+                                    <td class="due-date-col">
+                                        <t t-esc="line.get('due_date')"/>
+                                    </td>
+<!--                                    <td>-->
+<!--                                        <t t-esc="line.get('pay_group')"/>-->
+<!--                                    </td>-->
+                                    <td>
+                                        <t t-esc="line.get('balance')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('currency')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('balance_aed')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('original_remaining')"/>
+                                    </td>
+                                     <td>
+                                        <t t-esc="line.get('original_remaining_aed')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('payment_term')"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.get('division_code')"/>
+                                    </td>
+                                </tr>
+                            </t>
+                                <tr>
+                                    <td colspan="15" style="text-align:center">
+                                        <span>Total for : <t t-esc="doc.get('total_balance')"/> </span>
+                                    </td>
+                                </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <div class="text-center ml-5 balance-section" style="margin-left:20%;margin-right:20%;">
+                        <table class="custom_table table table-sm" width="100%" >
+                        <tr>
+<!--                            <td><strong>On Hold Balance</strong></td>-->
+<!--                            <td class="text-right">0.00</td>-->
+                            <td colspan="2"><strong>Total Balance</strong></td>
+                            <td class="text-right" colspan="2"><span t-esc="doc.get('total')"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>PDCs</strong></td>
+                            <td class="text-right"><span t-esc="doc.get('pdc_amount')"/></td>
+                            <td><strong>Prepayments</strong></td>
+                            <td class="text-right"><span t-esc="doc.get('prepayment_amount')"/></td>
+                        </tr>
+                    </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+<!--    <template id="report_supplier_soa_pdf">-->
+<!--        <t t-call="web.html_container">-->
+<!--            <t t-foreach="docs" t-as="doc">-->
+<!--                <div class="page">-->
+<!--                    <h2>Supplier Statement of Account</h2>-->
+<!--                    <p>-->
+<!--                        <strong>Supplier:</strong>-->
+<!--                        <t t-if="doc.get('partner')">-->
+<!--                            <t t-esc="doc.get('partner').name"/>-->
+<!--                        </t>-->
+<!--                    </p>-->
+<!--                    <table class="table table-sm table-bordered">-->
+<!--                        <thead>-->
+<!--                            <tr>-->
+<!--                                <th>Transaction Date</th>-->
+<!--                                <th>Trx Type</th>-->
+<!--                                <th>Invoice No</th>-->
+<!--                                <th>Doc Number</th>-->
+<!--                                <th>Due Date</th>-->
+<!--                                <th>Currency</th>-->
+<!--                                <th>Balance</th>-->
+<!--                                <th>Payment Terms</th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <t t-foreach="doc.get('lines')" t-as="line">-->
+<!--                                <tr>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="line.get('date')"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="line.get('journal')"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="line.get('name')"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="line.get('ref')"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="line.get('due_date')"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="line.get('line.currency')"/>-->
+<!--                                    </td>-->
+<!--                                    <td class="text-right">-->
+<!--                                        <t t-esc="line.get('line.amount')"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="line.get('payment_term')"/>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            </t>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                    <p>-->
+<!--                        <strong>Total:</strong>-->
+<!--                        <t t-esc="doc.get('total')"/>-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+</odoo>

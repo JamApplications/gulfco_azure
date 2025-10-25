@@ -1,0 +1,33 @@
+<odoo>
+    <!-- Form View -->
+    <record id="view_product_aging_report_wizard_form" model="ir.ui.view">
+        <field name="name">product.aging.report.wizard.form</field>
+        <field name="model">product.aging.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Product Aging Report">
+                <group>
+                    <field name="brand_ids" widget="many2many_tags" required="1"/>
+                    <field name="all_category"/>
+                    <field name="category_ids" invisible="all_category" widget="many2many_tags" required="not all_category"/>
+                    <field name="all_location"/>
+                    <field name="location_ids" invisible="all_location" widget="many2many_tags" required="not all_location"/>
+                </group>
+                <footer>
+                    <button name="print_pdf" type="object" string="Print PDF" class="btn-primary"/>
+                    <button name="print_xls" type="object" string="Print XLS"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_product_aging_report_wizard" model="ir.actions.act_window">
+        <field name="name">Product Aging Report</field>
+        <field name="res_model">product.aging.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_product_aging_report" name="Product Aging Report" parent="stock.menu_warehouse_report" action="action_product_aging_report_wizard"/>
+</odoo>

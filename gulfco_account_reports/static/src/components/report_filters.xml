@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<template>
+    <t t-name="gulfco_account_reports.ExtendedAccountReportFilters" t-inherit="account_reports.AccountReportFiltersCustomizable" t-inherit-mode="extension">
+
+         <xpath expr="//div[@id='filter_rounding_unit']" position="before">
+             <t t-if="'location_plan' in controller.options and controller.options.location_plan.length > 0">
+                 <div id="filter_analytic_plans_location">
+                    <t t-call="gulfco_account_reports.AnalyticPlannLocationReportFiltersAccountDetails"/>
+                 </div>
+             </t>
+             <t t-if="'department_plan' in controller.options and controller.options.department_plan.length > 0">
+                 <div id="filter_analytic_plans_department">
+                    <t t-call="gulfco_account_reports.AnalyticPlannDepartmentReportFiltersAccountDetails"/>
+                 </div>
+             </t>
+
+             <t t-if="'channel_plan' in controller.options and controller.options.channel_plan.length > 0">
+                 <div id="filter_analytic_plans_channel">
+                    <t t-call="gulfco_account_reports.AnalyticPlannChannelReportFiltersAccountDetails"/>
+                </div>
+             </t>
+        </xpath>
+    </t>
+
+</template>

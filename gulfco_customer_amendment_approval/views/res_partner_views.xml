@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_registration_inherit_form_amendment" model="ir.ui.view">
+        <field name="name">customer.amendment.registration.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="gulfco_contact_registration_custom.res_partner_registration_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <!--                    customer amendment button-->
+                <button name="customer_amendment_bu_sales" string="Amendment - BU Sales" type="object"
+                        class="oe_highlight"
+                        invisible="contact_type != 'customer' or not active"
+                        groups=""/>
+                <button name="customer_amendment_bu_scm" string="Amendment - BU SCM" type="object"
+                        class="oe_highlight"
+                        invisible="contact_type != 'customer' or not active"
+                        groups=""/>
+                <button name="customer_amendment_ccd" string="Amendment - CCD" type="object"
+                        class="oe_highlight"
+                        invisible="contact_type != 'customer' or not active"
+                        groups=""/>
+            </xpath>
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="object" name="action_show_customer_amendment"
+                        icon="fa-pencil-square-o" help="Customer Amendment" invisible="not customer_amendment_ids">
+                    <field string="Amendments" name="customer_amendment_count" widget="statinfo"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

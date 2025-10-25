@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="demo_assessment_purchase_result_excellent" model="assessment.purchase.result">
+        <field name="code">excellent</field>
+        <field name="name">Excellent</field>
+        <field name="sequence" eval="1"/>
+    </record>
+    <record id="demo_assessment_purchase_result_very_good" model="assessment.purchase.result">
+        <field name="code">very_good</field>
+        <field name="name">Very Good</field>
+        <field name="sequence" eval="2"/>
+    </record>
+    <record id="demo_assessment_purchase_result_good" model="assessment.purchase.result">
+        <field name="code">good</field>
+        <field name="name">Good</field>
+        <field name="sequence" eval="3"/>
+    </record>
+    <record id="demo_assessment_purchase_result_average" model="assessment.purchase.result">
+        <field name="code">average</field>
+        <field name="name">Average</field>
+        <field name="sequence" eval="4"/>
+    </record>
+    <record id="demo_assessment_purchase_result_below_average" model="assessment.purchase.result">
+        <field name="code">below_average</field>
+        <field name="name">Below Average</field>
+        <field name="sequence" eval="5"/>
+    </record>
+</odoo>

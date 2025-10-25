@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_tax_credit_note_4_inch_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+
+                <t t-call="web.basic_layout">
+                    <t t-set="company" t-value="doc.company_id"/>
+
+<!--                    <div class="thermal-tax-invoice-receipt page" style="font-size:8px;" t-attf-style="background-image: url('/plnx_rma_extended/static/src/img/Cancelled.png');background-position: center; background-size: cover;background-size::85mm 160mm;">-->
+                    <div class="thermal-tax-invoice-receipt page o_image_40_cover oe_img_bg o_bg_img_center flex-shrink-0 rounded-3 me-3" style="font-size:11px;">
+                        <div class="text-center">
+                            <img style="max-width: 280px; max-height: 80px; width: auto; height: auto; object-fit: contain;" src="/gulfco_sale_extanded/static/src/img/company_logo.png" alt="Logo"/>
+                            <br/>
+                            <strong t-esc="company.name"/>
+                            <br/>
+                            <span t-esc="company.street"/>
+                            <br/>
+                            <span t-esc="company.vat"/>
+                            <br/>
+                            <strong>TAX CREDIT NOTE</strong>
+                        </div>
+                        <hr/>
+                        <t t-set="sale_orders" t-value="doc.line_ids.sale_line_ids.order_id"/>
+                        <table class="table table-borderless" style="font-size:9px;">
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>Customer Account #</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <t t-if="doc.partner_id.property_account_receivable_id">
+                                        <span t-esc="doc.partner_id.property_account_receivable_id.display_name"/>
+                                    </t>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Invoice Type</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <t t-if="sale_orders and sale_orders[0].order_creation_source == 'vansales'">
+                                        <span>Cash</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span>Credit</span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>Customer Name</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.partner_id.name"/>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Invoice Date</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.date"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>Address</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.partner_id.contact_address"/>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Invoice No.</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>TRN No</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.partner_id.vat_trn"/>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Salesman</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.assign_to.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>PO No</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.po_number"/>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Payment Term</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.invoice_payment_term_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>Currency</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.currency_id.name"/>
+                                </td>
+                                <td style="width: 25%;">Notes</td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.ref"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr/>
+                        <table class="table table-sm table-borderless mb16 mt16" style="font-size:8px;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid black;">
+                                    <th style="width: 40%;text-align:left!important;">Item Name</th>
+                                    <th style="width: 15%;">Qty</th>
+                                    <th style="width: 10%;">Price</th>
+                                    <th style="width: 10%;">Discount</th>
+                                    <th style="width: 10%;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.invoice_line_ids" t-as="line">
+                                    <tr style="border-bottom: 1px solid black; page-break-inside: avoid;" >
+                                        <td style="width: 40%;">
+                                            <span t-esc="line.product_id.name"/>(<span t-esc="line.product_id.barcode"/>)
+                                        </td>
+                                        <td style="width:15%;text-align:center!important;">
+                                            <span t-esc="line.quantity"/>/<span t-field="line.product_uom_id">units</span>
+                                        </td>
+                                        <td style="width: 10%;text-align:center!important;">
+                                            <span t-esc="('%.2f' % line.price_unit)"/>
+                                        </td>
+                                        <td style="width: 10%;text-align:center!important;">
+                                            <span t-esc="line.discount"/> %
+                                        </td>
+                                        <td style="width: 10%;text-align:center!important;">
+                                            <span t-field="line.price_subtotal">27.00</span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <div class="clearfix" name="so_total_summary">
+                            <div id="total" class="row mt-n3" name="total" style="font-size:8px!important; page-break-inside: avoid;">
+                                <div t-attf-class="#{'col-7' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
+                                    <table class="total_table_json" style="width:100%; font-size:8px!important;border-color:white!important; table-layout: fixed; font-size: 11px; margin-top: 5px;">
+                                        <!-- Tax totals -->
+                                        <t t-call="account.document_tax_totals">
+                                            <t t-set="tax_totals" t-value="doc.tax_totals"/>
+                                            <t t-set="currency" t-value="doc.currency_id"/>
+                                        </t>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt8" style="page-break-inside: avoid;">
+                            <div class="col-12">
+                                <span style="font-size:8px!important;">Invoice Value in Word : <span t-esc="doc.currency_id.amount_to_text(doc.amount_total).replace(',', '')"/></span>
+                            </div>
+                        </div>
+                        <br/>
+                        <div style="page-break-inside: avoid;">
+                            <div class="row" style="page-break-inside: avoid;">
+                                <div class="col-12">
+                                    <span style="font-size:8px!important;">Material Received in Good Condition.</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                   <span style="font-size:8px!important;"> Customer Signature</span>
+                                </div>
+                                <div class="col-6">
+                                    <span style="font-size:8px!important;">Salesman Signature</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_tax_credit_note_4inch" model="report.paperformat">
+        <field name="format">custom</field>
+        <field name="name">Tax Credit Note (4inch)</field>
+        <field name="format">custom</field>
+        <field name="page_width" eval="102"/>
+        <field name="page_height" eval="208"/>
+        <field name="margin_top" eval="2"/>
+        <field name="margin_bottom" eval="10"/>
+        <field name="margin_left" eval="2"/>
+        <field name="margin_right" eval="2"/>
+        <field name="orientation">Portrait</field>
+        <field name="dpi" eval="80"/>
+    </record>
+
+    <record id="action_report_tax_credit_note_4_inch" model="ir.actions.report">
+        <field name="name">Tax Credit Note(4inch)</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">plnx_rma_extended.report_tax_credit_note_4_inch_pdf</field>
+        <field name="report_file">plnx_rma_extended.report_tax_credit_note_4_inch_pdf</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="plnx_rma_extended.paperformat_tax_credit_note_4inch"/>
+        <field name="domain" eval="[('is_rma_refund', '=', True),('move_type','=','out_refund')]"/>
+    </record>
+</odoo>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="demand_planning_tree_view" model="ir.ui.view">
+        <field name="name">demand.planning.tree.view</field>
+        <field name="model">demand.planning</field>
+        <field name="arch" type="xml">
+            <list string="Demand Planning">
+                <field name="product_id"/>
+                <field name="product_uom_id"/>
+                <field name="source_country_id"/>
+                <field name="company_id"/>
+                <field name="supplier_mos"/>
+                <field name="vendor_product_delay"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="demand_planning_form_details_view" model="ir.ui.view">
+        <field name="name">demand.planning.data.form.view</field>
+        <field name="model">demand.planning</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="product_uom_id"/>
+                            <field name="source_country_id"/>
+                            <field name="company_id"/>
+                            <field name="supplier_mos"/>
+                            <field name="vendor_product_delay"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="lines" string="Lines">
+                            <field name="demand_planning_line_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="opening_stock_qty"/>
+                                    <field name="opening_stock_regular_qty"/>
+                                    <field name="near_expiry_qty"/>
+                                    <field name="receipt_en_route_qty"/>
+                                    <field name="actual_sales_regular_qty"/>
+                                    <field name="actual_sales_promo_qty"/>
+                                    <field name="regular_sales_qty"/>
+                                    <field name="promotion_sales_qty"/>
+                                    <field name="to_order_qty"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="demand_planning_form_view" model="ir.ui.view">
+        <field name="name">demand.planning.form.view</field>
+        <field name="model">demand.planning</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="company_id" invisible="1"/>
+                <group>
+                    <group>
+                        <field name="type"/>
+                        <field name="vendor_id" domain="[('contact_type','=','supplier')]"
+                               invisible="type == 'by_product'"/>
+                        <field name="product_id" domain="[('item_type','=','tradable')]"
+                               invisible="type == 'by_supplier'"/>
+                        <field name="code"/>
+                        <field name="source_country_id" invisible="0" readonly="0"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_view_demand_planning" model="ir.actions.act_window">
+        <field name="name">Demand Planning</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">demand.planning</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('demand_planning_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('demand_planning_form_details_view')})]"/>
+    </record>
+
+    <record id="action_demand_planning" model="ir.actions.client">
+        <field name="name">Demand Planning</field>
+        <field name="res_model">demand.planning</field>
+        <field name="tag">demand_planning_client_action</field>
+    </record>
+
+    <record id="action_demand_planning_view" model="ir.actions.act_window">
+        <field name="name">Add a Product</field>
+        <field name="res_model">demand.planning</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="demand_planning_form_view"/>
+    </record>
+
+    <menuitem
+            id="menu_purchase_planning"
+            name="Planning"
+            sequence="2"
+            parent="purchase.menu_purchase_root"/>
+
+    <menuitem
+            id="menu_purchase_demand_planning_report"
+            name="Demand Planning Report"
+            action="action_demand_planning"
+            sequence="1"
+            parent="menu_purchase_planning"/>
+
+    <menuitem
+            id="menu_purchase_demand_planning"
+            name="Demand Planning"
+            action="action_view_demand_planning"
+            sequence="2"
+            parent="menu_purchase_planning"/>
+
+
+</odoo>

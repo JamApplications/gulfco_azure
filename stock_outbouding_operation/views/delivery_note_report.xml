@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="custom_external_layout_standard_delivery_slip">
+        <div t-attf-class="header o_company_#{company.id}_layout">
+          <div class="d-block">
+            <img t-if="company.logo" class="o_company_logo_small"
+                 t-att-src="image_data_uri(company.logo)"
+                 alt="Logo"/>
+          </div>
+            <div class="mt-3">
+                <table style="width: 100%; font-family: Arial, sans-serif;">
+                    <tr>
+                        <td style="width: 80%; text-align: center;">
+                            <strong style="font-size: 16px;">
+                                <t t-esc="company.partner_id.name"/>
+                            </strong>
+                            <br/>
+                            <span style="font-size: 12px;">
+                                <t t-esc="company.partner_id.street"/>
+                                –
+                                <t t-esc="company.partner_id.street2"/>
+                                – PO Box:
+                                <t t-esc="company.partner_id.po_box"/>
+                                –
+                                <t t-esc="company.partner_id.state_id.name"/>
+                                –
+                                <t t-esc="company.partner_id.country_id.name"/>
+                                <br/>
+                                TRN #
+                                <t t-esc="company.partner_id.vat_trn"/>
+                                Trade License No #
+                                <t t-esc="company.partner_id.trade_number"/>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <t t-set="layout_background_url"
+           t-value="'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else
+                '/base/static/img/demo_logo_report.png' if company.layout_background == 'Demo logo' else ''"/>
+        <div t-attf-class="article o_report_layout_standard o_table_standard o_company_#{company.id}_layout o_snail_mail {{'o_report_layout_background' if company.layout_background != 'Blank' else ''}}"
+             t-attf-style="{{ 'background-image: url(%s);' % layout_background_url if layout_background_url else '' }}"
+             t-att-data-oe-model="o and o._name"
+             t-att-data-oe-id="o and o.id"
+             t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <h2 t-out="layout_document_title"/>
+            <t t-out="0"/>
+        </div>
+
+        <div t-attf-class="footer o_company_#{company.id}_layout {{report_type != 'pdf' and 'mt-auto'}}">
+            <div class="o_footer_content d-flex border-top pt-2">
+                <div class="flex-grow-1 text-start me-2" t-field="company.report_footer"/>
+                <div class="text-end text-muted">
+                    <div t-if="report_type == 'pdf' and display_name_in_footer" t-out="o.name">(document name)</div>
+                    <div t-if="report_type == 'pdf'" class="text-nowrap">Page
+                        <span class="page"/>
+                        /
+                        <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="custom_external_layout_delivery_slip">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+        <t t-call="stock_outbouding_operation.custom_external_layout_standard_delivery_slip">
+            <t t-out="0"/>
+        </t>
+    </template>
+    <template id="report_delivery_document_custom" inherit_id="stock.report_delivery_document">
+        <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+            <attribute name="t-call">stock_outbouding_operation.custom_external_layout_delivery_slip</attribute>
+        </xpath>
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <div style="width: 100%; text-align: center; margin: 10px 0;">
+                <strong style="font-size: 18px;">DELIVERY NOTE</strong>
+            </div>
+            <div class="row mb-3" style="font-size: 16px;">
+                <div class="col-6">
+
+                    <!-- Bill To -->
+                    <div class="mb-3">
+                        <strong style="font-size: 20px;">Bill To Customer Details</strong>
+                        <br/>
+
+                        <span>
+                            <strong>Customer A/C No:</strong>
+                            <t t-if="o.sale_id and o.sale_id.partner_invoice_id"
+                               t-esc="o.sale_id.partner_invoice_id.customer_code or ''"/>
+                        </span>
+                        <br/>
+                        <span>
+                            <strong>Customer Name:</strong>
+                            <t t-out="o.sale_id.partner_invoice_id.name or ''"/>
+                        </span>
+                        <br/>
+                        <span>
+                            <strong>Address:</strong>
+                            <t t-out="o.sale_id.partner_invoice_id.street or ''"/>
+                        </span>
+                        <br/>
+                        <span>
+                            <strong>Customer TRN:</strong>
+                            <t t-out="o.sale_id.partner_invoice_id.vat_trn or ''"/>
+                        </span>
+                        <br/>
+                    </div>
+
+                    <!-- Ship To -->
+                    <div>
+                        <strong style="font-size: 20px;">Ship To Customer Details</strong>
+                        <br/>
+                        <span>
+                            <strong>Customer A/C No:</strong>
+                            <t t-if="o.partner_id" t-esc="o.partner_id.customer_code or ''"/>
+                        </span>
+                        <br/>
+                        <span>
+                            <strong>Customer Name:</strong>
+                            <t t-out="o.partner_id.name"/>
+                        </span>
+                        <br/>
+                        <span>
+                            <strong>Address:</strong>
+                            <t t-out="o.partner_id.street"/>
+                        </span>
+                        <br/>
+                        <span>
+                            <strong>Ship To TRN:</strong>
+                            <t t-out="o.partner_id.vat_trn or ''"/>
+                        </span>
+
+                    </div>
+                </div>
+                <br/>
+
+                <!-- Delivery Info -->
+                <div class="col-6">
+                    <strong style="font-size: 20px;">Delivery Details</strong>
+                    <br/>
+                    <span>
+                        <strong>Delivery No:</strong>
+                        <t t-out="o.name"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>Shipped Date:</strong>
+                        <t t-out="o.date_done"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>Source Document No:</strong>
+                        <t t-out="o.sale_id.name or ''"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>Source Document Date:</strong>
+                        <t t-out="o.sale_id.date_order or ''"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>PO No.:</strong>
+                        <t t-esc="o.sale_id.po_number or ''"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>Payment Terms:</strong>
+                        <t t-esc="o.sale_id.payment_term_id.name or ''"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>Salesman:</strong>
+                        <t t-out="o.sale_id.user_id.name or ''"/>
+                    </span>
+                    <br/>
+
+                    <span>
+                        <strong>Warehouse:</strong>
+                        <t t-out="o.sale_id.warehouse_id.name"/>
+                    </span>
+                    <br/>
+                    <span>
+                        <strong>Remarks:</strong>
+                        <t t-out="o.remark_picking or ''"/>
+                    </span>
+                </div>
+            </div>
+        </xpath>
+        <br/>
+        <xpath expr="//div[@class='page']" position="replace">
+            <table class="table table-bordered" style="font-size: 14px;">
+                <thead style="background-color:#D3D3D3; color: white; text-align: center;">
+                    <tr>
+                        <th>Sr</th>
+                        <th>Item Code</th>
+                        <th>Item Barcode No</th>
+                        <th>HS Code</th>
+                        <th>Country of origin</th>
+                        <th>Description</th>
+                        <th>UOM</th>
+                        <th>QTY</th>
+                        <th>LOT</th>
+                        <th>Expiry Date</th>
+                        <th>Lot Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="sequance" t-value="1"/>
+                    <t t-foreach="o.move_ids_without_package" t-as="move">
+                        <t t-set="move_line" t-value="env['stock.move.line'].sudo().search([('move_id','=',move.id)])"/>
+                        <t t-if="move_line">
+                            <tr>
+                                <td>
+                                    <span t-esc="sequance"/>
+                                </td>
+                                <td>
+                                    <t t-esc="move.product_id.default_code or ''"/>
+                                </td>
+                                <td>
+                                    <t t-esc="move.product_id.barcode"/>
+                                </td>
+                                <td>
+                                    <t t-esc="move.product_id.hs_code"/>
+                                </td>
+                                <td>
+                                    <t t-esc="move.product_id.country_of_origin.name"/>
+                                </td>
+                                <td>
+                                    <t t-esc="move.description_picking"/>
+                                </td>
+                                <td>
+                                    <t t-esc="move.product_uom.name"/>
+                                </td>
+                                <td>
+                                    <t t-esc="move.quantity"/>
+                                </td>
+                                <td>
+                                    <t t-esc="move_line[0].lot_id.name"/>
+                                </td>
+                                <td>
+                                    <t t-if="move_line[0].expiration_date">
+                                        <span t-field="move_line[0].expiration_date"  t-options='{"widget": "date", "hide_seconds": True}'/>
+                                    </t>
+<!--                                    <t t-if="move_line[0].expiration_date"-->
+<!--                                       t-esc="move_line[0].expiration_date.strftime('%Y-%m-%d')"/>-->
+                                </td>
+                                <td>
+                                    <t t-esc="move_line[0].quantity"/>
+                                </td>
+                                <!--                                <td t-esc="move_line[0].lot_id.name"/>-->
+                                <!--                                <td t-esc="move_line[0].expiration_date"/>-->
+                                <!--                                <td t-esc="move_line[0].quantity"/>-->
+                            </tr>
+                            <!-- Additional rows for remaining lots -->
+                            <t t-foreach="move_line[1:]" t-as="line">
+                                <tr>
+                                    <td t-esc="line.lot_id.name"/>
+                                    <td><span t-field="line.expiration_date"  t-options='{"widget": "date", "hide_seconds": True}'/></td>
+                                    <td t-esc="line.quantity"/>
+                                </tr>
+                            </t>
+                            <t t-set="sequance" t-value="sequance + 1"/>
+                        </t>
+                    </t>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+    <record id="paperformat_delivery_slip" model="report.paperformat">
+        <field name="name">Delivery Slip Paperformat</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">40</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="stock.action_report_delivery" model="ir.actions.report">
+        <field name="paperformat_id" ref="stock_outbouding_operation.paperformat_delivery_slip"/>
+    </record>
+
+</odoo>

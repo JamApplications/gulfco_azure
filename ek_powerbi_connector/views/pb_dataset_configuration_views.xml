@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- PowerBI Dataset Configuration List View -->
+        <record id="view_pb_dataset_configuration_list" model="ir.ui.view">
+            <field name="name">pb.dataset.configuration.list</field>
+            <field name="model">pb.dataset.configuration</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="api_key"/>
+                    <field name="user_id"/>
+                    <field name="allowed_company_ids" widget="many2many_tags"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- PowerBI Dataset Configuration Form View -->
+        <record id="view_pb_dataset_configuration_form" model="ir.ui.view">
+            <field name="name">pb.dataset.configuration.form</field>
+            <field name="model">pb.dataset.configuration</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="api_key"/>
+                            <field name="access_type"/>
+                            <field name="user_id" invisible="access_type != 'user_based'" required="access_type == 'user_based'"/>
+                            <field name="user_company_ids" invisible="1"/>
+                            <field name="allowed_company_ids" widget="many2many_tags" invisible="access_type != 'user_based'" required="access_type == 'user_based'"/>
+                        </group>
+                        <notebook>
+                            <page string="Tables">
+                                <field name="ext_dataset_table_ids" mode="kanban">
+                                    <kanban>
+                                        <field name="name"/>
+                                        <field name="model_id"/>
+                                        <field name="res_model_name"/>
+                                        <field name="domain"/>
+                                        <field name="field_ids"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div class="oe_kanban_global_click">
+                                                    <div class="d-flex flex-column align-items-center gap-2 py-3">
+                                                        <div class="p-0">
+                                                            <i class="fa fa-4x fa-database text-primary" aria-hidden="true" title="Dataset"></i>
+                                                        </div>
+                                                        <div class="p-0 text-dark text-center">
+                                                            <span class="fs-3 fw-bold"><field name="name"/></span>
+                                                        </div>
+                                                        <div class="p-0 text-center">
+                                                            <pre class="m-0"><t t-out="record.res_model_name.value"/></pre>
+                                                        </div>
+                                                        <div class="p-0 text-center">
+                                                             <span class="fs-6 fw-bold"><t t-out="record.model_id.value"/></span>
+                                                        </div>
+                                                        <div class="p-0">
+                                                            <span class="badge rounded-pill bg-primary text-white fs-6">
+                                                                <t t-set="total_fields" t-value="record.field_ids.raw_value.length"/>
+                                                                <t t-out="total_fields"/> Columns
+                                                            </span>
+                                                        </div>
+                                                        <div class="p-0">
+                                                            <hr class="my-2"/>
+                                                                <div style="font-size: small">
+                                                                    <field name="domain" widget="domain" options="{'model': 'res_model_name'}"/>
+                                                                </div>
+                                                            <hr class="my-2"/>
+                                                        </div>
+
+                                                        <div>
+                                                            <button class="btn btn-outline-primary" type="object" name="action_pb_view_records">
+                                                                View Records
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Main Action: pb.dataset.configuration -->
+        <record id="pb_dataset_configuration_action" model="ir.actions.act_window">
+            <field name="name">PowerBI Dataset Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pb.dataset.configuration</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                All important PowerBI Dataset Configuration Track handle here
+            </p><p>
+                Ekika helps you track, manage and maintain your PowerBI Dataset Configurations activity in the software.
+            </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demand_planning_gulfco_vendor_partner_fields" model="ir.ui.view">
+        <field name="name">res.partner.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="gulfco_vendor_customized_data.vendor_details_form_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='supplier_type']" position="after">
+                <field name="supplier_mos" required="0" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

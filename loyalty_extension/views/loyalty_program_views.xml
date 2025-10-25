@@ -1,0 +1,34 @@
+<odoo>
+    <record id="view_loyalty_rule_form_inherit_customers" model="ir.ui.view">
+        <field name="name">loyalty.rule.form.inherit.customers</field>
+        <field name="model">loyalty.rule</field>
+        <field name="inherit_id" ref="loyalty.loyalty_rule_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/group[last()]" position="after">
+                <group string="Customer Rules" col="1" class="oe_left">
+                    <button name="open_manage_customer_wizard"
+                            string="Manage Customers"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-users"/>
+                </group>
+                <notebook>
+                    <page string="Customers">
+                        <group>
+                            <button name="action_view_customers"
+                                    string="Search Customers"
+                                    type="object"
+                                    class="btn-primary"
+                                    icon="fa-search"/>
+                        </group>
+
+                        <field name="customer_ids" readonly="1">
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

@@ -1,0 +1,72 @@
+<odoo>
+    <!-- View for Stock Request Order -->
+    <record id="view_stock_request_order_form_inherit_custom" model="ir.ui.view">
+        <field name="name">stock.request.order.form.inherit.custom</field>
+        <field name="model">stock.request.order</field>
+        <field name="inherit_id" ref="stock_request_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/header/button[@name='action_confirm']" position="attributes">
+                <attribute name="invisible">
+                    not (
+                        state in ['approved_done']
+                    or (
+                            direction in ('internal_transfer', 'van_load', 'branch_transfer', 'van_off_load',
+                    'miscellaneous_issue_out', 'miscellaneous_receiving',)
+                            and state == 'submitted'
+                        )
+
+                    )
+                </attribute>
+            </xpath>
+
+            <xpath expr="//form/header/button[@name='action_draft']" position="attributes">
+                <attribute name="invisible">
+                    not (
+                        state in ['approved_done']
+                        or (
+                            direction in ('internal_transfer', 'van_load', 'branch_transfer', 'van_off_load',
+                    'miscellaneous_issue_out', 'miscellaneous_receiving',)
+                            and state == 'submitted'
+                        )
+                    )
+                </attribute>
+            </xpath>
+
+            <xpath expr="//form/header/button[@name='action_cancel']" position="attributes">
+                <attribute name="invisible">
+                    not (
+                        state in ['draft', 'approved_done', 'open']
+                        or (
+                            direction in ('internal_transfer', 'van_load', 'branch_transfer', 'van_off_load',
+                    'miscellaneous_issue_out', 'miscellaneous_receiving',)
+                            and state == 'submitted'
+                        )
+                    )
+                </attribute>
+            </xpath>
+
+
+            <!-- Adding approval buttons with new attrs syntax -->
+            <xpath expr="//form/header/button[@name='action_confirm']" position="before">
+
+                <button name="action_approve"
+                    type="object"
+                    string="Approve"
+                    class="btn-primary"
+                    invisible="state in ['draft', 'rejected', 'approved_done', 'open', 'cancel', 'done', 'delivery_recycle']
+                        or direction in (
+                     'internal_transfer', 'miscellaneous_issue_out', 'miscellaneous_receiving',
+                      'van_load', 'branch_transfer', 'van_off_load')"/>
+
+            </xpath>
+
+           <xpath expr="//field[@name='state']" position="attributes">
+               <attribute name="statusbar_visible">draft,submitted,approved,open,cancel,done,delivery_recycle</attribute>
+           </xpath>
+
+
+        </field>
+    </record>
+
+</odoo>

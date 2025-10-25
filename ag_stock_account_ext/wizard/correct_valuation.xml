@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="ag_correct_valuation_form" model="ir.ui.view">
+        <field name="name">correct.valuation.form</field>
+        <field name="model">correct.valuation</field>
+        <field name="arch" type="xml">
+            <form string="Correct Valuation">
+                <group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_correct_valuation" string="Update Cost" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ag_correct_valuation_action" model="ir.actions.act_window">
+        <field name="name">Correct Valuation</field>
+        <field name="res_model">correct.valuation</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="ag_correct_valuation_form"/>
+    </record>
+
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="menu_correct_valuat" name="Correct Valuation" parent="stock.menu_stock_warehouse_mgmt" action="ag_correct_valuation_action" sequence="10"/>
+
+
+</odoo>

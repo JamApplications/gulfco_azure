@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="gulfco_account_report_filters.SalespersonFilters" t-inherit="account_reports.AccountReportFiltersCustomizable">
+
+        <xpath expr="//div[@id='filter_date']" position="after">
+            <t t-if="'salesperson' in controller.options">
+                <div id="filter_salesperson" class="filter_salesperson">
+                    <t t-call="gulfco_account_report_filters.AccountReportFilterSalesPerson"/>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+    <t t-name="gulfco_account_report_filters.AccountReportFilterSalesPerson">
+        <Dropdown menuClass="'account_report_filter salesperson'">
+            <button class="btn btn-secondary">
+                <i class="fa fa-folder-open me-1"/>
+                        Salesperson
+            </button>
+            <t t-set-slot="content">
+                <div class="dropdown-item gap-2 align-items-center">
+                    <label>Salesperson (Assign To)</label>
+                    <MultiRecordSelector t-props="getMultiRecordSelectorProps('res.partner', 'salesperson_ids')"/>
+                </div>
+
+                <div class="dropdown-item gap-2 align-items-center">
+                    <label>Sales Team</label>
+                    <MultiRecordSelector t-props="getMultiRecordSelectorProps('crm.team', 'sales_team_ids')"/>
+                </div>
+            </t>
+        </Dropdown>
+    </t>
+
+</templates>

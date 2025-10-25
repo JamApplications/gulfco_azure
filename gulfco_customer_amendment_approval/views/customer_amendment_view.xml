@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="customer_amendment_view_tree" model="ir.ui.view">
+        <field name="name">customer_amendment_view_tree</field>
+        <field name="model">customer.amendment</field>
+        <field name="arch" type="xml">
+            <list string="Customer Amendment">
+                <field name="name"/>
+                <field name="type"/>
+            </list>
+        </field>
+    </record>
+    <record id="customer_amendment_view_form" model="ir.ui.view">
+        <field name="name">customer_amendment_view_form</field>
+        <field name="model">customer.amendment</field>
+        <field name="arch" type="xml">
+            <form string="Customer Amendment">
+                <header>
+                    <field name="type" invisible="1"/>
+                    <field name="bu_sales_state" widget="statusbar" invisible="type != 'sales_amendment'" statusbar_visible="draft,waiting_manager_approval,manager_approval,reject"/>
+                    <field name="bu_scm_state" widget="statusbar" invisible="type != 'scm_amendment'" statusbar_visible="draft,waiting_ccd_officer_approval,ccd_officer_approval,reject"/>
+                    <field name="bu_ccd_state" widget="statusbar" invisible="type != 'ccd_amendment'" statusbar_visible="draft,waiting_ccd_officer_approval,ccd_officer_approved,ccd_approved,reject"/>
+
+<!--                    Approval flow for the BU Sales-->
+                    <button name="action_submit_bu_sales" string="Submit for Approval" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'sales_amendment' or bu_sales_state != 'draft'"
+                        groups="gulfco_contact_registration_custom.group_submit_cash_customer" />
+                    <button name="action_manager_approve_bu_sales" string="Manager Approval" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'sales_amendment' or bu_sales_state != 'waiting_manager_approval'"
+                         groups="gulfco_contact_registration_custom.group_manager_cash_approval" />
+                    <button name="action_reject_bu_sales" string="Reject" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'sales_amendment' or bu_sales_state not in ['draft','waiting_manager_approval']"
+                        groups="gulfco_contact_registration_custom.group_reset_cash_customer"/>
+
+
+                    <!-- Approval flow for the BU SCM  -->
+                    <button name="action_submit_bu_scm" string="Submit Request" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'scm_amendment' or bu_scm_state != 'draft'"
+                        groups="gulfco_contact_registration_custom.group_submit_cash_customer" />
+                    <button name="action_ccd_officer_bu_scm" string="CCD Officer Approval" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'scm_amendment' or bu_scm_state != 'waiting_ccd_officer_approval'"
+                        groups="gulfco_contact_registration_custom.group_credit_officer_approval"/>
+                    <button name="action_reject_bu_scm" string="Reject" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'scm_amendment' or bu_scm_state not in ['waiting_ccd_officer_approval','ccd_officer_approved']"
+                        groups="gulfco_contact_registration_custom.group_reset_credit_customer,gulfco_contact_registration_custom.group_reset_cash_customer"/>
+                    <!-- Approval flow for the BU CCD  -->
+                    <button name="submit_to_ccd_officer_approval" string="Submit Request" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'ccd_amendment' or bu_ccd_state != 'draft'"
+                        groups="gulfco_contact_registration_custom.group_submit_credit_customer,gulfco_contact_registration_custom.group_submit_cash_customer"/>
+
+                    <button name="action_ccd_officer_approve" string="CCD Office Approval" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'ccd_amendment' or bu_ccd_state != 'waiting_ccd_officer_approval'"
+                        groups="gulfco_contact_registration_custom.group_credit_officer_approval"/>
+
+                    <button name="action_ccd_approved" string="CCD Manager Approval" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'ccd_amendment' or bu_ccd_state != 'ccd_officer_approved'"
+                        groups="gulfco_contact_registration_custom.group_ccd_credit_approval"/>
+
+                    <button name="action_reject_ccd" string="Reject" type="object"
+                        class="oe_highlight"
+                        invisible="type != 'ccd_amendment' or bu_ccd_state not in ['waiting_ccd_officer_approval', 'ccd_officer_approved'] or is_ccd_officer_direct_approved"
+                        groups="gulfco_contact_registration_custom.group_reset_credit_customer"/>
+                </header>
+                <sheet>
+                    <div>
+                        <h5>
+                            <field name="name"/>
+                        </h5>
+                    </div>
+                    <group invisible="type != 'sales_amendment'">
+                        <group>
+                            <table class="table table-sm o_form_table" style="border-color: white !important;">
+                                <thead>
+                                    <tr>
+                                        <th>Label</th>
+                                        <th>New Value</th>
+                                        <th>Previous Value</th>
+                                    </tr>
+                                </thead>
+                                 <tbody>
+                                    <tr><td><label for="customer_group_id"/></td><td><field name="customer_group_id"/></td><td><field name="prev_customer_group_id" readonly="1" force_save="1" nolabel="1"/></td></tr>
+                                    <tr><td><label for="outlet_code"/></td><td><field name="outlet_code"/></td><td><field name="prev_outlet_code" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="outlet_short_name"/></td><td><field name="outlet_short_name"/></td><td><field name="prev_outlet_short_name" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="external_ref"/></td><td><field name="external_ref"/></td><td><field name="prev_external_ref" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="sales_leader_id"/></td><td><field name="sales_leader_id"/></td><td><field name="prev_sales_leader_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="collector_id"/></td><td><field name="collector_id"/></td><td><field name="prev_collector_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                 </tbody>
+                            </table>
+                        </group>
+                        <group>
+                            <table class="table table-sm o_form_table" style="border-color: white !important;">
+                                <thead>
+                                    <tr>
+                                        <th>Label</th>
+                                        <th>New Value</th>
+                                        <th>Previous Value</th>
+                                    </tr>
+                                </thead>
+                                 <tbody>
+                                    <tr><td><label for="buyer_id"/></td><td><field name="buyer_id"/></td><td><field name="prev_buyer_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="finance_manager_id"/></td><td><field name="finance_manager_id"/></td><td><field name="prev_finance_manager_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="share_soa_email"/></td><td><field name="share_soa_email"/></td><td><field name="prev_share_soa_email" readonly="1" nolabel="1" force_save="1"/></td></tr>
+
+                                     <tr><td><label for="partner_channel_id"/></td><td><field name="partner_channel_id"/></td><td><field name="prev_partner_channel_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="outlet_id"/></td><td><field name="outlet_id" if="partner_channel_id" required="0" /></td><td><field name="prev_outlet_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="sub_outlet_id"/></td><td><field name="sub_outlet_id" if="outlet_id" required="0"/></td><td><field name="prev_sub_outlet_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+
+                                    <tr><td><label for="share_invoice_email"/></td><td><field name="share_invoice_email"/></td><td><field name="prev_share_invoice_email" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="latitude"/></td><td><field name="latitude"/></td><td><field name="prev_latitude" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="longitude"/></td><td><field name="longitude"/></td><td><field name="prev_longitude" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                 </tbody>
+                            </table>
+                        </group>
+                    </group>
+                    <group invisible="type != 'scm_amendment'">
+                        <group>
+                            <table class="table o_form_table" style="border-color: white !important;">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>New Value</th>
+                                        <th>Previous Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><label for="delivery_receive_time"/></td><td><field name="delivery_receive_time"/></td><td><field name="prev_delivery_receive_time" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                </tbody>
+                            </table>
+                        </group>
+                    </group>
+                    <group invisible="type != 'ccd_amendment'">
+                        <group>
+                            <table class="table o_form_table" style="border-color: white !important;">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>New Value</th>
+                                        <th>Previous Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><label for="customer_name"/></td><td><field name="customer_name"/></td><td><field name="prev_customer_name" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="customer_type"/></td><td><field name="customer_type"/></td><td><field name="prev_customer_type" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="detailed_address"/></td><td><field name="detailed_address"/></td><td><field name="prev_detailed_address" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="community_name"/></td><td><field name="community_name"/></td><td><field name="prev_community_name" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="city"/></td><td><field name="city"/></td><td><field name="prev_city" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="po_box"/></td><td><field name="po_box"/></td><td><field name="prev_po_box" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="emirate"/></td><td><field name="emirate"/></td><td><field name="prev_emirate" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="tl_issued_emirate"/></td><td><field name="tl_issued_emirate"/></td><td><field name="prev_tl_issued_emirate" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="trade_number"/></td><td><field name="trade_number"/></td><td><field name="prev_trade_number" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="establish_data"/></td><td><field name="establish_data"/></td><td><field name="prev_establish_data" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="tl_expiry_date"/></td><td><field name="tl_expiry_date"/></td><td><field name="prev_tl_expiry_date" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="delivery_receive_time"/></td><td><field name="delivery_receive_time"/></td><td><field name="prev_delivery_receive_time" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="is_credit_hold"/></td><td><field name="is_credit_hold"/></td><td><field name="prev_is_credit_hold" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="credit_hold_reason_id"/></td><td><field name="credit_hold_reason_id" required="is_credit_hold" invisible="not is_credit_hold"/></td><td><field name="prev_credit_hold_reason_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+<!--                                    <tr><td><label for="credit_hold_reason"/></td><td><field name="credit_hold_reason"/></td><td><field name="prev_credit_hold_reason" readonly="1" nolabel="1" force_save="1"/></td></tr>-->
+                                    <tr><td><label for="is_key_account"/></td><td><field name="is_key_account"/></td><td><field name="prev_is_key_account" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                </tbody>
+                            </table>
+                        </group>
+                        <group>
+                            <table class="table o_form_table" style="border-color: white !important;">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>New Value</th>
+                                        <th>Previous Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><label for="category"/></td><td><field name="category"/></td><td><field name="prev_category" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="owner_name"/></td><td><field name="owner_name"/></td><td><field name="prev_owner_name" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="owner_share"/></td><td><field name="owner_share"/></td><td><field name="prev_owner_share" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="nationality_id"/></td><td><field name="nationality_id"/></td><td><field name="prev_nationality_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="vat_trn"/></td><td><field name="vat_trn"/></td><td><field name="prev_vat_trn" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="email"/></td><td><field name="email"/></td><td><field name="prev_email" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="credit_limit"/></td><td><field name="credit_limit"/></td><td><field name="prev_credit_limit" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="property_payment_term_id"/></td><td><field name="property_payment_term_id"/></td><td><field name="prev_property_payment_term_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                    <tr><td><label for="property_inbound_payment_method_line_id"/></td><td><field name="property_inbound_payment_method_line_id"/></td><td><field name="prev_property_inbound_payment_method_line_id" readonly="1" nolabel="1" force_save="1"/></td></tr>
+                                </tbody>
+                            </table>
+                        </group>
+                        <group string="Channels Info" invisible="1">
+                            <field name="current_chanel" invisible="1"/>
+                            <field name="current_sub_channel" invisible="1"/>
+                            <table class="table o_form_table" style="border-color: white !important;">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>New Value</th>
+                                        <th>Previous Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="channel"/></td>
+                                        <td><field name="channel"/></td>
+                                        <td><field name="prev_channel" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_chanel != 'MT'">
+                                        <td><label for="channel_mt"/></td>
+                                        <td><field name="channel_mt" required="current_chanel == 'MT'" invisible="current_chanel != 'MT'"/></td>
+                                        <td><field name="prev_channel_mt" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_chanel != 'GT'">
+                                        <td><label for="channel_gt"/></td>
+                                        <td><field name="channel_gt" required="current_chanel == 'GT'" nolabel="1" string="Outlet Classification"/></td>
+                                        <td><field name="prev_channel_gt" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_chanel != 'E-Com'">
+                                        <td><label for="channel_ecom"/></td>
+                                        <td><field name="channel_ecom" required="current_chanel == 'E-Com'" nolabel="1" string="Outlet Classification"/></td>
+                                        <td><field name="prev_channel_ecom" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_chanel != '3PL'">
+                                        <td><label for="channel_3pl"/></td>
+                                        <td><field name="channel_3pl" required="current_chanel == '3PL'" nolabel="1" string="Outlet Classification"/></td>
+                                        <td><field name="prev_channel_3pl" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+
+                                       <!-- MT Sub Channels -->
+                                    <tr invisible="current_sub_channel != 'HyperMarket'">
+                                        <td><label for="channel_mt_hyper"/></td>
+                                        <td><field name="channel_mt_hyper" required="current_sub_channel == 'HyperMarket'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_mt_hyper" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'SuperMarket'">
+                                        <td><label for="channel_mt_super"/></td>
+                                        <td><field name="channel_mt_super" required="current_sub_channel == 'SuperMarket'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_mt_super" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+
+                                    <!-- GT Sub Channels -->
+                                    <tr invisible="current_sub_channel != 'Grocery'">
+                                        <td><label for="channel_gt_grocery"/></td>
+                                        <td><field name="channel_gt_grocery" required="current_sub_channel == 'Grocery'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_gt_grocery" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'ConvenienceStore'">
+                                        <td><label for="channel_gt_cs"/></td>
+                                        <td><field name="channel_gt_cs" required="current_sub_channel == 'ConvenienceStore'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_gt_cs" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'Supermarket'">
+                                        <td><label for="channel_gt_super"/></td>
+                                        <td><field name="channel_gt_super" required="current_sub_channel == 'Supermarket'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_gt_super" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'PetrolStation'">
+                                        <td><label for="channel_gt_petrol"/></td>
+                                        <td><field name="channel_gt_petrol" required="current_sub_channel == 'PetrolStation'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_gt_petrol" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'DiscountCenter'">
+                                        <td><label for="channel_gt_discount"/></td>
+                                        <td><field name="channel_gt_discount" required="current_sub_channel == 'DiscountCenter'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_gt_discount" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'Wholesale'">
+                                        <td><label for="channel_gt_wholesale"/></td>
+                                        <td><field name="channel_gt_wholesale" required="current_sub_channel == 'Wholesale'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_gt_wholesale" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'TradingCompany'">
+                                        <td><label for="channel_gt_tc"/></td>
+                                        <td><field name="channel_gt_tc" required="current_sub_channel == 'TradingCompany'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_gt_tc" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'SpecialAccounts'">
+                                        <td><label for="channel_gt_sc"/></td>
+                                        <td><field name="channel_gt_sc" required="current_sub_channel == 'SpecialAccounts'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_gt_sc" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+
+                                     <!--                            channel_horeca-->
+                                    <tr invisible="current_sub_channel != 'HotelsandResorts'">
+                                        <td><label for="channel_horeca_hr"/></td>
+                                        <td><field name="channel_horeca_hr" required="current_sub_channel == 'HotelsandResorts'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_horeca_hr" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'RestaurantandCafe'">
+                                        <td><label for="channel_horeca_rc"/></td>
+                                        <td><field name="channel_horeca_rc" required="current_sub_channel == 'RestaurantandCafe'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_horeca_rc" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'SpecialAccount'">
+                                        <td><label for="channel_horeca_sa"/></td>
+                                        <td><field name="channel_horeca_sa" required="current_sub_channel == 'SpecialAccount'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_horeca_sa" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'Caterings'">
+                                        <td><label for="channel_horeca_caterings"/></td>
+                                        <td><field name="channel_horeca_caterings" required="current_sub_channel == 'Caterings'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_horeca_caterings" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'HORECATradingCompany'">
+                                        <td><label for="channel_horeca_tc"/></td>
+                                        <td><field name="channel_horeca_tc" required="current_sub_channel == 'HORECATradingCompany'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_horeca_tc" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'PubsandClubs'">
+                                        <td><label for="channel_horeca_pc"/></td>
+                                        <td><field name="channel_horeca_pc" required="current_sub_channel == 'PubsandClubs'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_horeca_pc" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'OnlineMarketPlace'">
+                                        <td><label for="channel_ecom_mp"/></td>
+                                        <td><field name="channel_ecom_mp" required="current_sub_channel == 'OnlineMarketPlace'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_ecom_mp" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+                                    <tr invisible="current_sub_channel != 'DeliveryApps'">
+                                        <td><label for="channel_ecom_app"/></td>
+                                        <td><field name="channel_ecom_app" required="current_sub_channel == 'DeliveryApps'" nolabel="1" string="Outlet Sub Classification"/></td>
+                                        <td><field name="prev_channel_ecom_app" readonly="1" nolabel="1" force_save="1"/></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </group>
+                        <!-- Document Attachments Table -->
+                        <group>
+                            <field name="trade_license_file_name" invisible="1"/>
+                            <field name="prev_trade_license_file_name" invisible="1"/>
+                            <field name="caf_file_name" invisible="1"/>
+                            <field name="guarantees_copy_file_name" invisible="1"/>
+                            <field name="eid_file_name" invisible="1"/>
+                            <field name="agreement_copy_file_name" invisible="1"/>
+                            <field name="bank_statement_file_name" invisible="1"/>
+                            <field name="vat_trn_file_name" invisible="1"/>
+                            <field name="poer_attorney_file_name" invisible="1"/>
+                            <field name="company_photo_file_name" invisible="1"/>
+                            <field name="passport_copy_file_name" invisible="1"/>
+                            <field name="memorandum_association_file_name" invisible="1"/>
+                            <field name="prev_caf_file_name" invisible="1"/>
+                            <field name="prev_guarantees_copy_file_name" invisible="1"/>
+                            <field name="prev_eid_file_name" invisible="1"/>
+                            <field name="prev_agreement_copy_file_name" invisible="1"/>
+                            <field name="prev_bank_statement_file_name" invisible="1"/>
+                            <field name="prev_vat_trn_file_name" invisible="1"/>
+                            <field name="prev_poer_attorney_file_name" invisible="1"/>
+                            <field name="prev_company_photo_file_name" invisible="1"/>
+                            <field name="prev_passport_copy_file_name" invisible="1"/>
+                            <field name="prev_memorandum_association_file_name" invisible="1"/>
+                            <table class="table o_form_table" style="border-color: white !important;">
+                                <thead>
+                                    <tr>
+                                        <th>Document</th>
+                                        <th>Current Attachment</th>
+                                        <th>Previous Attachment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="trade_license_attachment"/></td>
+                                        <td><field name="trade_license_attachment" filename="trade_license_file_name"/></td>
+                                        <td><field name="prev_trade_license_attachment" widget="binary" readonly="1" nolabel="1" force_save="1" filename="prev_trade_license_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="caf_attachment"/></td>
+                                        <td><field name="caf_attachment" filename="caf_file_name"/></td>
+                                        <td><field name="prev_caf_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_caf_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="guarantees_copy_attachment"/></td>
+                                        <td><field name="guarantees_copy_attachment" filename="guarantees_copy_file_name"/></td>
+                                        <td><field name="prev_guarantees_copy_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_guarantees_copy_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="eid_attachment"/></td>
+                                        <td><field name="eid_attachment" filename="eid_file_name"/></td>
+                                        <td><field name="prev_eid_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_eid_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="agreement_copy_attachment"/></td>
+                                        <td><field name="agreement_copy_attachment" filename="agreement_copy_file_name"/></td>
+                                        <td><field name="prev_agreement_copy_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_agreement_copy_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="bank_statement_attachment"/></td>
+                                        <td><field name="bank_statement_attachment" filename="bank_statement_file_name"/></td>
+                                        <td><field name="prev_bank_statement_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_bank_statement_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="vat_trn_attachment"/></td>
+                                        <td><field name="vat_trn_attachment" filename="vat_trn_file_name"/></td>
+                                        <td><field name="prev_vat_trn_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_vat_trn_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="poer_attorney_attachment"/></td>
+                                        <td><field name="poer_attorney_attachment" filename="poer_attorney_file_name"/></td>
+                                        <td><field name="prev_poer_attorney_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_poer_attorney_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="company_photo_attachment"/></td>
+                                        <td><field name="company_photo_attachment" filename="company_photo_file_name"/></td>
+                                        <td><field name="prev_company_photo_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_company_photo_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="passport_copy_attachment"/></td>
+                                        <td><field name="passport_copy_attachment" filename="passport_copy_file_name"/></td>
+                                        <td><field name="prev_passport_copy_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_passport_copy_file_name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="memorandum_association_attachment"/></td>
+                                        <td><field name="memorandum_association_attachment" filename="memorandum_association_file_name"/></td>
+                                        <td><field name="prev_memorandum_association_attachment" readonly="1" nolabel="1" force_save="1" filename="prev_memorandum_association_file_name"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </group>
+                    </group>
+                    <notebook invisible="1">
+                        <page name="sales_man" string="Sales Man">
+                            <field name="sales_men_ids">
+                                <list editable="bottom">
+                                    <field name="sale_man_id"/>
+                                    <field name="sale_man_contact"/>
+                                    <field name="sale_man_mail"/>
+                                    <field name="department"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

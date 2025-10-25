@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+promo_group_access,promo_group_access,model_promo_product_group,base.group_user,1,1,1,1
+customer_group_access,customer_group_access,model_promo_customer_group,base.group_user,1,1,1,1
+ladder_rule_access,ladder_rule_access,model_promo_ladder_rule,base.group_user,1,1,1,1
+promo_slab_access,promo_slab_access,model_promo_slab_rule,base.group_user,1,1,1,1
+access_worker_journal_user,worker.journal access,model_worker_journal,base.group_user,1,1,1,1
+
+access_sale_order_line_reward,sale.order.line.reward access,model_sale_order_line_reward,base.group_user,1,1,1,1
+access_account_move_line_reward,account.move.line.reward access,model_account_move_line_reward,base.group_user,1,1,1,1

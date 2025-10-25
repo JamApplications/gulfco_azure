@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="order_analysis_purchase_request_line_tree" model="ir.ui.view">
+        <field name="name">order.analysis.purchase.request.line.tree</field>
+        <field name="model">purchase.request.line</field>
+        <field name="inherit_id" ref="purchase_request.purchase_request_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='purchased_qty']" position="attributes">
+                <attribute name="string">Final Qty CTN.</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="gulfco_purchase_request_line_form_inherit" model="ir.ui.view">
+        <field name="name">order.analysis.line.tree.inherit</field>
+        <field name="model">purchase.request.line</field>
+        <field name="inherit_id" ref="purchase_request.purchase_request_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='purchased_qty']" position="attributes">
+                <attribute name="string">Final Qty CTN.</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="purchase_request_line_search_inherit_custom" model="ir.ui.view">
+        <field name="name">purchase.order.line.search.inherit.custom</field>
+        <field name="model">purchase.request.line</field>
+        <field name="inherit_id" ref="purchase_request.purchase_request_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="supplier_id" string="Preferred Supplier" domain="[]"
+                        context="{'group_by': 'supplier_id'}"/>
+                <filter name="purchase_request_id" string="Order Analysis" domain="[]"
+                        context="{'group_by': 'request_id'}"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_purchase_request_form_demand_planning" model="ir.ui.view">
+        <field name="name">purchase.request.form.demand.planning</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='line_ids']//list//field[@name='purchased_qty']" position="attributes">
+                <attribute name="string">Final Qty CTN.</attribute>
+            </xpath>
+            <xpath expr="//label[@for='name']" position="replace">
+                <label for="name" class="oe_inline" invisible="context.get('from_order_analysis')"/>
+                <label for="name" class="oe_inline" invisible="not context.get('from_order_analysis')"
+                       string="Order Analysis Ref."/>
+            </xpath>
+            <xpath expr="//field[@name='date_start']" position="replace">
+                <field name="date_start" readonly="not is_editable and not context.get('from_order_analysis')"
+                       invisible="context.get('from_order_analysis')" string="Creation date"/>
+                <field name="date_start" readonly="not is_editable and context.get('from_order_analysis')"
+                       invisible="not context.get('from_order_analysis')" string="Analysis date"/>
+            </xpath>
+            <xpath expr="//button[@name='button_to_approve']" position="replace">
+                <button
+                        name="button_to_approve"
+                        invisible="state not in ('draft') or context.get('from_order_analysis')"
+                        string="Request approval"
+                        type="object"
+                        class="oe_highlight"
+                        id="button_to_approve"
+                />
+                <button
+                        name="button_to_approve"
+                        invisible="state not in ('draft') or not context.get('from_order_analysis')"
+                        string="Order Analysis Approve"
+                        type="object"
+                        class="oe_highlight"
+                        id="order_analysis_to_approve"
+                />
+            </xpath>
+            <xpath expr="//field[@name='line_ids']//list//field[@name='purchased_qty']" position="before">
+                <field name="lrf_qty"/>
+                <field name="supplier_id" string="Vendor"/>
+                <field name="supplier_code"/>
+                <field name="vendor_product_country_of_origin_ids" column_invisible="1"/>
+                <field name="country_of_origin" domain="[('id','in',vendor_product_country_of_origin_ids)]"/>
+                <field name="product_packaging_qty" string="Order QTY Pallet"/>
+                <field name="product_packaging_id"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <!--                <button type="object" name="action_view_demand_planning" class="oe_stat_button"-->
+                <!--                        invisible="demand_planning_count == 0" icon="fa-list">-->
+                <!--                    <field name="demand_planning_count" widget="statinfo" string="Demand Planning"/>-->
+                <!--                </button>-->
+                <button type="object" name="action_view_demand_planning_report" class="oe_stat_button"
+                        invisible="demand_planning_count == 0" icon="fa-list">
+                    <field name="demand_planning_count" widget="statinfo" string="Demand Planning Report"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="purchase_request_order_analysis_action">
+        <field name="name">Order Analysis</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_requested_by":uid,'from_order_analysis': 1,'default_request_type':'order_analysis'}</field>
+        <field name="search_view_id" ref="purchase_request.view_purchase_request_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to start a new Order Analysis process.
+            </p>
+            <p>
+                A Order Analysis is an instruction to Purchasing to procure
+                a certain quantity of materials services, so that they are
+                available at a certain point in time.
+            </p>
+        </field>
+    </record>
+
+    <record id="order_analysis_line_form_action" model="ir.actions.act_window">
+        <field name="name">Order Analysis Lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.request.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_supplier_id":1,'from_order_analysis': 1,'search_default_purchase_request_id':1}</field>
+        <field name="search_view_id" ref="purchase_request.purchase_request_line_search"/>
+    </record>
+
+    <record id="purchase_request.menu_purchase_request_pro_mgt" model="ir.ui.menu">
+        <field name="name">Order Analysis</field>
+        <field name="action" ref="gulfco_demand_planning.purchase_request_order_analysis_action"/>
+    </record>
+    <record id="purchase_request.menu_purchase_request_line" model="ir.ui.menu">
+        <field name="name">Order Analysis Line</field>
+        <field name="action" ref="gulfco_demand_planning.order_analysis_line_form_action"/>
+    </record>
+</odoo>

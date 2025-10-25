@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates>
+
+    <t t-inherit="account_accountant.ListViewReconcile.Buttons" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_list_buttons')]/button" position="replace">
+        </xpath>
+        <xpath expr="//div[hasclass('o_list_buttons')]" position="inside">
+            <button class="btn btn-primary"
+                    t-on-click="() => this.importDataWizard()"
+                    groups="account.group_account_user">
+                Import Data
+            </button>
+        </xpath>
+    </t>
+</templates>

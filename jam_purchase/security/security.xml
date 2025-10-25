@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.module.category" id="purchase_approval">
+        <field name="name">Purchase Approval</field>
+        <field name="sequence">2</field>
+        <field name="visible" eval="0" />
+    </record>
+
+    <record id="group_purchase_approval_it" model="res.groups">
+        <field name="name">IT Department Approval</field>
+        <field name="category_id" ref="purchase_approval"/>
+    </record>
+    <record id="group_purchase_approval_gosm" model="res.groups">
+        <field name="name">Group OSM IT Approve</field>
+        <field name="category_id" ref="purchase_approval"/>
+    </record>
+    <record id="group_purchase_approval_gcio" model="res.groups">
+        <field name="name">Group CIO Approval</field>
+        <field name="category_id" ref="purchase_approval"/>
+    </record>
+</odoo>

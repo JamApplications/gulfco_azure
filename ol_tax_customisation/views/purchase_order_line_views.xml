@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="purchase_order_form_tax_vat_code" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.tax.vat.code</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='taxes_id']" position="after">
+                <field name="tax_vat_code_ids" widget="many2many_tags" domain="[('type_tax_use', '=', 'purchase'), ('company_id', 'parent_of', parent.company_id), ('country_id', '=', parent.tax_country_id), ('active', '=', True)]" 
+                       context="{'show_vat_code': True, 'default_type_tax_use': 'purchase', 'search_view_ref': 'account.account_tax_view_search'}" 
+                       options="{'no_create': True}" optional="show" readonly="is_downpayment"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

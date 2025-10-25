@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_partner_customer_detailed_data_inherit_form_worker_passowrd" model="ir.ui.view">
+        <field name="name">res.partner.customer.worker.password.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="gulfco_customer_customized_data.res_partner_customer_detailed_data_inherit_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='worker_code']" position="attributes">
+                 <attribute name="invisible">contact_type != 'worker'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='worker_code']" position="after">
+<!--                 <group>-->
+                <div class="o_row" >
+                    <label for="worker_password_data" string="Worker Password" invisible="contact_type != 'worker'"/>
+                    <field name="worker_password_data" invisible="contact_type != 'worker'"/>
+                    <button name="auto_generate_password" type="object"
+                            class="btn btn-primary fa fa-plus-square-o"
+                            aria-label="Generate a new password"
+                            invisible="worker_password_data or contact_type != 'worker'"
+                            title="Generate a new Password" role="img"/>
+                </div>
+                <field name="division" invisible="1"/>
+                <field name="division_ids" widget="many2many_tags" invisible="contact_type != 'worker'"/>
+                <field name="location_analytic_account_id" invisible="contact_type != 'worker'"/>
+<!--                 </group>-->
+
+<!--                <button type="object" name="auto_generate_password" string="generate Pass"/>-->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_customer_detailed_data_inherit_form_sale_extended" model="ir.ui.view">
+        <field name="name">res.partner.customer.detailed.data.custom.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="gulfco_customer_customized_data.res_partner_customer_detailed_data_inherit_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='detailed_customer_data']//field[@name='channel']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <field name="department" position="before">
+                <field name="partner_channel_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                <field name="outlet_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                <field name="sub_outlet_id" options="{'no_create': True, 'no_create_edit': True}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

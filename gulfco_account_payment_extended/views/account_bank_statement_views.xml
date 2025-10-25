@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="gulfco_view_bank_statement_line_quick_create_form_bank_rec_widget" model="ir.ui.view">
+            <field name="name">gulfco.account.bank.statement.line.form.bank_rec_widget</field>
+            <field name="model">account.bank.statement.line</field>
+            <field name="inherit_id" ref="account_accountant.view_bank_statement_line_quick_create_form_bank_rec_widget"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_ref']" position="after">
+                    <field name="ref" nolabel="1" placeholder="Ref."/>
+                </xpath>
+            </field>
+        </record>
+        <record id="gulfco_view_bank_statement_line_kanban_bank_rec_widget" model="ir.ui.view">
+            <field name="name">gulfco.view.bank.statement.line.kanban.bank.rec.widget</field>
+            <field name="model">account.bank.statement.line</field>
+            <field name="inherit_id" ref="account_accountant.view_bank_statement_line_kanban_bank_rec_widget"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="default_order">bank_line,date</attribute>
+                </xpath>
+                <xpath expr="//field[@name='statement_id']" position="after">
+                    <field name="ref"/>
+                    <field name="bank_line"/>
+                </xpath>
+                <xpath expr="//div[@class='d-flex'][1]" position="before">
+                    <div class="d-flex">
+                        <field name="bank_line" class="fw-bolder text-nowrap"/>
+                    </div>
+                </xpath>
+                 <xpath expr="//div[@t-att-st-line-id='record.id.raw_value']" position="inside">
+                    <div class="d-flex">
+                        <field name="ref" class="fw-bolder text-nowrap"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="gulfco_view_bank_statement_line_tree_inherit" model="ir.ui.view">
+            <field name="name">gulfco.bank.statement.line.list.inherit</field>
+            <field name="model">account.bank.statement.line</field>
+            <field name="inherit_id" ref="account_accountant.view_bank_statement_line_tree_bank_rec_widget"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date']" position="before">
+                    <field name="bank_line" readonly="1"/>
+                    <field name="transaction_date" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='running_balance']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

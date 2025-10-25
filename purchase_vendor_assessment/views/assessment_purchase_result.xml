@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="assessment_purchase_result_view_list" model="ir.ui.view">
+        <field name="name">assessment_purchase_result_view_list</field>
+        <field name="model">assessment.purchase.result</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="sequence" widget="handle"/>
+                <field name="code" />
+                <field name="name" />
+                <field name="description" />
+                <field name="color" widget="color" invisible="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="assessment_purchase_result_view_filter" model="ir.ui.view">
+        <field name="name">assessment_purchase_result_view_filter</field>
+        <field name="model">assessment.purchase.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code" />
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+    <record id="assessment_purchase_result_action" model="ir.actions.act_window">
+        <field name="name">Purchase Result</field>
+        <field name="res_model">assessment.purchase.result</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="view_id" eval="False" />
+    </record>
+</odoo>

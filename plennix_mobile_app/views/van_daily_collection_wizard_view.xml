@@ -1,0 +1,32 @@
+<odoo>
+    <!-- views/van_daily_collection_wizard_view.xml -->
+    <record id="view_van_daily_collection_wizard_form" model="ir.ui.view">
+        <field name="name">van.daily.collection.wizard.form</field>
+        <field name="model">van.daily.collection.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Van Daily Collection Report">
+                <group>
+                    <field name="user_id"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_van_daily_collection_wizard" model="ir.actions.act_window">
+        <field name="name">Van Daily Collection Report</field>
+        <field name="res_model">van.daily.collection.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_van_daily_collection_report" name="Van Daily Collection Report"
+              parent="account.menu_finance_reports"
+              action="action_van_daily_collection_wizard"/>
+
+</odoo>

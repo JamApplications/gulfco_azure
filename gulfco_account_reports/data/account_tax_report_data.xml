@@ -1,0 +1,57 @@
+<odoo>
+    <!-- 6. tag (for R. C. goods) -->
+
+    <record id="l10n_ae.tax_report_line_import_uae_base" model="account.report.line">
+        <field name="name">6. Goods imported into the UAE</field>
+            <field name="expression_ids">
+            <record id="l10n_ae.tax_report_line_import_uae_base_tag" model="account.report.expression">
+                <field name="label">balance</field>
+                <field name="engine">custom</field>
+                <!-- <field name="subformula">ass_value</field> -->
+                <field name="formula">_report_custom_engine_compute_ass_value_base_six</field>
+                <field name="subformula">balance</field>
+            </record>  
+        </field>
+    </record> 
+    <record id="l10n_ae.tax_report_line_supplies_out_of_scope_base" model="account.report.line">
+        <field name="name">7. Out of scope</field>
+    </record>    
+    <record id="l10n_ae.tax_report_line_import_uae_vat" model="account.report.line">
+        <field name="name">6. Goods imported into the UAE</field>
+        <field name="expression_ids">
+            <record id="l10n_ae.tax_report_line_import_uae_vat_tag" model="account.report.expression">
+                <field name="label">balance</field>
+                <field name="engine">custom</field>
+                <field name="formula">_report_custom_engine_compute_ass_value_vat_six</field>
+                <field name="subformula">balance</field>
+            </record>
+        </field>
+    </record> 
+    <record id="l10n_ae.tax_report_line_supplies_out_of_scope_vat" model="account.report.line">
+        <field name="name">7. Out of scope</field>
+    </record>
+
+    <!-- 3. tag (for R. C. services) -->
+    <record id="l10n_ae.tax_report_line_supplies_reverse_charge_base" model="account.report.line">
+            <field name="expression_ids">
+            <record id="l10n_ae.tax_report_line_supplies_reverse_charge_base_tag" model="account.report.expression">
+                <field name="label">balance</field>
+                <field name="engine">custom</field>
+                <!-- <field name="subformula">ass_value</field> -->
+                <field name="formula">_report_custom_engine_compute_ass_value_base_three</field>
+                <field name="subformula">balance</field>
+            </record>  
+        </field>
+    </record>    
+    <record id="l10n_ae.tax_report_line_supplies_reverse_charge_vat" model="account.report.line">
+        <field name="expression_ids">
+            <record id="l10n_ae.tax_report_line_supplies_reverse_charge_vat_tag" model="account.report.expression">
+                <field name="label">balance</field>
+                <field name="engine">custom</field>
+                <field name="formula">_report_custom_engine_compute_ass_value_vat_three</field>
+                <field name="subformula">balance</field>
+            </record>
+        </field>
+    </record>
+
+</odoo>

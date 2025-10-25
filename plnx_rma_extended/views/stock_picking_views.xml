@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="plnx_rma_extended_view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_ids_without_package']//list" position="inside">
+                <field name="return_reason_id"/>
+            </xpath>
+
+            <xpath expr="//form/header/field[@name='state'][1]" position="replace">
+                <field name="state" widget="statusbar"
+                       invisible="picking_type_code != 'incoming' or not is_rma_in_type "
+                       statusbar_visible="draft,ready,driver_assigned,collation_done,done,return_offload"/>
+                <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming' or is_rma_in_type" statusbar_visible="draft,assigned,done"/>
+            </xpath>
+
+                <xpath expr="//button[@name='button_validate'][2]" position="replace">
+                </xpath>
+                <xpath expr="//button[@name='button_validate']" position="replace">
+                    <button name="button_validate" invisible="state in ('draft', 'confirmed', 'done', 'cancel') or is_rma_in_type or is_pack_type or is_out_type"
+                            string="Validate " type="object" class="oe_highlight" groups="stock.group_stock_user" data-hotkey="v"/>
+                </xpath>
+                <xpath expr="//button[@name='button_validate']" position="after">
+                    <button name="button_validate" invisible="not is_rma_in_type or state in ('draft', 'confirmed',  'assigned', 'driver_assigned','collaction_done', 'done', 'cancel')"
+                            string="Validate" type="object" class="oe_highlight"
+                            groups="stock.group_stock_user" data-hotkey="v"/>
+                    <button name="action_assign_driver" type="object" class="oe_highlight"
+                            string="Assign"
+                            invisible="not is_rma_in_type or state not in ('assigned')"/>
+
+                    <button name="action_collect" type="object" class="oe_highlight"
+                            string="Collect"
+                            invisible="not is_rma_in_type or state != 'driver_assigned'"/>
+
+                    <button name="action_item_offload" type="object" class="oe_highlight"
+                            string="Item Offload"
+                            invisible="not is_rma_in_type or state not in ('collation_done','done')"/>
+
+                </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_picking_form_view_inherit_outbound_extended_rma" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_outbouding_operation.view_picking_form_view_inherit_outbound"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_driver_id']" position="after">
+                <field name="picking_driver_id" invisible="not is_rma_in_type " readonly="state in ['cancel', 'done']"/>
+                <field name="is_rma_in_type" invisible="1"/>
+                <field name="is_rma_out_type" invisible="1"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+
+</odoo>

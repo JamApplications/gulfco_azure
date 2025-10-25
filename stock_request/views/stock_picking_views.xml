@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field eval="12" name="priority" />
+        <field name="arch" type="xml">
+              <!-- Put a clear banner on those pickings -->
+              <xpath expr="//sheet" position="before">
+                <div invisible="van_api_only==False" class="oe_title">
+                  <h3 class="text-warning">Heads up</h3>
+                  <p>
+                    This is the <b>final Van Load</b> (Transit → Van). Validation is
+                    restricted to the Van mobile app. Warehouse UI is intentionally disabled.
+                  </p>
+                </div>
+              </xpath>
+              <!-- Hide Validate if this is a final Van picking (for normal warehouse users ) -->
+<!--              <xpath expr="//header/button[@name='button_validate']" position="attributes">-->
+<!--                <attribute name="attrs">{'invisible': [('van_api_only', '=', True)]}</attribute>-->
+<!--              </xpath>-->
+            <div name="button_box" position="inside">
+                <button
+                    type="object"
+                    name="action_view_stock_request"
+                    class="oe_stat_button"
+                    icon="fa-chain"
+                    invisible="stock_request_ids == []"
+                >
+                    <field
+                        name="stock_request_count"
+                        widget="statinfo"
+                        string="Stock Requests"
+                    />
+                    <field name="stock_request_ids" invisible="1" />
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

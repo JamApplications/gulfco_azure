@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="gulfco_demand_planning.DemandPlanningLineComponent">
+        <tbody class="o_mps_content" t-att-data-id="demandPlanning.id"
+               t-att-data-warehouse_id="'warehouse_id' in demandPlanning and demandPlanning.warehouse_id[0]">
+
+            <tr class="bg-light">
+                <th/>
+                <th/>
+                <th/>
+                <th/>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end"><span t-esc="dpl.line_data_type"/></th>
+                </t>
+            </tr>
+            <tr class="bg-light">
+                <th>
+                    <CheckBox value='isSelected' onChange.bind="(ev) => this.toggleSelection(ev, demandPlanning.id)"/>
+                </th>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                    <a href="#" class="o_mrp_mps_record_url" t-att-data-res-id="demandPlanning.product_id[0]"
+                       t-att-data-model="'product.product'" t-on-click.prevent="_onClickForecastReport"><t t-esc="demandPlanning.product_id[1]"/></a>
+                    <span t-if="'product_uom_id' in demandPlanning" class="text-muted"> by <t
+                            t-esc="demandPlanning.product_uom_id[1]"/></span>
+                    <span t-if="'warehouse_id' in demandPlanning"> - <t t-esc="demandPlanning.warehouse_id[1]"/></span>
+                    <span> </span>
+                    <button type="button"
+                            t-attf-class="{{! groups.mrp_mps_show_safety_stock and 'o_hidden' or 'btn btn-link text-muted o_no_padding o_mrp_mps_edit'}}"
+                            t-on-click.stop="(ev) => this._onClickEdit(ev, demandPlanning.id)">
+                        <span class="fa fa-pencil text-muted fa-fw" role="img" aria-label="Forecasted"
+                              title="Forecasted"/>
+                    </button>
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                    Opening Stock Total
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <t t-if="dpl.line_data_type == 'Actual'">
+                            <span><t t-esc="formatFloat(dpl.opening_stock_qty)"/></span>
+                        </t>
+                        <t t-else="">
+                            <t t-set="predpl" t-value="demandPlanning.demand_planning_line_ids[dpl_index-1]"/>
+                            <t t-if="predpl.line_data_type == 'Actual'">
+                                <t t-set="closing_to_order_qty" t-value="0.0"/>
+                            </t>
+                            <t t-elif="predpl.is_set_manually_to_order">
+                                <t t-set="closing_to_order_qty" t-value="predpl.actual_to_order_qty"/>
+                            </t>
+                            <t t-else="">
+                                    <t t-set="starting_index" t-value="predpl - demandPlanning.vendor_product_delay"/>
+                                    <t t-set="ending_index" t-value="starting_index - demandPlanning.supplier_mos"/>
+                                    <t t-set="to_order_qty" t-value="0.0"/>
+                                    <t t-set="f_opening_stock_total" t-value="0.0"/>
+                                    <t t-set="f_receive_enroute_qty" t-value="0.0"/>
+                                    <t t-set="f_total_sale" t-value="0.0"/>
+                                    <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="f_dpl" t-key="f_dpl_index">
+                                        <t t-if="f_dpl_index >= starting_index and f_dpl_index &lt; ending_index">
+                                            <t t-set="f_total_sale" t-value="(f_total_sale or 0.0) + (f_dpl.regular_sales_qty or 0.0) + (f_dpl.promotion_sales_qty or 0.0)"/>
+                                            <t t-if="starting_index == f_dpl_index">
+                                                 <t t-if="f_dpl.line_data_type == 'Actual'">
+                                                     <t t-set="f_opening_stock_total" t-value="f_dpl.opening_stock_qty or 0.0"/>
+                                                 </t>
+                                                 <t t-set="f_receive_enroute_qty" t-value="f_dpl.receipt_en_route_qty or 0.0"/>
+                                            </t>
+                                        </t>
+                                    </t>
+                                    <t t-set="closing_to_order_qty" t-value="(f_total_sale or 0.0) - (f_opening_stock_total or 0.0) - (f_receive_enroute_qty or 0.0)"/>
+                            </t>
+                            <t t-if="predpl.line_data_type == 'Actual'">
+                                <t t-set="closing_opening_stock" t-value="predpl.opening_stock_qty"/>
+                            </t>
+                            <span><t t-esc="formatFloat(closing_opening_stock + predpl.receipt_en_route_qty + closing_to_order_qty - (predpl.regular_sales_qty + predpl.promotion_sales_qty))"/></span>
+                        </t>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                    Opening Stock Regular
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <span><t t-esc="formatFloat(dpl.opening_stock_regular_qty)"/></span>
+                        <!--                        <input type="text"-->
+                        <!--                                t-att-data-date_index="dpl_index"-->
+                        <!--                                t-attf-class="text-end o_highlight form-control"-->
+                        <!--                                t-att-value="formatFloat(dpl.opening_stock_regular_qty)"-->
+                        <!--                                t-on-focus.prevent="_onFocusInput"-->
+                        <!--                                readonly="1"/>-->
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                    Near Expiry (180 days)
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <span><t t-esc="formatFloat(dpl.near_expiry_qty)"/></span>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                   Receipt - Enroute
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                         <span><t t-esc="formatFloat(dpl.receipt_en_route_qty)"/></span>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                   Actual Sales - Regular
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <span><t t-esc="formatFloat(dpl.actual_sales_regular_qty)"/></span>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                   Actual Sales -Promo
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <span><t t-esc="formatFloat(dpl.actual_sales_promo_qty)"/></span>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                  Total Sales
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <span><t t-esc="formatFloat(dpl.actual_sales_promo_qty + dpl.actual_sales_regular_qty)"/></span>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                  Regular Sales / Forecast
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                         <input type="text"
+                                t-att-data-date_index="dpl_index"
+                                t-attf-class="text-end o_highlight form-control"
+                                t-att-value="formatFloat(dpl.regular_sales_qty)"
+                                t-on-focus.prevent="_onFocusInput"
+                                t-on-change.stop="(ev) => this._onChangeRegularSales(ev, demandPlanning.id)"
+                         />
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                 Promotion Sales/ Forecast
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                         <input type="text"
+                                t-att-data-date_index="dpl_index"
+                                t-attf-class="text-end o_highlight form-control"
+                                t-att-value="formatFloat(dpl.promotion_sales_qty)"
+                                t-on-focus.prevent="_onFocusInput"
+                                t-on-change.stop="(ev) => this._onChangePromotionSales(ev, demandPlanning.id)"
+
+                         />
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                Total Sales / Forecast
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                          <span><t t-esc="formatFloat(dpl.regular_sales_qty + dpl.promotion_sales_qty)"/></span>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                Achievement( Fcst VS Actual)
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <span><t t-esc="formatFloat((dpl.actual_sales_regular_qty/dpl.regular_sales_qty) * 100)"/></span>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                    Closing Stock
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+<!--                             <span><t t-esc="formatFloat(dpl.opening_stock_qty + dpl.receipt_en_route_qty - dpl.near_expiry_qty - (dpl.regular_sales_qty + dpl.promotion_sales_qty))"/></span>-->
+                        <t t-if="dpl.line_data_type == 'Actual'">
+                            <t t-set="closing_to_order_qty" t-value="0.0"/>
+                        </t>
+                        <t t-elif="dpl.is_set_manually_to_order">
+                            <t t-set="closing_to_order_qty" t-value="dpl.actual_to_order_qty"/>
+                        </t>
+                        <t t-else="">
+                                <t t-set="starting_index" t-value="dpl_index - demandPlanning.vendor_product_delay"/>
+                                <t t-set="ending_index" t-value="starting_index - demandPlanning.supplier_mos"/>
+                                <t t-set="to_order_qty" t-value="0.0"/>
+                                <t t-set="f_opening_stock_total" t-value="0.0"/>
+                                <t t-set="f_receive_enroute_qty" t-value="0.0"/>
+                                <t t-set="f_total_sale" t-value="0.0"/>
+                                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="f_dpl" t-key="f_dpl_index">
+                                    <t t-if="f_dpl_index >= starting_index and f_dpl_index &lt; ending_index">
+                                        <t t-set="f_total_sale" t-value="(f_total_sale or 0.0) + (f_dpl.regular_sales_qty or 0.0) + (f_dpl.promotion_sales_qty or 0.0)"/>
+                                        <t t-if="starting_index == f_dpl_index">
+                                             <t t-if="f_dpl.line_data_type == 'Actual'">
+                                                 <t t-set="f_opening_stock_total" t-value="f_dpl.opening_stock_qty or 0.0"/>
+                                             </t>
+<!--                                             <t t-else="">-->
+<!--                                                 <t t-set="fpredpl" t-value="demandPlanning.demand_planning_line_ids[f_dpl_index-1]"/>-->
+<!--                                                 <t t-set="f_opening_stock_total" t-value="(fpredpl.opening_stock_qty or 0.0) + (fpredpl.receipt_en_route_qty or 0.0) - (fpredpl.near_expiry_qty or 0.0) - ((fpredpl.regular_sales_qty or 0.0) + (fpredpl.promotion_sales_qty or 0.0))"/>-->
+<!--                                             </t>-->
+                                             <t t-set="f_receive_enroute_qty" t-value="f_dpl.receipt_en_route_qty or 0.0"/>
+                                        </t>
+                                    </t>
+                                </t>
+                                <t t-set="closing_to_order_qty" t-value="(f_total_sale or 0.0) - (f_opening_stock_total or 0.0) - (f_receive_enroute_qty or 0.0)"/>
+                        </t>
+                        <t t-if="dpl.line_data_type == 'Actual'">
+                            <t t-set="closing_opening_stock" t-value="dpl.opening_stock_qty"/>
+                        </t>
+<!--                        <t t-else="">-->
+<!--                            <t t-set="predpl" t-value="demandPlanning.demand_planning_line_ids[dpl_index-1]"/>-->
+<!--                            <t t-set="closing_opening_stock" t-value="predpl.opening_stock_qty + predpl.receipt_en_route_qty - predpl.near_expiry_qty - (predpl.regular_sales_qty + predpl.promotion_sales_qty)"/>-->
+<!--                        </t>-->
+                        <span><t t-esc="formatFloat(closing_opening_stock + dpl.receipt_en_route_qty + closing_to_order_qty - (dpl.regular_sales_qty + dpl.promotion_sales_qty))"/></span>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                    To Order
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <t t-if="dpl.line_data_type == 'Actual'">
+                            <input type="text"
+                               t-att-data-date_index="dpl_index"
+                               t-attf-class="text-end o_highlight form-control"
+                               t-att-value="formatFloat(0)"
+                               t-on-focus.prevent="_onFocusInput"
+                               t-on-change.stop="(ev) => this._onChangeToOrder(ev, demandPlanning.id)"/>
+                        </t>
+                        <t t-else="">
+                            <t t-if="dpl.is_set_manually_to_order">
+                                <input type="text"
+                                   t-att-data-date_index="dpl_index"
+                                   t-attf-class="text-end o_highlight form-control"
+                                   t-att-value="formatFloat(dpl.actual_to_order_qty)"
+                                   t-on-focus.prevent="_onFocusInput"
+                                   t-on-change.stop="(ev) => this._onChangeToOrder(ev, demandPlanning.id)"
+                            />
+                            </t>
+                            <t t-else="">
+                                <t t-set="starting_index" t-value="dpl_index + demandPlanning.vendor_product_delay"/>
+                                <t t-set="ending_index" t-value="starting_index + demandPlanning.supplier_mos"/>
+                                <t t-set="to_order_qty" t-value="0.0"/>
+                                <t t-set="f_opening_stock_total" t-value="0.0"/>
+                                <t t-set="f_receive_enroute_qty" t-value="0.0"/>
+                                <t t-set="f_total_sale" t-value="0.0"/>
+                                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="f_dpl" t-key="f_dpl_index">
+                                    <t t-if="f_dpl_index >= starting_index and f_dpl_index &lt; ending_index">
+                                    <t t-set="f_total_sale" t-value="(f_total_sale or 0.0) + (f_dpl.regular_sales_qty or 0.0) + (f_dpl.promotion_sales_qty or 0.0)"/>
+                                    <t t-if="starting_index == f_dpl_index">
+                                         <t t-if="f_dpl.line_data_type == 'Actual'">
+                                             <t t-set="f_opening_stock_total" t-value="f_dpl.opening_stock_qty or 0.0"/>
+                                         </t>
+                                         <t t-else="">
+                                             <t t-set="fpredpl" t-value="demandPlanning.demand_planning_line_ids[f_dpl_index-1]"/>
+                                             <t t-if="fpredpl.line_data_type == 'Actual'">
+                                                <t t-set="closing_to_order_qty" t-value="0.0"/>
+                                            </t>
+                                            <t t-elif="fpredpl.is_set_manually_to_order">
+                                                <t t-set="closing_to_order_qty" t-value="fpredpl.actual_to_order_qty"/>
+                                            </t>
+                                            <t t-else="">
+                                                    <t t-set="fpredpl_starting_index" t-value="fpredpl - demandPlanning.vendor_product_delay"/>
+                                                    <t t-set="fpredpl_ending_index" t-value="fpredpl_starting_index - demandPlanning.supplier_mos"/>
+                                                    <t t-set="fpredpl_to_order_qty" t-value="0.0"/>
+                                                    <t t-set="fpredpl_f_opening_stock_total" t-value="0.0"/>
+                                                    <t t-set="fpredpl_f_receive_enroute_qty" t-value="0.0"/>
+                                                    <t t-set="fpredpl_f_total_sale" t-value="0.0"/>
+                                                    <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="fpredpl_f_dpl" t-key="fpredpl_f_dpl_index">
+                                                        <t t-if="fpredpl_f_dpl_index >= fpredpl_starting_index and fpredpl_f_dpl_index &lt; fpredpl_ending_index">
+                                                            <t t-set="fpredpl_f_total_sale" t-value="(fpredpl_f_total_sale or 0.0) + (fpredpl_f_dpl.regular_sales_qty or 0.0) + (fpredpl_f_dpl.promotion_sales_qty or 0.0)"/>
+                                                            <t t-if="fpredpl_starting_index == fpredpl_f_dpl_index">
+                                                                 <t t-if="fpredpl_f_dpl.line_data_type == 'Actual'">
+                                                                     <t t-set="fpredpl_f_opening_stock_total" t-value="fpredpl_f_dpl.opening_stock_qty or 0.0"/>
+                                                                 </t>
+                                                                 <t t-set="fpredpl_f_receive_enroute_qty" t-value="fpredpl_f_dpl.receipt_en_route_qty or 0.0"/>
+                                                            </t>
+                                                        </t>
+                                                    </t>
+                                                    <t t-set="closing_to_order_qty" t-value="(fpredpl_f_total_sale or 0.0) - (fpredpl_f_opening_stock_total or 0.0) - (fpredpl_f_receive_enroute_qty or 0.0)"/>
+                                            </t>
+                                            <t t-if="fpredpl.line_data_type == 'Actual'">
+                                                <t t-set="closing_opening_stock" t-value="fpredpl.opening_stock_qty"/>
+                                            </t>
+                                             <t t-set="f_opening_stock_total" t-value="closing_opening_stock + fpredpl.receipt_en_route_qty + closing_to_order_qty - (fpredpl.regular_sales_qty + fpredpl.promotion_sales_qty)"/>
+                                         </t>
+                                         <t t-set="f_receive_enroute_qty" t-value="f_dpl.receipt_en_route_qty or 0.0"/>
+                                    </t>
+                                </t>
+                                </t>
+                                <SaveToOrderQtyTrigger
+                                            line_id="demandPlanning.id"
+                                            date_index="dpl_index"
+                                            qty="to_order_qty"
+                                        />
+                                <t t-set="to_order_qty" t-value="(f_total_sale or 0.0) - (f_opening_stock_total or 0.0) - (f_receive_enroute_qty or 0.0)"/>
+                                <input type="text"
+                                       t-att-data-date_index="dpl_index"
+                                       t-attf-class="text-end o_highlight form-control"
+                                       t-att-value="to_order_qty"
+                                       t-on-focus.prevent="_onFocusInput"
+                                       t-on-change.stop="(ev) => this._onChangeToOrder(ev, demandPlanning.id)"
+                                />
+                            </t>
+                        </t>
+                    </th>
+                </t>
+            </tr>
+            <tr>
+                <th/>
+                <th>
+                    <span t-if="'code' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.code"/></span>
+                </th>
+                <th scope="col">
+                    Stock Hold
+                </th>
+                <th>
+                    <span t-if="'source_country_id' in demandPlanning" class="text-muted"><t t-esc="demandPlanning.source_country_id[1]"/></span>
+                </th>
+                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="dpl" t-key="dpl_index">
+                    <th class="text-end">
+                        <t t-set="stock_hold" t-value="0.0"/>
+<!--                        <t t-set="closing_stock"-->
+<!--                           t-value="dpl.opening_stock_qty + dpl.receipt_en_route_qty - dpl.near_expiry_qty - (dpl.regular_sales_qty + dpl.promotion_sales_qty)"/>-->
+                        <t t-if="dpl.line_data_type == 'Actual'">
+                            <t t-set="stock_hold_closing_to_order_qty" t-value="0.0"/>
+                        </t>
+                        <t t-elif="dpl.is_set_manually_to_order">
+                            <t t-set="stock_hold_closing_to_order_qty" t-value="dpl.actual_to_order_qty"/>
+                        </t>
+                        <t t-else="">
+                                <t t-set="starting_index" t-value="dpl_index + demandPlanning.vendor_product_delay"/>
+                                <t t-set="ending_index" t-value="starting_index + demandPlanning.supplier_mos"/>
+                                <t t-set="to_order_qty" t-value="0.0"/>
+                                <t t-set="f_opening_stock_total" t-value="0.0"/>
+                                <t t-set="f_receive_enroute_qty" t-value="0.0"/>
+                                <t t-set="f_total_sale" t-value="0.0"/>
+                                <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="f_dpl" t-key="f_dpl_index">
+                                    <t t-if="f_dpl_index >= starting_index and f_dpl_index &lt; ending_index">
+                                        <t t-set="f_total_sale" t-value="(f_total_sale or 0.0) + (f_dpl.regular_sales_qty or 0.0) + (f_dpl.promotion_sales_qty or 0.0)"/>
+                                        <t t-if="starting_index == f_dpl_index">
+                                             <t t-if="f_dpl.line_data_type == 'Actual'">
+                                                 <t t-set="f_opening_stock_total" t-value="f_dpl.opening_stock_qty or 0.0"/>
+                                             </t>
+                                             <t t-else="">
+                                                 <t t-set="fpredpl" t-value="demandPlanning.demand_planning_line_ids[f_dpl_index-1]"/>
+                                                 <t t-set="f_opening_stock_total" t-value="(fpredpl.opening_stock_qty or 0.0) + (fpredpl.receipt_en_route_qty or 0.0) - (fpredpl.near_expiry_qty or 0.0) - ((fpredpl.regular_sales_qty or 0.0) + (fpredpl.promotion_sales_qty or 0.0))"/>
+                                             </t>
+                                             <t t-set="f_receive_enroute_qty" t-value="f_dpl.receipt_en_route_qty or 0.0"/>
+                                        </t>
+                                    </t>
+                                </t>
+                                <t t-set="stock_hold_closing_to_order_qty" t-value="(f_total_sale or 0.0) - (f_opening_stock_total or 0.0) - (f_receive_enroute_qty or 0.0)"/>
+                        </t>
+                        <t t-if="dpl.line_data_type == 'Actual'">
+                            <t t-set="stock_hold_closing_opening_stock" t-value="dpl.opening_stock_qty"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="predpl" t-value="demandPlanning.demand_planning_line_ids[dpl_index-1]"/>
+                            <t t-set="stock_hold_closing_opening_stock" t-value="predpl.opening_stock_qty + predpl.receipt_en_route_qty - predpl.near_expiry_qty - (predpl.regular_sales_qty + predpl.promotion_sales_qty)"/>
+                        </t>
+                        <t t-set="closing_stock" t-value="stock_hold_closing_opening_stock + dpl.receipt_en_route_qty + stock_hold_closing_to_order_qty - (dpl.regular_sales_qty + dpl.promotion_sales_qty)"/>
+                        <t t-set="sum_regular_sales_qty" t-value="0.0"/>
+                        <t t-set="sum_promotion_sales_qty" t-value="0.0"/>
+                        <t t-set="length_value" t-value="0"/>
+                        <t t-foreach="demandPlanning.demand_planning_line_ids" t-as="f_dpl" t-key="f_dpl_index">
+                            <t t-if="f_dpl.date >= dpl.date">
+                                <t t-if="f_dpl.regular_sales_qty > 0.0 or f_dpl.promotion_sales_qty">
+                                    <t t-set="sum_promotion_sales_qty"
+                                       t-value="sum_promotion_sales_qty + f_dpl.promotion_sales_qty"/>
+                                    <t t-set="sum_regular_sales_qty"
+                                       t-value="sum_regular_sales_qty + f_dpl.regular_sales_qty"/>
+                                    <t t-set="length_value" t-value="length_value + 1"/>
+                                </t>
+                            </t>
+                        </t>
+                        <!--                        <t t-esc="sum_promotion_sales_qty"/>-->
+                        <!--                        <t t-esc="sum_regular_sales_qty"/>-->
+                        <t t-if="length_value > 0 and (sum_promotion_sales_qty > 0.0 or sum_promotion_sales_qty > 0.0)">
+                            <t t-set="stock_hold"
+                               t-value="closing_stock/((sum_promotion_sales_qty+sum_regular_sales_qty)/length_value)"/>
+                        </t>
+                        <span><t t-esc="formatFloat(stock_hold)"/></span>
+                        <!--                        <input type="text"-->
+                        <!--                               t-att-data-date_index="dpl_index"-->
+                        <!--                               t-attf-class="text-end o_highlight form-control"-->
+                        <!--                               t-att-value="formatFloat(stock_hold)"-->
+                        <!--                               t-on-focus.prevent="_onFocusInput"-->
+                        <!--                               readonly="1"-->
+                        <!--                        />-->
+                    </th>
+                </t>
+            </tr>
+        </tbody>
+    </t>
+
+</templates>

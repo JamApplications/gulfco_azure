@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="supplier_sharing_view" name="Customer Sharing View in Portal">
+        <t t-call="portal.frontend_layout">
+            <t t-set="pageName" t-value="'o_customer_sharing_container'"/>
+            <t t-set="no_footer" t-value="true"/>
+            <t t-call="vendor_customer_portal.supplier_sharing"/>
+        </t>
+    </template>
+
+    <template id="supplier_sharing" name="Supplier Sharing View">
+        <iframe class="flex-grow-1" frameborder="0" t-attf-src="/{{ request.context['lang'] }}/my/supplier_sharing"/>
+    </template>
+
+    <template id="supplier_sharing_embed" name="Supplier Sharing View Embed">
+        <t t-call="web.layout">
+            <t t-set="head_supplier_sharing_sharing">
+                <script type="text/javascript">
+                    odoo.__session_info__ =<t t-out="json.dumps(session_info)"/>;
+                    odoo.loadMenusPromise = Promise.resolve();
+                </script>
+                <base target="_parent"/>
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="vendor_customer.webclient" t-js="false"/>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="vendor_customer.webclient" t-css="false"/>
+                <t t-call="web.conditional_assets_tests"/>
+            </t>
+            <t t-set="head" t-value="head_supplier_sharing_sharing + (head or '')"/>
+            <t t-set="body_classname" t-value="'o_web_client o_supplier_sharing'"/>
+        </t>
+    </template>
+
+</odoo>

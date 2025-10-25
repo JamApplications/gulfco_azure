@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+  <t t-name="plnx_barcode_employee_pin.pinDialog">
+    <Dialog size="'md'" title="props.title" modalRef="modalRef" title.translate="Enter Employee PIN" >
+      <div class="mt-2 col-12 row">
+          <div class="col-3" for="barcode_emp_pin"> <strong>Barcode PIN</strong></div>
+             <div class="col-9" style="border-bottom:1px solid black;margin-left: -30px;" >
+                <input type="text" name="barcode_emp_pin" id="barcode_emp_pin_id" class="barcode_pin_class" style="px;border:0;margin-left: -15px;" t-ref="pin-input"/>
+             </div>
+         </div>
+      <t t-set-slot="footer">
+        <button class="btn" string="Confirm" t-att-class="props.confirmClass" t-on-click="_confirm" t-esc="props.confirmLabel"/>
+        <button t-if="props.cancel" class="btn btn-secondary" t-on-click="_cancel" t-esc="props.cancelLabel"/>
+      </t>
+    </Dialog>
+  </t>
+
+</templates>

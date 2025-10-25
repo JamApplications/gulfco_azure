@@ -1,0 +1,103 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="plnx_rma_order_tree_view">
+            <field name="name">plnx_rma_order_tree_view</field>
+            <field name="model">rma.order</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="plnx_rma_order_form_view">
+            <field name="name">plnx_rma_order_form_view</field>
+            <field name="model">rma.order</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="confirm" string="Confirm" type="object" class="btn btn-primary"
+                                invisible="status == 'confirmed'"/>
+                        <button name="draft" string="Draft" type="object" class="btn btn-primary"
+                                invisible="status == 'draft'"/>
+                        <field name="status" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div name="button_box" class="oe_button_box">
+                            <button name="action_view_rma" type="object"
+                                    class="oe_stat_button" icon="fa-pencil-square-o" invisible="rma_count == 0">
+                                <field name="rma_count" widget="statinfo" string="RMAs"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field
+                                        name="partner_id"
+                                        widget="res_partner_many2one"
+                                        context="{'search_default_customer':1, 'show_address': 1, 'show_vat': True}"
+                                        readonly="status != 'draft'"
+                                        options="{'always_reload': True}"
+                                />
+                                <field
+                                        name="partner_shipping_id"
+                                        readonly="status != 'draft'"
+                                        force_save="1"
+                                />
+                                <field
+                                        name="partner_invoice_id"
+                                        readonly="status != 'draft'"
+                                        force_save="1"
+                                />
+                                <field name="sale_order_id" readonly="status != 'draft'"
+                                       domain="[('partner_id', '=', partner_id)]"/>
+                                <field name="date" readonly="status != 'draft'"/>
+
+                            </group>
+                            <group>
+                                <field name="responsible_id" readonly="status != 'draft'"/>
+                                <field name="team_id" readonly="status != 'draft'"/>
+                                <field name="source_document" readonly="status != 'draft'"/>
+                                <field name="deadline_date" readonly="status != 'draft'"/>
+                                <field name="priority" readonly="status != 'draft'"/>
+                            </group>
+                        </group>
+                        <div>
+                            <label for="remarks">Remarks</label>
+                            <field name="remarks" readonly="status != 'draft'"/>
+                        </div>
+                        <field name="rma_line_ids" readonly="status != 'draft'">
+                            <list editable="bottom">
+                                <field name="sale_order_id" column_invisible="1"/>
+                                <field name="origin_delivery_id" domain="origin_delivery_domain"/>
+                                <field name="orign_move"
+                                       domain="[('picking_id', '=', origin_delivery_id),('remaining_qty', '!=', 0)]"/>
+                                <field name="product_id"/>
+                                <field name="product_uom_qty"/>
+                                <field name="remaining_qty"/>
+                                <field name="operation_id"/>
+                                <field name="rma_id" column_invisible="1"/>
+                            </list>
+                        </field>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="plnx_rma_order_search">
+            <field name="name">plnx_rma_order_search</field>
+            <field name="model">rma.order</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="sale_order_id"/>
+                </search>
+            </field>
+        </record>
+    </data>
+</odoo>

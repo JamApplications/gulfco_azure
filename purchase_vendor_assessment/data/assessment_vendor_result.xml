@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="demo_assessment_vendor_result_0" model="assessment.vendor.result">
+        <field name="name">Keep buying and mark as a Strategy Partnership</field>
+        <field name="sequence" eval="10"/>
+        <field name="note">Excellent &gt;= 5%, others must be Very good</field>
+        <field name="criteria_domain">['&amp;', '&amp;', '&amp;', ['x_below_average', '=', 0], ['x_average', '=', 0], ['x_good', '=', 0], ['x_excellent', '&gt;=', 0.05]]</field>
+        <field name="decision">1</field>
+    </record>
+    <record id="demo_assessment_vendor_result_1" model="assessment.vendor.result">
+        <field name="name">Keep buying</field>
+        <field name="sequence" eval="20"/>
+        <field name="note">All orders must be Excellent, or Very good, or Good at least</field>
+        <field name="criteria_domain">['&amp;', '&amp;', ['x_below_average', '=', 0], ['x_average', '=', 0], ['order_count', '&gt;=', 1]]</field>
+        <field name="decision">0</field>
+    </record>
+    <record id="demo_assessment_vendor_result_2" model="assessment.vendor.result">
+        <field name="name">Warning and looking for the alternative vendor</field>
+        <field name="sequence" eval="30"/>
+        <field name="note">Below Average &lt; 10%</field>
+        <field name="criteria_domain">['&amp;', ['order_count', '&gt;', 0], ['x_below_average', '&lt;', 0.1]]</field>
+        <field name="decision">2</field>
+    </record>
+    <record id="demo_assessment_vendor_result_3" model="assessment.vendor.result">
+        <field name="name">Stop buying</field>
+        <field name="sequence" eval="40"/>
+        <field name="note">Below Average &gt;= 10%</field>
+        <field name="criteria_domain">[['x_below_average', '&gt;=', 0.1]]</field>
+        <field name="decision">3</field>
+    </record>
+    <record id="demo_assessment_vendor_result_4" model="assessment.vendor.result">
+        <field name="name">Default</field>
+        <field name="sequence" eval="50"/>
+        <field name="note">If cannot map any result to the assessment, set this Default one</field>
+        <field name="criteria_domain">[]</field>
+        <field name="decision">0</field>
+    </record>
+</odoo>

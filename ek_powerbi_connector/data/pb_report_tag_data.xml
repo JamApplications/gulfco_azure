@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="pb_report_tag_sales" model="pb.report.tag">
+            <field name="name">Sales</field>
+        </record>
+        <record id="pb_report_tag_crm" model="pb.report.tag">
+            <field name="name">CRM</field>
+        </record>
+        <record id="pb_report_tag_procurement" model="pb.report.tag">
+            <field name="name">Procurement</field>
+        </record>
+        <record id="pb_report_tag_inventory" model="pb.report.tag">
+            <field name="name">Inventory</field>
+        </record>
+        <record id="pb_report_tag_logistic" model="pb.report.tag">
+            <field name="name">Logistic</field>
+        </record>
+        <record id="pb_report_tag_production" model="pb.report.tag">
+            <field name="name">Production</field>
+        </record>
+        <record id="pb_report_tag_finance" model="pb.report.tag">
+            <field name="name">Finance</field>
+        </record>
+        <record id="pb_report_tag_hr" model="pb.report.tag">
+            <field name="name">HR</field>
+        </record>
+        <record id="pb_report_tag_project" model="pb.report.tag">
+            <field name="name">Project</field>
+        </record>
+        <record id="pb_report_tag_marketing" model="pb.report.tag">
+            <field name="name">Marketing</field>
+        </record>
+        <record id="pb_report_tag_pos" model="pb.report.tag">
+            <field name="name">POS</field>
+        </record>
+        <record id="pb_report_tag_qc" model="pb.report.tag">
+            <field name="name">QC</field>
+        </record>
+    </data>
+</odoo>

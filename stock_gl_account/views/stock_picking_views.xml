@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="stock_picking_form_inherit_gl" model="ir.ui.view">
+    <field name="name">stock.picking.form.gl</field>
+    <field name="model">stock.picking</field>
+    <field name="inherit_id" ref="stock.view_picking_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button invisible="picking_type_code != 'internal'" name="action_view_gl_entries"
+          type="object"
+          string="View GL Entries" 
+          class="oe_stat_button" icon="fa-bars">
+        </button>
+      </xpath>
+      <xpath expr="//field[@name='location_dest_id']" position="after">
+        <field name="gl_journal_id" invisible="1"/>
+        <!--        invisible="picking_type_code != 'internal'"-->
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

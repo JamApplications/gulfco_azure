@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_at_date_wizard" model="ir.ui.view">
+        <field name="name">inventory.at.date.wizard.form</field>
+        <field name="model">inventory.at.date.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Inventory at Date">
+                <group>
+                    <field name="date"/>
+                </group>
+                <footer>
+                    <button string="Show Inventory"
+                            type="object"
+                            name="action_open_inventory"
+                            class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_inventory_at_date_wizard" model="ir.actions.act_window">
+        <field name="name">Inventory at Date</field>
+        <field name="res_model">inventory.at.date.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+</odoo>

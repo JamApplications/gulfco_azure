@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gulfco_stock_location_tag_form_view" model="ir.ui.view">
+        <field name="name">gulfco.stock.location.tag.form.view</field>
+        <field name="model">stock.location.tag</field>
+        <field name="inherit_id" ref="stock_3dbase.stock_location_tag_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='opacity']" position="after">
+                <field name="is_outbound"/>
+                <field name="is_inbound"/>
+                <field name="is_saleable"/>
+                <field name="is_not_saleable"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="gulfco_stock_location_tag_tree_view" model="ir.ui.view">
+        <field name="name">gulfco.stock.location.tag.list</field>
+        <field name="model">stock.location.tag</field>
+        <field name="inherit_id" ref="stock_3dbase.stock_location_tag_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='opacity']" position="after">
+                <field name="is_outbound"/>
+                <field name="is_inbound"/>
+                <field name="is_saleable"/>
+                <field name="is_not_saleable"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

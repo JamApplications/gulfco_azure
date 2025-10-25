@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_stock_move_transfer_list_in_barcode_template">
+        <t t-call="web.html_container">
+<!--        <t t-call="web.basic_layout">-->
+            <p> hi...<t t-esc="docs"/> </p>
+            <t t-set="move_ids" t-value="docs.env['stock.move'].sudo().browse(docs.ids)"/>
+            <t t-set="pickings" t-value="move_ids.mapped('picking_id')"/>
+            <p> jo <t t-esc="pickings"/> </p>
+
+
+
+              <t t-foreach="pickings" t-as="pick">
+                  <p> oveL:<t t-esc="move_ids.filtered(lambda m: m.picking_id.id == pick.id)"/> </p>
+                <t t-set="picking_moves" t-value="move_ids.filtered(lambda m: m.picking_id.id == pick.id)"/>
+                  <p> hi:<t t-esc="picking_moves"/> </p>
+                <t t-set="packages" t-value="pick.move_line_ids.mapped('result_package_id')"/>
+
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        <table class="table table-sm" style="margin-bottom: 20px;">
+                            <thead>
+                            <tr>
+                                <td>
+                                </td>
+                                <th>
+                                    <strong>
+                                        ASN
+                                    </strong>
+<!--                                    <t t-esc="pick"/>-->
+                                </th>
+                                <th><strong>Transfer</strong></th>
+<!--                                <td><t t-esc="pick.name or pick.name"/></td>-->
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><strong>No.</strong></td>
+                                <td> <span t-esc="pick.asn_no_id.bl_no_asn_no"/> </td>
+<!--                                <td><strong></strong></td>-->
+                                <td>
+                                 <span t-esc="pick.name"/>
+                                </td>
+<!--                                <td>*<t t-esc="pick.origin or pick.name"/>*</td>-->
+                            </tr>
+                                <tr>
+                                <td><strong>Barcode</strong></td>
+                                <td>
+                                    <span t-field="pick.asn_no_id.bl_no_asn_no"
+                                                      t-options="{
+                                                          'widget': 'barcode',
+                                                          'quiet': 0.5,
+                                                          'img_style': 'width:120px;height:25px;'
+                                                      }"/>
+                                </td>
+<!--                                <td><strong></strong></td>-->
+                                <td>
+                                 <span t-field="pick.name"
+                                                      t-options="{
+                                                          'widget': 'barcode',
+                                                          'quiet': 0.5,
+                                                          'img_style': 'width:120px;height:25px;'
+                                                      }"/>
+                                </td>
+<!--                                <td>*<t t-esc="pick.origin or pick.name"/>*</td>-->
+                            </tr>
+                            </tbody>
+                        </table>
+                        <t t-set="half_index" t-value="int(len(packages) / 2.0 + 0.5)"/>
+
+                        <div class="row mb16">
+                            <div class="col-6" t-if="packages">
+                            <div class="mt16 mb8"><strong>Packages</strong></div>
+                            <table class="table table-sm">
+                                <t t-foreach="packages[0:half_index]" t-as="pkg">
+                                    <tr>
+                                        <td><t t-esc="pkg.name"/></td>
+                                        <td>
+                                            <span t-field="pkg.name"
+                                                  t-options="{
+                                                      'widget': 'barcode',
+                                                      'quiet': 0.5,
+                                                      'img_style': 'width:120px;height:25px;'
+                                                  }"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+
+                        <div class="col-6" t-if="len(packages) > 1">
+                            <div class="mt16 mb8"><strong>Packages</strong></div>
+                            <table class="table table-sm">
+                                <t t-foreach="packages[half_index:]" t-as="pkg">
+                                    <tr>
+                                        <td><t t-esc="pkg.name"/></td>
+                                        <td>
+                                            <span t-field="pkg.name"
+                                                  t-options="{
+                                                      'widget': 'barcode',
+                                                      'quiet': 0.5,
+                                                      'img_style': 'width:120px;height:25px;'
+                                                  }"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                        <br/>
+                        <table class="table table-bordered table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Item Code</th>
+                                    <th>Name</th>
+                                    <th>Ordered Qty</th>
+                                    <th>EAC Barcode</th>
+                                    <th>BOX Barcode</th>
+                                    <th>CTN Barcode</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="picking_moves" t-as="move">
+                                    <tr>
+                                        <td><t t-esc="move.product_id.default_code"/></td>
+                                        <td><t t-esc="move.product_id.name"/></td>
+
+
+                                        <td>
+                                            <t t-esc="str(int(move.product_packaging_qty)) + ' ' + (move.product_packaging_id.name or '')"/>
+<!--                                            <t t-esc="str(int(move.product_packaging_qty)) + ' ' + move.product_packaging_id.name"/>-->
+                                        </td>
+
+                                        <td>
+                                            <t t-set="eac_pack" t-value="move.product_id.packaging_ids.filtered(lambda p: not p.package_type_id.type and not p.package_type_id.is_pallete_package)[:1]"/>
+                                            <span t-field="eac_pack.barcode"/>
+                                        </td>
+                                        <td>
+                                            <t t-set="box_pack" t-value="move.product_id.packaging_ids.filtered(lambda p: p.package_type_id.type == 'box')[:1]"/>
+                                            <span t-field="box_pack.barcode"/>
+                                        </td>
+                                        <td>
+                                            <t t-set="ctn_pack" t-value="move.product_id.packaging_ids.filtered(lambda p: p.package_type_id.type == 'ctn')[:1]"/>
+                                            <span t-field="ctn_pack.barcode"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <t t-set="eac_pack" t-value="move.product_id.packaging_ids.filtered(lambda p: not p.package_type_id.type and not p.package_type_id.is_pallete_package)[:1]"/>
+                                            <span t-field="eac_pack.barcode"
+                                                      t-options="{
+                                                          'widget': 'barcode',
+                                                          'quiet': 0.5,
+                                                          'img_style': 'width:120px;height:25px;'
+                                                      }"/>
+                                        </td>
+                                        <td>
+                                            <t t-set="box_pack" t-value="move.product_id.packaging_ids.filtered(lambda p: p.package_type_id.type == 'box')[:1]"/>
+                                             <span t-field="box_pack.barcode"
+                                                      t-options="{
+                                                          'widget': 'barcode',
+                                                          'quiet': 0.5,
+                                                          'img_style': 'width:120px;height:25px;'
+                                                      }"/>
+                                        </td>
+                                        <td>
+                                            <t t-set="ctn_pack" t-value="move.product_id.packaging_ids.filtered(lambda p: p.package_type_id.type == 'ctn')[:1]"/>
+                                            <span t-field="ctn_pack.barcode"
+                                                      t-options="{
+                                                          'widget': 'barcode',
+                                                          'quiet': 0.5,
+                                                          'img_style': 'width:120px;height:25px;'
+                                                      }"/>
+                                        </td>
+
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+
+
+        </t>
+<!--        </t>-->
+        </t>
+    </template>
+</odoo>

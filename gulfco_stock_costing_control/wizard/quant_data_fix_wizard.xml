@@ -1,0 +1,29 @@
+<odoo>
+    <record id="view_quant_data_fix_wizard_form" model="ir.ui.view">
+        <field name="name">quant.data.fix.wizard.form</field>
+        <field name="model">quant.data.fix.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Fix Quant Data">
+                <group>
+                    <field name="quant_id"/>
+                    <field name="quantity_to_update"/>
+                    <field name="update_reserved_qty"/>
+                    <field name="reserved_qty_to_update" invisible = "not update_reserved_qty"/>
+                </group>
+                <footer>
+                    <button string="Update Quant" type="object" name="action_update_quant" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_quant_data_fix_wizard" model="ir.actions.act_window">
+        <field name="name">Quant Data Fix</field>
+        <field name="res_model">quant.data.fix.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_quants_datafix_wizard" name="Quants Datafix Wizard" parent="stock.menu_stock_adjustments" action="action_quant_data_fix_wizard"/>
+</odoo>

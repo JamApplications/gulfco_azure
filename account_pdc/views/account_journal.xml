@@ -1,0 +1,48 @@
+<odoo>
+    <record id="account_journal_form_inherit" model="ir.ui.view">
+        <field name="name">account.journal.form.inherit</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_pdc" invisible="type != 'bank'"/>
+<!--                attrs="{'invisible':[('type', '!=', 'bank')]}"/>-->
+            </xpath>
+            <xpath expr="//notebook/page[@id='outbound_payment_settings']/field[@name='outbound_payment_method_line_ids']/list"
+                   position="inside">
+                <field name="is_pdc_payable"/>
+            </xpath>
+
+
+            <xpath expr="//notebook" position="inside">
+                <page name="pdc_receivable_setting" string="PDC Receivable Settings"
+                       invisible="is_pdc == False">
+<!--                      attrs="{'invisible':[('is_pdc', '=', False)]}">-->
+                    <group>
+                        <group string="Incoming PDC Account">
+                            <field name="pdc_notes_receivable_account_id" required="is_pdc == True"/>
+<!--                            attrs="{'required':[('is_pdc', '=', True)]}"/>-->
+                            <field name="pdc_check_under_collection_account_id" required="is_pdc == True"/>
+<!--                                   attrs="{'required':[('is_pdc', '=', True)]}"/>-->
+                            <field name="write_off_pdc_account_id" required="is_pdc == True"/>
+                            <field name="pdc_bounce_receivable_account_id" required="is_pdc == True"/>
+                            <field name="pdc_bounce_beneficiaries_account_id" required="is_pdc == True"/>
+<!--                            attrs="{'required':[('is_pdc', '=', True)]}"/>-->
+                        </group>
+                    </group>
+                </page>
+                <page name="pdc_payable_setting" string="PDC Payable Settings"
+                      invisible="type != 'bank'">
+<!--                      attrs="{'invisible':[('type', '!=', 'bank')]}">-->
+                    <group>
+                        <group string="Outgoing PDC Account">
+                            <field name="pdc_notes_payable_account_id"/>
+                            <field name="pdc_payable_under_collection_account_id"/>
+                        </group>
+                    </group>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

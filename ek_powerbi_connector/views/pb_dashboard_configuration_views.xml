@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- PowerBI Dashboard Configuration List View -->
+        <record id="view_pb_dashboard_configuration_list" model="ir.ui.view">
+            <field name="name">pb.dashboard.configuration.list</field>
+            <field name="model">pb.dashboard.configuration</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- PowerBI Dashboard Configuration Form View -->
+        <record id="view_pb_dashboard_configuration_form" model="ir.ui.view">
+            <field name="name">pb.dashboard.configuration.form</field>
+            <field name="model">pb.dashboard.configuration</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="group_id"/>
+                            <field name="report_id"/>
+                            <field name="report_tag_id" widget="selection"/>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Main Action: pb.dashboard.configuration -->
+        <record id="pb_dashboard_configuration_action" model="ir.actions.act_window">
+            <field name="name">PowerBI Dashboard Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pb.dashboard.configuration</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                All important PowerBI Dashboard Configuration Track handle here
+            </p><p>
+                Ekika helps you track, manage and maintain your PowerBI Dashboard Configurations activity in the software.
+            </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

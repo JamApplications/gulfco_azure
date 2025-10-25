@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+     <record id="view_res_partner_filter_inherit" model="ir.ui.view">
+        <field name="name">res.partner.select.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="customer_code"/>
+                <field name="vendor_code"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record id="vendor_details_form_inherit_form_base_inherit" model="ir.ui.view">
+        <field name="name">res.partner.customer.detailed.data.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']//group[@name='purchase']" position="inside">
+                <field name="supplier_hold" invisible="contact_type not in ['supplier', 'both']"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="vendor_details_form_inherit_form" model="ir.ui.view">
+        <field name="name">res.partner.vendor.detailed.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="gulfco_customer_customized_data.res_partner_customer_detailed_data_inherit_form"/>
+        <field name="arch" type="xml">
+           <xpath expr="//field[@name='contact_type']" position="attributes">
+               <attribute name="invisible">1</attribute>
+           </xpath>
+<!--            <xpath expr="//button[@name='create_company']" position="after">-->
+            <xpath expr="//field[@name='customer_code']" position="before">
+               <group>
+                    <field name="contact_type" required="type == 'contact'"/>
+               </group>
+            </xpath>
+
+<!--            <xpath expr="//page[@name='CCD']" position="inside">-->
+
+<!--                    <group string="Attachment" name="attachments">-->
+<!--                        <group>-->
+<!--                            <field name="trade_license_file_name" invisible="1"/>-->
+<!--                            <field name="trade_license_attachment" widget="binary"-->
+<!--                                   filename="trade_license_file_name" required="contact_type in ['supplier', 'both']"/>-->
+
+<!--                            <field name="caf_file_name" invisible="1"/>-->
+<!--                            <field name="caf_attachment" widget="binary" filename="caf_file_name"/>-->
+
+<!--                            <field name="guarantees_copy_file_name" invisible="1"/>-->
+<!--                            <field name="guarantees_copy_attachment" widget="binary" filename="guarantees_copy_file_name"/>-->
+
+<!--                            <field name="eid_file_name" invisible="1"/>-->
+<!--                            <field name="eid_attachment" widget="binary" filename="eid_file_name"/>-->
+
+<!--                            <field name="agreement_copy_file_name" invisible="1"/>-->
+<!--                            <field name="agreement_copy_attachment" widget="binary" filename="agreement_copy_file_name"/>-->
+
+<!--                            <field name="bank_statement_file_name" invisible="1"/>-->
+<!--                            <field name="bank_statement_attachment" widget="binary" filename="bank_statement_file_name"/>-->
+
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                            <field name="vat_trn_file_name" invisible="1"/>-->
+<!--                            <field name="vat_trn_attachment" widget="binary" filename="vat_trn_file_name"/>-->
+
+<!--                            <field name="poer_attorney_file_name" invisible="1"/>-->
+<!--                            <field name="poer_attorney_attachment" widget="binary" filename="poer_attorney_file_name"/>-->
+
+<!--                            <field name="company_photo_file_name" invisible="1"/>-->
+<!--                            <field name="company_photo_attachment" widget="binary" filename="company_photo_file_name"/>-->
+
+<!--                            <field name="passport_copy_file_name" invisible="1"/>-->
+<!--                            <field name="passport_copy_attachment" widget="binary" filename="passport_copy_file_name"/>-->
+
+<!--                            <field name="memorandum_association_file_name" invisible="1"/>-->
+<!--                            <field name="memorandum_association_attachment" widget="binary" filename="memorandum_association_file_name"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+
+<!--            </xpath>-->
+            <xpath expr="//page[@name='detailed_customer_data']" position="after">
+                <page name="vendor_details" string="Vendor Details" invisible="contact_type == 'customer'">
+                    <group>
+                        <group>
+                            <field name="supplier_type" required="contact_type in ['supplier', 'both']"/>
+                            <field name="vendor_code"/>
+                            <field name="rfq_analysis_ref" invisible="supplier_type == 'foreign'"/>
+
+                            <field name="supplier_classification_id" required="contact_type in ['supplier', 'both']"/>
+<!--                            <field name="supplier_classification" required="contact_type in ['supplier', 'both']"/>-->
+                            <field name="parent_group_name"/>
+<!--                            <field name="po_box"/>-->
+<!--                            <field name="zip" string="ZIP/Pincode/Area Code"/>-->
+<!--                            <field name="vat_trn"/>-->
+                        </group>
+                    </group>
+                    <group string="Legal Documents" name="legal_documents">
+                        <group>
+                            <field name="trade_number" string="Trade License"/>
+                            <field name="legal_document_issue_date" string="Issued Date"
+                                />
+                        </group>
+                        <group>
+                            <field name="issuance_authority"/>
+                            <field name="legal_document_expiry_date"/>
+                        </group>
+                    </group>
+                    <group string="Attachment" name="attachments">
+                        <group>
+                            <field name="trade_license_file_name" invisible="1"/>
+                            <field name="trade_license_attachment" widget="binary" filename="trade_license_file_name"
+                                   />
+                            <field name="vat_trn_file_name" invisible="1"/>
+                            <field name="vat_trn_attachment" widget="binary" filename="vat_trn_file_name"/>
+                            <field name="bank_account_attachment_file_name" invisible="1"/>
+                            <field name="bank_account_attachment" widget="binary"
+                                   filename="bank_account_attachment_file_name"
+                                   />
+                            <field name="noc_payment_file_name" invisible="1"/>
+                            <field name="noc_payment_attachment" widget="binary" filename="noc_payment_file_name"
+                                   />
+                            <field name="other_document_file_name" invisible="1"/>
+                            <field name="other_document_attachment" widget="binary"
+                                   filename="other_document_file_name"/>
+                            <field name="vendor_registration_file_name" invisible="1"/>
+                            <field name="vendor_registration_attachment" widget="binary"
+                                   filename="vendor_registration_file_name"
+                                   />
+                            <field name="agreement_file_name" invisible="1"/>
+                            <field name="agreement_attachment" widget="binary" filename="agreement_file_name"/>
+                            <field name="other_attachment_file_name" invisible="1"/>
+                            <field name="other_attachment" widget="binary" filename="other_attachment_file_name"/>
+                            <field name="quotation_attachment_file_name" invisible="1"/>
+                            <field name="quotation_attachment" widget="binary" filename="quotation_attachment_file_name"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,55 @@
+<odoo>
+    <record id="view_custodian_payment_summery_report_list" model="ir.ui.view">
+        <field name="name">custodian.payment.summery.report.list</field>
+        <field name="model">custodian.payment.summery.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="custodian_code" string="Custodian Code"/>
+                <field name="custodian_id" string="Custodian Name"/>
+                <field name="employee_code"/>
+                <field name="employee"/>
+                <field name="custodian_branch_id"/>
+                <field name="custodian_user_job_id"/>
+                <field name="company_id" string="Division"/>
+                <field name="payment_method_line_id" string="Media Type" column_invisible="1"/>
+                <field name="media_type" string="Media Type"/>
+                 <field name="payment_ids" optional="show"/>
+                <field name="amount" string="Amount"/>
+                <field name="aed_amount" string="AED Amount"/>
+                <field name="transfer_date"/>
+                <field name="gl_account"/>
+                 <field name="currency_id" optional="show"/>
+                <button
+                    name="action_show_payment_info"
+                    type="object"
+                    icon="fa-list"
+                    title="Show Details"
+                    width="0.1"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="custodian_payment_summery_report_search_view" model="ir.ui.view">
+        <field name="name">custodian.payment.summery.report.search.view</field>
+        <field name="model">custodian.payment.summery.report</field>
+        <field name="arch" type="xml">
+            <search string="Custodian Report Summery Search">
+                <field name="custodian_id"/>
+                <group expand="1" string="Group By">
+                    <filter string="Custodian" name="custodian_group_by" context="{'group_by':'custodian_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_custodian_payment_summery_report" model="ir.actions.act_window">
+        <field name="name">Custodian Summery Report</field>
+        <field name="res_model">custodian.payment.summery.report</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_custodian_group_by': 1,'show_custodian_report':1}</field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="custodian_summery_report_menu" name="Custodian Summery Report" parent="account.menu_finance_reports" action="action_custodian_payment_summery_report"/>
+</odoo>

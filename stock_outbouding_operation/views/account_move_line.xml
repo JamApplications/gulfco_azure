@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+         <record id="stock_outbounding_view_move_line_reconcile_tree_inherit_custom" model="ir.ui.view">
+            <field name="name">stock.outbounding.account.move.line.reconcile.tree.inherit.custom</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account_accountant.view_move_line_reconcile_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='ref']" position="after">
+                    <field name="remark_invoice" optional="hide"/>
+                    <field name="move_type" optional="hide"/>
+                </xpath>
+                <field name="date" position="after">
+                    <field name="date_maturity" position="move"/>
+                </field>
+            </field>
+         </record>
+
+        <record id="view_account_move_form_inherit_excise" model="ir.ui.view">
+            <field name="name">account.move.form.inherit.excise</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_line_ids']/list/field[@name='price_unit']" position="after">
+                    <field name="excise_tax" column_invisible="1"/>
+                </xpath>
+                <xpath expr="//sheet/group/group/field[@name='invoice_date']" position="after">
+                    <field name="receipt_date" invisible="move_type not in ('in_invoice')" />
+                </xpath>
+                <xpath expr="//sheet/group/group/field[@name='invoice_date']" position="after">
+                    <field name="po_number" invisible="1" />
+                </xpath>
+                <xpath expr="//sheet/group/group/field[@name='po_number']" position="after">
+                    <field name="company_id" readonly="1" string="Div" invisible="move_type not in ('out_invoice', 'in_invoice')"/>
+                    <field name="branch" invisible="move_type not in ('out_invoice', 'in_invoice')"/>
+                    <field name="remark_invoice" invisible="move_type not in ('out_invoice', 'in_invoice','out_refund','in_refund')"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+
+
+</odoo>

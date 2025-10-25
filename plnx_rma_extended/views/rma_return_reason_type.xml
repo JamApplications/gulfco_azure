@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_rma_return_reason_type_list" model="ir.ui.view">
+        <field name="name">RMA Return Reasons Type</field>
+        <field name="model">rma.return.reason.type</field>
+        <field eval="6" name="priority"/>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="name" />
+            </list>
+        </field>
+    </record>
+    <record id="action_rma_return_reason_type" model="ir.actions.act_window">
+        <field name="name">RMA Return Reasons Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rma.return.reason.type</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new RMA Return Reason
+            </p>
+            <p>
+            Manage RMA Return reasons.
+            </p>
+        </field>
+    </record>
+    <menuitem
+        id="rma_configuration_rma_return_reason_type_menu"
+        name="RMA Return Reasons Type"
+        parent="rma.rma_configuration_menu"
+        action="action_rma_return_reason_type"
+    />
+</odoo>

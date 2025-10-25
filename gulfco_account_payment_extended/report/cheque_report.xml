@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="paperformat_cheque_report" model="report.paperformat">
+        <field name="name">A4</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">32</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">37</field>
+        <field name="dpi">90</field>
+        <field name="css_margins" eval="True"/>
+    </record>
+
+    <template id="report_cheque_template">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <div class="row mb-3">
+                        <div class="col-6" style="line-height: 1.5;">
+                            <br/>
+                            <strong>Payee Name:</strong>
+                            <span t-esc="doc.partner_id.name or ''"/>
+                            <br/>
+                            <strong>Supplier#:</strong>
+                            <span t-esc="doc.partner_id.vendor_code or ''"/>
+                            <br/>
+                            <strong>Phone#:</strong>
+                            <span t-esc="doc.partner_id.phone or ''"/>
+                        </div>
+                        <div class="col-6 text-right" style="line-height: 1.5;">
+                            <strong>Voucher:</strong>
+                            <span t-esc="doc.name or ''"/>
+                            <br/>
+                            <strong>Date:</strong>
+                            <span t-esc="doc.date.strftime('%d %b %Y') if doc.date else ''"/>
+                            <br/>
+                            <strong>Cheque#:</strong>
+                            <span t-esc="doc.cheque_book_line_id.cheque_number or ''"/>
+                            <br/>
+                            <strong>Cheque Amount:</strong>
+                            <span t-esc="'{:,.2f}'.format(doc.amount_local or 0)"/>
+                        </div>
+
+                    </div>
+                    <div style="min-height: 500px !important;max-height: 500px !important;">
+                        <table class="table table-sm table-bordered" t-if="doc.reconcile_invoice_ids and not doc.advance_sale_purchase">
+                            <thead>
+                                <tr>
+                                    <th>TRX Number</th>
+                                    <th>TRX Date</th>
+                                    <th class="text-right">Amount</th>
+                                     <t t-if="len(doc.reconcile_invoice_ids) > 1">
+                                        <th>TRX Number</th>
+                                        <th>TRX Date</th>
+                                        <th class="text-right">Amount</th>
+                                     </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="range(0, len(doc.reconcile_invoice_ids), 2)" t-as="idx">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="doc.reconcile_invoice_ids[idx].invoice_id.ref or ''"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="doc.reconcile_invoice_ids[idx].invoice_id.invoice_date.strftime('%d %b %Y') if doc.reconcile_invoice_ids[idx].invoice_id.invoice_date else ''"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="'{:,.2f}'.format(doc.reconcile_invoice_ids[idx].amount_paid or 0)"/>
+                                        </td>
+                                        <t t-if="idx + 1 &lt; len(doc.reconcile_invoice_ids)">
+                                            <td>
+                                                <span t-esc="doc.reconcile_invoice_ids[idx + 1].invoice_id.ref or ''"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="doc.reconcile_invoice_ids[idx + 1].invoice_id.invoice_date.strftime('%d %b %Y') if doc.reconcile_invoice_ids[idx + 1].invoice_id.invoice_date else ''"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-esc="'{:,.2f}'.format(doc.reconcile_invoice_ids[idx + 1].amount_paid or 0)"/>
+                                            </td>
+                                        </t>
+<!--                                        <t t-else="">-->
+<!--                                            <td></td><td></td><td></td>-->
+<!--                                        </t>-->
+                                    </tr>
+                                </t>
+<!--                                <tr t-foreach="doc.reconcile_invoice_ids" t-as="line">-->
+<!--                                    <td>-->
+<!--                                        <span t-esc="line.invoice_id.ref or ''"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <span t-esc="line.invoice_id.invoice_date.strftime('%d %b %Y') if line.invoice_id.invoice_date else ''"/>-->
+<!--                                    </td>-->
+<!--                                    <td class="text-right">-->
+<!--                                        <span t-esc="'{:,.2f}'.format(line.amount_paid or 0)"/>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-5">
+                        <div class="row">
+                            <div class="col-1">
+                                <table class="table table-borderless table-sm" style="width:100%;">
+                                    <tr>
+                                        <td>
+                                            <strong>Received By</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Contact#</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Signature</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-3 mt-3">
+                                <table class="table table-bordered table-sm" style="width:100%;">
+                                    <tr>
+                                        <td>&#160;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&#160;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&#160;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&#160;</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-8 text-center">
+                                <div class="row">
+                                    <div class="col">
+                                        <div style="min-height: 50px;"/>
+                                        <span style="border-top:1px solid #000; display:inline-block; width: 80%;">
+                                            Prepared By
+                                        </span>
+                                    </div>
+                                    <div class="col">
+                                        <div style="min-height: 50px;"/>
+                                        <span style="border-top:1px solid #000; display:inline-block; width: 80%;">
+                                            Reviewed By
+                                        </span>
+                                    </div>
+                                    <div class="col">
+                                        <div style="min-height: 50px;"/>
+                                        <span style="border-top:1px solid #000; display:inline-block; width: 80%;">
+                                            Approved By
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:150px !important;">
+                    <div class="row" style="margin-top:-5px;width: 100% !important;">
+                        <div style="width: 50% !important;padding-left: 120px !important;">
+                            <span>&#160;</span>
+                        </div>
+                        <div style="width: 50% !important;padding-left: 165px !important;margin-top:-35px;">
+                            <span t-esc="doc.date.strftime('%d %b %Y') if doc.date else ''"/>
+                        </div>
+                    </div>
+                    <div class="row" style="width: 100% !important;margin-top:-10px !important;">
+                        <div style="width: 50% !important;padding-left: 90px !important;">
+                            <span t-esc="doc.partner_id.name"/>
+                        </div>
+                        <div style="width: 50% !important;padding-left: 90px !important;">
+                            <span>&#160;</span>
+                        </div>
+                    </div>
+                    <div style="width: 100%;float: left;display: flex;">
+                        <div style="width: 14cm;margin-top:15px !important;">
+                            <div style="width: 100%; padding-left: 80px; ">
+                                <span style="line-height:2.5" t-esc="doc.company_id.currency_id.amount_to_text(doc.amount_local)"/><span>&#160;Only</span>
+                            </div>
+                        </div>
+                        <div style="margin-top:-30px !important">
+                            <span style="margin-left: 80% !important;" t-esc="'{:,.2f}'.format(doc.amount_local or 0)"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+    <record id="action_cheque_report" model="ir.actions.report">
+        <field name="name">Cheque Report</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gulfco_account_payment_extended.report_cheque_template</field>
+        <field name="report_file">gulfco_account_payment_extended.report_cheque_template</field>
+        <field name="binding_model_id" ref="account.model_account_payment"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Cheque Report'</field>
+        <field name="domain" eval="[('payment_type','=','outbound')]"/>
+        <field name="paperformat_id" ref="gulfco_account_payment_extended.paperformat_cheque_report"/>
+    </record>
+</odoo>

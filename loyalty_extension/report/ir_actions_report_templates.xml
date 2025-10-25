@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="document_tax_totals" inherit_id="sale.document_tax_totals">
+        <xpath expr="//tr[hasclass('o_subtotal')]" position="before">
+            <tr>
+                <td><strong>Total Value before Discount</strong></td>
+                <td class="text-end text-nowrap">
+                    <span t-out="tax_totals['before_discount_amount']"/>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Reward Discount</strong></td>
+                <td class="text-end text-nowrap">
+                    <span t-out="tax_totals['reward_discount_amount']"/>
+                </td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>

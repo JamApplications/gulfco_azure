@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="assessment_vendor_view_list" model="ir.ui.view">
+        <field name="name">assessment_vendor_view_list</field>
+        <field name="model">assessment.vendor</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="partner_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="assessment_vendor_view_filter" model="ir.ui.view">
+        <field name="name">assessment_vendor_view_filter</field>
+        <field name="model">assessment.vendor</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="state"/>
+                <field name="user_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="To Approve" name="to_approve" domain="[('state', '=', 'waiting')]"/>
+                <filter string="Released" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Refused" name="refused" domain="[('state', '=', 'refused')]"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Vendor" name='vendor' context="{'group_by':'partner_id'}"/>
+                    <filter string="User" name='user' context="{'group_by':'user_id'}"/>
+                    <filter string="Status" name="status" context="{'group_by':'state'}"/>
+                    <separator orientation="vertical"/>
+                    <filter string="From Date" name="group_date_from" context="{'group_by':'date_from:month'}"/>
+                    <filter string="To Date" name="group_date_to" context="{'group_by':'date_to:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="assessment_vendor_view_form" model="ir.ui.view">
+        <field name="name">assessment_vendor_view_form</field>
+        <field name="model">assessment.vendor</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_load" type="object"
+                            string="Load"
+                            invisible="state != 'draft'"
+                            class="oe_highlight"/>
+                    <button name="action_submit" type="object"
+                            string="Submit"
+                            invisible="state != 'draft'"
+                            class="oe_highlight"/>
+
+<!--                    <button name="get_assessment_lines" type="object"-->
+<!--                            string="Compute Assessment"-->
+<!--                            invisible="assessment_criteria_ids == []"-->
+<!--                            class="oe_highlight"/>-->
+
+                    <button name="action_approve" type="object"
+                            string="Approve"
+                            invisible="state != 'waiting'"
+                            groups="purchase_vendor_assessment.group_assessment_approver"
+                            class="oe_highlight"/>
+                    <button name="action_refuse" type="object"
+                            string="Refuse"
+                            invisible="state != 'waiting'"
+                            groups="purchase_vendor_assessment.group_assessment_approver"
+                            class=""/>
+                    <button name="action_reset" type="object"
+                            string="Set to Draft"
+                            invisible="state not in ['canceled', 'refused']"
+                            class=""/>
+                    <button name="action_cancel" type="object"
+                            string="Cancel"
+                            invisible="state not in ['draft', 'waiting']"
+                            class=""/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="state != 'draft'"/>
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <!--                            not needed this 2 fields-->
+                            <!--                            <field name="template_id"  options="{'no_open': True}" required="1" readonly="state != 'draft'"/>-->
+                            <!--                            <field name="result_id" readonly="1" options="{'no_open': True}"/>-->
+                        </group>
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="user_id" readonly="1" force_save="1" options="{'no_open': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Purchase Assessment" name="assessment_lines">
+                            <field name="assessment_criteria_ids" >
+                                <list editable="bottom" delete="1" create="0">
+                                    <field name="criteria_id" readonly="1" force_save="1" options="{'no_open': True}"/>
+                                    <field name="score"  widget="percentage" />
+                                    <field name="status" force_save="1"/>
+                                    <field name="weightage_point" force_save="1" sum="Total Weightage"/>
+                                    <field name="point_scored" readonly="1" force_save="1" sum="Point Scored"/>
+
+                                    <button name="open_po"  class="oe_stat_button" icon="fa-list" type="object" string="View PO">
+                                    </button>
+                                </list>
+                            </field>
+                        </page>
+                        <!--                        <page string="Purchase Assessment" name="lines">-->
+                        <!--                            <field name="assessment_purchase_ids" readonly="1">-->
+                        <!--                                <list>-->
+                        <!--                                    <field name="purchase_id"/>-->
+                        <!--                                    <field name="point" sum="Total"/>-->
+                        <!--                                    <field name="result_id" />-->
+                        <!--                                </list>-->
+                        <!--                            </field>-->
+                        <!--                        </page>-->
+                        <!--                        <page string="Result Ratio" name="ratio">-->
+                        <!--                            <field name="result_ratio_ids" readonly="1">-->
+                        <!--                                <list>-->
+                        <!--                                    <field name="result_id" />-->
+                        <!--                                    <field name="count" sum="Total"/>-->
+                        <!--                                    <field name="ratio" widget="percentage" sum="Total"/>-->
+                        <!--                                </list>-->
+                        <!--                            </field>-->
+                        <!--                        </page>-->
+                    </notebook>
+                    <group>
+                        <field name="notes" nolabel="1" placeholder="Add your notes ..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="assessment_vendor_action" model="ir.actions.act_window">
+        <field name="name">Vendor Assessment</field>
+        <field name="res_model">assessment.vendor</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="view_id" eval="False"/>
+    </record>
+</odoo>

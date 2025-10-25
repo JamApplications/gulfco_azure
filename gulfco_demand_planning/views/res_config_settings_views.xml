@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.mrp.mps</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="mrp_mps.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='mrp_mps']" position="after">
+                <setting id="demand_planning" help="Demand Planning Report">
+                    <b>Demand Planning</b>
+                    <div class="content-group mt16">
+                        <group>
+                            <group>
+                                <label string="Default Time Range" for="demand_planning_period"
+                                       class="o_light_label mr8"/>
+                            </group>
+                            <group>
+                                <label string="Number of Periods" for="demand_planning_period_to_display_year"
+                                       class="o_light_label mr8"/>
+                            </group>
+                            <field name="demand_planning_period" widget="radio" class="o_light_label"/>
+                            <group style="line-height: normal">
+                                <field name="demand_planning_period_to_display_year" nolabel="1"/>
+                                <br/>
+                                <field name="demand_planning_period_to_display_month" nolabel="1"/>
+                                <br/>
+                                <field name="demand_planning_period_to_display_week" nolabel="1"/>
+                                <br/>
+                                <field name="demand_planning_period_to_display_day" nolabel="1"/>
+                            </group>
+                             <label string="Previous Column Number" for="previous_column_number"
+                                       class="o_light_label mr8"/>
+                            <field name="previous_column_number" nolabel="1"/>
+                        </group>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <div t-name="gulfco_demand_planning.demand_planning" class="main o_action">
+        <MrpMpsControlPanel>
+            <t t-set-slot="layout-buttons">
+                <button
+                        type="button"
+                        class="btn btn-primary order_button"
+                        t-on-click.stop="_onClickReplenish"
+                        t-on-mouseover.stop="_onMouseOverReplenish"
+                        t-on-mouseout.stop="_onMouseOutReplenish">Order</button>
+                <button
+                        type="button"
+                        class='btn btn-secondary'
+                        t-on-click.stop="_onClickCreate">Add a Product</button>
+                <ViewScaleSelector scales="periodTypes" currentScale="currentPeriodType" setScale.bind="setScale"/>
+            </t>
+            <t t-set-slot="layout-actions">
+                <MrpMpsSearchBar/>
+            </t>
+            <t t-set-slot="control-panel-additional-actions">
+                <ActionMenus t-if="isRecordSelected"
+                             getActiveIds="() => Array.from(model.selectedRecords)"
+                             context="{}"
+                             domain="model.domain"
+                             items="actionMenuItems"
+                             isDomainSelected="model.isDomainSelected"
+                             resModel="'demand.planning'"/>
+            </t>
+
+        </MrpMpsControlPanel>
+        <div class="o_mrp_mps o_content bg-view">
+            <t t-if="lines.length">
+                <div class="text-nowrap mr0 ml0">
+                    <table class="table table-sm o_mps_product_table">
+                        <thead class="table-light">
+                            <tr class="o_mps_period">
+                                <th>
+                                    <CheckBox value='isSelected' onChange.bind="toggleSelection"/>
+                                </th>
+                                <th>
+                                    <span>Code</span>
+                                </th>
+                                <th scope="col">
+                                    <span>Order</span>
+                                </th>
+                                <th>
+                                    <span>Source</span>
+                                </th>
+                                <th class="text-end" scope="col" t-foreach="demandPlanningPeriods" t-as="period"
+                                    t-key="period">
+                                    <div><t t-esc="period"/></div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <t t-foreach="Object.keys(groupedByVendorId)" t-as="vendorKey" t-key="vendorKey">
+                            <t t-set="items" t-value="groupedByVendorId[vendorKey]"/>
+                            <tbody class="o_mps_content">
+                            <tr class="bg-light">
+                                <th/>
+                                <th/>
+                                <th scope="col" style="color:blue;">
+                                    <span t-esc="vendorKey"/>
+                                </th>
+                                <th/>
+                                <th class="text-end" scope="col" t-foreach="demandPlanningPeriods" t-as="period"
+                                    t-key="period">
+                                </th>
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+<!--                                <th/>-->
+                            </tr>
+                            </tbody>
+                            <t t-foreach="items" t-as="demandPlanning" t-key="demandPlanning.id">
+                                <DemandPlanningLineComponent data="demandPlanning" groups="groups"/>
+                            </t>
+                        </t>
+                        <!--                        <t t-foreach="lines" t-as="demandPlanning" t-key="demandPlanning.id">-->
+                        <!--                            <DemandPlanningLineComponent data="demandPlanning" groups="groups"/>-->
+                        <!--                        </t>-->
+                    </table>
+                </div>
+            </t>
+            <t t-else="">
+                <t t-call="demand_planning_nocontent_helper"/>
+            </t>
+        </div>
+    </div>
+
+    <t t-name="demand_planning_nocontent_helper">
+        <div class="o_view_nocontent">
+            <div class="o_nocontent_help">
+                <p class="o_view_nocontent_smiling_face">
+                    No product yet. Add one to start scheduling.
+                </p>
+            </div>
+        </div>
+    </t>
+
+</templates>

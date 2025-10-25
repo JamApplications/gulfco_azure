@@ -1,0 +1,16 @@
+<odoo>
+    <template id="report_picking_batch_inherit" inherit_id="stock_picking_batch.report_picking_batch">
+        <xpath expr="//table[hasclass('table')]//thead//tr//th[2]" position="after">
+            <th>Source Document No</th>
+            <th>Source Document Type</th>
+        </xpath>
+        <xpath expr="//table[hasclass('table')]//tbody//tr//td[2]" position="after">
+            <td>
+                <span t-field="pick.origin"/>
+            </td>
+            <td>
+                <span />
+            </td>
+        </xpath>
+    </template>
+</odoo>

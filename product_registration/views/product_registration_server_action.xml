@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_record_pending_internal_approval" model="ir.actions.server">
+        <field name="name">Submit for Muncipality Registration</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_pending_internal_approval()</field>
+        <field name="groups_id" eval="[(4, ref('product_registration.group_submit_for_municipality_registration'))]"/>
+    </record>
+
+    <record id="action_record_action_approve_municipality" model="ir.actions.server">
+        <field name="name">Approve Internal Approval</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_approve_municipality()</field>
+        <field name="groups_id" eval="[(4, ref('product_registration.group_pending_internal_approval'))]"/>
+    </record>
+
+    <record id="action_record_action_approved" model="ir.actions.server">
+        <field name="name">Approve Item Activation</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_approved()</field>
+        <field name="groups_id" eval="[(4, ref('product_registration.group_submit_item_activation_approval'))]"/>
+    </record>
+
+    <record id="action_record_action_approved_without_municipality" model="ir.actions.server">
+        <field name="name">Approve Item Activation without Approval</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_approved()</field>
+        <field name="groups_id"
+               eval="[(4, ref('product_registration.group_item_activation_without_municipality_approval'))]"/>
+    </record>
+
+    <record id="action_record_action_rejected" model="ir.actions.server">
+        <field name="name">Reject internal Approval</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_rejected()</field>
+        <field name="groups_id" eval="[(4, ref('product_registration.group_pending_internal_approval'))]"/>
+    </record>
+
+    <record id="action_record_action_rejected_item_activation_approval" model="ir.actions.server">
+        <field name="name">Reject Item Activation</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_rejected()</field>
+        <field name="groups_id" eval="[(4, ref('product_registration.group_submit_item_activation_approval'))]"/>
+    </record>
+
+    <record id="action_record_action_rejected_item_activation_without_municipality_approval" model="ir.actions.server">
+        <field name="name">Reject Item Activation Without Municipality</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_rejected()</field>
+        <field name="groups_id"
+               eval="[(4, ref('product_registration.group_item_activation_without_municipality_approval'))]"/>
+    </record>
+
+    <record id="action_record_action_returned_for_correction" model="ir.actions.server">
+        <field name="name">Return</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_returned_for_correction()</field>
+        <field name="groups_id" eval="[(4, ref('product_registration.group_pending_internal_approval'))]"/>
+    </record>
+
+    <record id="action_record_action_submit_item_activation" model="ir.actions.server">
+        <field name="name">Submit To Item Activation</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_submit_item_activation()</field>
+        <field name="groups_id" eval="[(4, ref('product_registration.group_submit_item_activation'))]"/>
+    </record>
+
+    <record id="action_record_action_submit_item_activation_without_municipality" model="ir.actions.server">
+        <field name="name">Submit To Item Activation without municipality</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_submit_item_activation_without_municipality()</field>
+        <field name="groups_id"
+               eval="[(4, ref('product_registration.group_submit_item_activation_without_municipality'))]"/>
+    </record>
+
+    <record id="action_record_action_deleted_activation_without_municipality_approval" model="ir.actions.server">
+        <field name="name">Delete (Item Activation without municipality)</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_deleted()</field>
+        <field name="groups_id"
+               eval="[(4, ref('product_registration.group_item_activation_without_municipality_approval'))]"/>
+    </record>
+
+    <record id="action_record_action_deleted_item_activation_approval" model="ir.actions.server">
+        <field name="name">Delete (Item Activation)</field>
+        <field name="model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_model_id" ref="product_registration.model_product_template"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_deleted()</field>
+        <field name="groups_id"
+               eval="[(4, ref('product_registration.group_submit_item_activation_approval'))]"/>
+    </record>
+</odoo>

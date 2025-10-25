@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="gulfco_contact_registration_custom.customer_registration_template" name="Customer Registration">
+        <t t-call="website.layout">
+
+            <div class="container">
+                <div class="text-center mb16 mt32">
+                    <h2>Customer Registration Form</h2>
+                </div>
+                <form action="/submit_customer_registration" method="post" enctype="multipart/form-data"
+                      class="o_mark_required mb32 oe_registration_form" data-mark="*" data-model_name="" data-success-page="">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label>Company Type :</label>
+                            <span class="s_website_form_mark"> *</span>
+                            <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+                                <label class="btn btn-outline-primary  w-50">
+                                    <input type="radio" name="company_type" id="individual" value="person" autocomplete="off" checked="checked"> Individual</input>
+                                </label>
+                                <label class="btn btn-outline-primary w-50">
+                                    <input type="radio" name="company_type" id="company" value="company" autocomplete="off"> Company</input>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <label>Customer Name :</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <input type="text" name="customer_name" class="form-control" required=""/>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Customer Type :</label>
+                            <span class="s_website_form_mark"> *</span>
+                            <select name="customer_type" id="customer_type" class="form-control" required="">
+                                <option value=""></option>
+                                <option value="cash">Cash</option>
+                                <option value="credit">Credit</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Business Type :</label>
+                            <input type="text" name="customer_category" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Tax Registration Number (TRN) :</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <input type="text" name="customer_trn" class="form-control" required=""/>
+                    </div>
+
+                    <!--   personal & channel info   -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="mt-4 mb-2">Personal Info</h4>
+                            <div class="col-md-12">
+                                <label>Nationality :</label>
+                                 <select name="nationality" id="nationality" class="form-control">
+                                    <option value=""></option>
+                                    <t t-foreach="request.env['res.country'].search([])" t-as="country">
+                                        <option t-att-value="country.id"><t t-esc="country.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Emirate ID :</label>
+                                <input type="text" name="emirate_id" class="form-control"/>
+                            </div>
+<!--                            <div class="col-md-12">-->
+<!--                                <label>Emirate :</label>-->
+<!--                                <select name="emirate" id="emirate" class="form-control">-->
+<!--                                    <option value=""></option>-->
+<!--                                    <t t-foreach="request.env['res.country.state'].search([])" t-as="state">-->
+<!--                                        <option t-att-value="state.id"><t t-esc="state.name"/></option>-->
+<!--                                    </t>-->
+<!--                                </select>-->
+<!--                            </div>-->
+                            <div class="col-md-12">
+                                <label>TL issued From Emairates :</label>
+                                <input type="text" name="trade_license_issue" class="form-control"/>
+                            </div>
+                            <div class="col-md-12 customer_trade_license ">
+                                <label>Trade License #:</label>
+                                <span class="s_website_form_mark"> *</span>
+                                <input type="text" name="trade_license" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-12">
+                                <label>TL Expiry Date:</label>
+                                <input type="date" name="tl_expiry_date" class="form-control" />
+                            </div>
+                            <div class="col-md-12">
+                                <label>Establish Data:</label>
+                                <input type="text" name="establish_data" class="form-control" />
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="mt-4 mb-2">Owner Info</h4>
+                            <div class="col-md-12">
+                                <label>Owner Name :</label>
+                                <input type="text" name="owner_name" class="form-control"/>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Owner Share :</label>
+                                <input type="number" name="owner_share" class="form-control"/>
+                            </div>
+                            <div class="col-md-12">
+                                <label>External Reference :</label>
+                                <input type="text" name="ext_reference" class="form-control"/>
+                            </div>
+                        </div>
+<!--                        <div class="col-md-6">-->
+<!--                            <h4 class="mt-4 mb-2">Channel Info</h4>-->
+<!--                            <div class="col-md-12">-->
+<!--                                <label>Channel :</label>-->
+<!--&lt;!&ndash;                                <input type="text" name="emirate" class="form-control"/>&ndash;&gt;-->
+<!--                                <select name="channel" id="channel" class="form-control channel_selection">-->
+<!--                                    <option value=""></option>-->
+<!--                                    <option value="MT">MT</option>-->
+<!--                                    <option value="GT">GT</option>-->
+<!--                                    <option value="HORECA">HORECA</option>-->
+<!--                                    <option value="E-Com">E-Com</option>-->
+<!--                                    <option value="3PL">3PL</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-12">-->
+<!--                                <label>Sub channel 1 :</label>-->
+<!--&lt;!&ndash;                                <input type="text" name="sub_channel1" class="form-control"/>&ndash;&gt;-->
+<!--                                <select name="sub_channel1" id="sub_channel1" class="form-control sub_channel_selection">-->
+<!--                                    <option value=""></option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-12">-->
+<!--&lt;!&ndash;                                <label>Sub channel 2:</label>&ndash;&gt;-->
+<!--                                <label>Outlet Classification :</label>-->
+<!--                                <select name="sub_channel2" id="sub_channel2" class="form-control">-->
+<!--                                    <option value=""></option>-->
+<!--                                </select>-->
+<!--&lt;!&ndash;                                <input type="text" name="sub_channel2" class="form-control"/>&ndash;&gt;-->
+<!--                            </div>-->
+<!--&lt;!&ndash;                            <div class="col-md-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <label>Outlet Classification:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input type="text" name="otl_clss" class="form-control"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--                            <div class="col-md-12">-->
+<!--                                <label>Outlet Sub Classification :</label>-->
+<!--                                <input type="text" name="otl_sub_clss" class="form-control"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                    </div>
+
+
+                    <!--   Outlet & owner info   -->
+                    <!--   owner info   -->
+<!--                    <div class="row">-->
+<!--&lt;!&ndash;                        <div class="col-md-6">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <h4 class="mt-4 mb-2">Owner Info</h4>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="col-md-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <label>Outlet Short Name :</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input type="text" name="otl_name" class="form-control"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="col-md-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <label>Customer Outlet Code :</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input type="text" name="otl_code" class="form-control"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="col-md-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <label>External Reference :</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input type="text" name="ext_reference" class="form-control"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <h4 class="mt-4 mb-2">Owner Info</h4>-->
+<!--                            <div class="col-md-12">-->
+<!--                                <label>Owner Name :</label>-->
+<!--                                <input type="text" name="owner_name" class="form-control"/>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-12">-->
+<!--                                <label>Owner Share :</label>-->
+<!--                                <input type="number" name="owner_share" class="form-control"/>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-12">-->
+<!--                                <label>External Reference :</label>-->
+<!--                                <input type="text" name="ext_reference" class="form-control"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6"/>-->
+<!--                    </div>-->
+
+
+                    <h4 class="mt-4">Company Detail</h4>
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <label>Company Name:</label>-->
+<!--                            <input type="text" name="company_name" class="form-control" required=""/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+                    <div class="col-md-12">
+                        <label>Complete Address :</label>
+                        <span class="s_website_form_mark"> *</span>
+                        <textarea name="complete_address" class="form-control" required=""></textarea>
+                    </div>
+                    <div class="row mt-2">
+                         <div class="col-md-4">
+                             <label>Country :</label>
+                             <span class="s_website_form_mark"> *</span>
+<!--                            <input type="text" name="country_name" class="form-control state_selection" required=""/>-->
+                             <select name="country_id" id="country_id" class="form-control state_selection" required="">
+                                <option value=""></option>
+                                <t t-foreach="request.env['res.country'].search([])" t-as="country">
+                                    <option t-att-value="country.id"><t t-esc="country.name"/></option>
+                                </t>
+                             </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>State/City :</label>
+                            <span class="s_website_form_mark"> *</span>
+                            <select id="state_id" name="state_id" class="form-control">
+                                <option value="">Select a state</option>
+                            </select>
+                            <div class="mt-1 mb-2">
+                                <input type="text" name="city_name" class="form-control" required="" placeholder="Please Add City Name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label>ZIP / Pincode / Area Code :</label>
+                            <input type="text" name="zip_code" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Area/Zone/Community Name :</label>
+                            <span class="s_website_form_mark"> *</span>
+                            <input type="text" name="area_zone_name" class="form-control" required=""/>
+                        </div>
+                        <div class="col-md-4">
+                            <label>P.O.Box :</label>
+                            <input type="number" name="po_box" class="form-control"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Web Site (URL) :</label>
+                            <input type="text" name="website_url" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Telephone # :</label>
+                            <input type="number" name="telephone" class="form-control"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Mobile # :</label>
+                            <input type="number" name="mobile" class="form-control"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Email :</label>
+                            <span class="s_website_form_mark"> *</span>
+                            <input type="email" class="form-control" name="email" required="1"
+                                                        placeholder="e.g. john.smith@example.com"/>
+                        </div>
+                    </div>
+
+                    <h4 class="mt-4">Contact Details</h4>
+                    <table class="table table-borderless o_main_table small">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name <span class="s_website_form_mark"> *</span></th>
+                                <th>Tel</th>
+                                <th>Mobile</th>
+                                <th>Email Id <span class="s_website_form_mark"> *</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="mt-2">
+                                        <b>Contact Person</b>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" name="contact_name" class="form-control" required="1"/>
+                                </td>
+                                <td>
+                                    <input type="number" name="contact_tel" class="form-control"/>
+                                </td>
+                                <td>
+                                    <input type="number" name="contact_mobile" class="form-control"/>
+                                </td>
+                                <td>
+                                    <input type="email" class="form-control" name="contact_email" required="1"
+                                                        placeholder="e.g. john.smith@example.com"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                    <div class="customer_attachment">
+                            <h3 class="mt-4">Attachments</h3>
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <label>Trade License:</label>
+<!--                                    <span class="s_website_form_mark">*</span>-->
+                                    <input type="file" name="trade_license_attachment" class="form-control"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>VAT/TRN Certificates:</label>
+                                    <input type="file" name="vat_certificates" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label>Bank Statement of 6 months</label>
+<!--                                    <span class="s_website_form_mark">*</span>-->
+                                    <input type="file" name="bank_statement_of_six_month" class="form-control"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>CAF:</label>
+<!--                                    <span class="s_website_form_mark">*</span>-->
+                                    <input type="file" name="caf_attachment" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label>Guarantees Copy:</label>
+<!--                                    <span class="s_website_form_mark">*</span>-->
+                                    <input type="file" name="customer_guarantees_copy" class="form-control" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>EID Copy:</label>
+                                    <input type="file" name="customer_eid_copy" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="mt32 text-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+        </t>
+    </template>
+
+</odoo>

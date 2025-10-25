@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="rma_receipt_report_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <t t-set="picking" t-value="o.get_rma_receipt()"/>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>
+                                        Receipt Date:-
+                                        <t t-esc="picking.scheduled_date"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>GRV No / Sales Order Ref :-
+                                        <t t-esc="o.picking_id.origin or ''"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>
+                                        Receipt # :-
+                                        <t t-esc="picking.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>
+                                        Salesman Name:-
+                                        <t t-esc="o.user_id.name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>
+                                        Customer Name:-
+                                        <t t-esc="o.partner_id.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>
+                                        Driver Detail :-
+                                        <t t-esc="picking.picking_driver_id.name or ''"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Warehouse :-
+                                        <t t-esc="picking.location_id.warehouse_id.name or ''"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>
+                                        Approved by :-
+                                        <t t-esc="o.approved_by.name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <br/>
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Item Code</th>
+                                        <th>Description</th>
+                                        <th>Package Qty</th>
+                                        <th>Package</th>
+                                        <th>Unit Qty</th>
+                                        <th>Return Reason</th>
+                                        <th>QC Comments/ Remarks</th>
+                                        <th>Lot / Batch Number</th>
+                                        <th>Expiry Date</th>
+                                        <th>Locator</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="sequance" t-value="1"/>
+                                    <t t-if="o.line_ids">
+                                        <t t-foreach="o.line_ids" t-as="line">
+                                            <t t-set="ctn_package"
+                                               t-value="line.product_id.packaging_ids.filtered(lambda s: s.package_type_id.type == 'ctn')"/>
+                                            <t t-set="move_line" t-value="picking.move_line_ids.filtered(lambda s:s.product_id == line.product_id)"/>
+                                            <tr>
+                                                <td><span><t t-esc="sequance"/></span><t t-set="sequance" t-value="sequance+1"/></td>
+                                                <td>
+                                                    <span t-esc="line.product_id.default_code"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="line.product_id.name"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="ctn_package">
+                                                        <t t-set="ctn_qty" t-value="line.product_uom_qty/ctn_package[0].qty"/>
+                                                        <t t-esc="ctn_qty"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="ctn_package.name or ''"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="line.product_uom_qty"/>
+                                                </td>
+                                                <td>
+                                                   <t t-esc="line.return_reason_id.name"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="o.remarks"/>
+                                                </td>
+                                                <td>
+                                                   <t t-esc="move_line.lot_id.name or move_line.lot_name or '-'"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="move_line.expiration_date"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="move_line.location_id.display_name"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-elif="picking.move_line_ids">
+                                        <t t-foreach="picking.move_line_ids" t-as="line">
+                                             <t t-set="ctn_package"
+                                               t-value="line.product_id.packaging_ids.filtered(lambda s: s.package_type_id.type == 'ctn')"/>
+                                            <t t-set="move_line" t-value="picking.move_line_ids.filtered(lambda s:s.product_id == line.product_id)"/>
+                                            <tr>
+                                                <td><span><t t-esc="sequance"/></span><t t-set="sequance" t-value="sequance+1"/></td>
+                                                <td>
+                                                    <span t-esc="line.product_id.default_code"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="line.product_id.name"/>
+                                                </td>
+                                                <td>
+                                                     <t t-if="ctn_package">
+                                                         <t t-set="ctn_qty" t-value="line.quantity/ctn_package[0].qty"/>
+                                                         <t t-esc="ctn_qty"/>
+                                                     </t>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="ctn_package.name or ''"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="line.quantity"/>
+                                                </td>
+                                                <td>
+                                                   <t t-esc="o.return_reason_id.name"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="o.remarks"/>
+                                                </td>
+                                                <td>
+                                                   <t t-esc="line.lot_id.name or line.lot_name or '-'"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="line.expiration_date"/>
+                                                </td>
+                                                <td>
+                                                    <t t-esc="line.location_id.display_name"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <template id="rma_receipt_report_main_template">
+            <t t-call="plnx_rma_extended.rma_receipt_report_template"/>
+        </template>
+        <record id="action_rma_record_receipt_report" model="ir.actions.report">
+            <field name="name">Print RMA Receipt</field>
+            <field name="model">rma</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">plnx_rma_extended.rma_receipt_report_main_template</field>
+            <field name="report_file">plnx_rma_extended.report_receipt_po</field>
+            <field name="print_report_name">'RMA Receipt Report'</field>
+            <!--            <field name="binding_model_id" ref="plnx_rma_extended.model_rma"/>-->
+            <!--            <field name="binding_type">report</field>-->
+        </record>
+    </data>
+</odoo>

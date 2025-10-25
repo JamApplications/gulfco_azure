@@ -1,0 +1,75 @@
+<odoo>
+    <record id="view_custodian_form" model="ir.ui.view">
+        <field name="name">custodian.form.view</field>
+        <field name="model">custodian</field>
+        <field name="arch" type="xml">
+            <form string="Custodian">
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button class="oe_stat_button" type="object" name="action_custodian_report">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Custodian Report</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="custodian_code" required="1"/>
+                            <field name="employee_code"/>
+                            <field name="responsible_custodian" required="0"
+                                   domain="['|',('contact_type','=','worker'),('employee_ids', '!=', False)]"/>
+                            <field name="custodian_branch_id"/>
+                            <field name="custodian_user_job_id"/>
+                            <field name="journal_ids" widget="many2many_tags" required="1"/>
+                            <field name="restriction_custodian_ids" widget="many2many_tags"/>
+                            <field name="inbound_payment_method_line_ids" widget="many2many_tags" domain="[('journal_id','in',journal_ids),('payment_type','=','inbound')]" required="journal_ids"/>
+                        </group>
+                    </group>
+                    <!--                    <notebook>-->
+                    <!--                        <page string="Lines">-->
+                    <!--                            <field name="line_ids">-->
+                    <!--                                <list editable="bottom">-->
+                    <!--                                    <field name="journal_id" required="1"/>-->
+                    <!--                                    <field name="responsible_custodian" domain="['|',('contact_type','=','worker'),('employee_ids', '!=', False)]" required="1"/>-->
+                    <!--                                </list>-->
+                    <!--                            </field>-->
+                    <!--                        </page>-->
+                    <!--                    </notebook>-->
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_custodian_tree" model="ir.ui.view">
+        <field name="name">custodian.tree.view</field>
+        <field name="model">custodian</field>
+        <field name="arch" type="xml">
+            <list string="Custodian">
+                <field name="name"/>
+                <field name="custodian_code"/>
+                <field name="employee_code"/>
+                <field name="responsible_custodian" required="0"
+                       domain="['|',('contact_type','=','worker'),('employee_ids', '!=', False)]"/>
+                <field name="custodian_branch_id"/>
+                <field name="custodian_user_job_id"/>
+                <field name="journal_ids" widget="many2many_tags" required="1"/>
+                <field name="restriction_custodian_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_custodian" model="ir.actions.act_window">
+        <field name="name">Custodian</field>
+        <field name="res_model">custodian</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a custodian record here.
+            </p>
+        </field>
+    </record>
+    <menuitem id="menu_custodian" name="Custodian" parent="account.menu_finance_configuration"
+              action="action_custodian"/>
+</odoo>

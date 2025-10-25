@@ -1,0 +1,248 @@
+<odoo>
+    <template id="report_customer_statement_pdf">
+        <t t-call="web.basic_layout">
+            <style>
+                .page-break {
+                page-break-before: always;
+                break-before: always;
+                }
+
+                /* Optionally reset first page */
+                .page-break:first-child {
+                page-break-before: auto;
+                break-before: auto;
+                }
+            </style>
+            <t t-foreach="soa_report_data" t-as="partner">
+                <div class="page-break">
+                    <!--                <div class="page">-->
+                    <div class="oe_structure"/>
+                    <table class="table" style="width:100% !important;">
+                        <tbody>
+                            <tr>
+                                <td style="width:15% !important;">
+                                    <b>Customer Name:-</b>
+                                </td>
+                                <td style="width:15% !important;">
+                                    <t t-esc="partner.get('name')"/>
+                                </td>
+                                <td style="width:40% !important;">&#160;</td>
+                                <td style="width:15% !important;">
+                                    <b>Running Date:</b>
+                                </td>
+                                <td style="width:15% !important;">
+                                    <t t-esc="partner.get('running_date')"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:15% !important;">
+                                    <b>Arabic Customer Name:-</b>
+                                </td>
+                                <td style="width:15% !important;">
+                                    <t t-esc="partner.get('arabic_name')"/>
+                                </td>
+                                <td style="width:40% !important;">&#160;</td>
+                                <td style="width:15% !important;">
+                                    <b>As of Date:</b>
+                                </td>
+                                <td style="width:15% !important;">
+                                    <t t-esc="partner.get('as_of_date')"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:15% !important;">
+                                    <b>Account No:-</b>
+                                </td>
+                                <td style="width:15% !important;">
+                                    <t t-esc="partner.get('customer_code')"/>
+                                </td>
+                                <td style="width:40% !important;">&#160;</td>
+                                <td style="width:15% !important;"/>
+                                <td style="width:15% !important;"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table class="table" style="width:100% !important;">
+                        <tbody>
+                            <tr>
+                                <td style="width:10% !important;">Tel:</td>
+                                <td style="width:5% !important;"/>
+                                <td style="width:10% !important;">
+                                    <t t-esc="partner.get('phone')"/>
+                                </td>
+                                <td style="width:10% !important;">Fax Area:</td>
+                                <td style="width:5% !important;"/>
+                                <td style="width:10% !important;">
+                                    <t t-esc="partner.get('area')"/>
+                                </td>
+                                <td style="width:50% !important;"/>
+                            </tr>
+                            <tr>
+                                <td style="width:10% !important;">P.O Box:</td>
+                                <td style="width:5% !important;"/>
+                                <td style="width:10% !important;">
+                                    <t t-esc="partner.get('po_box')"/>
+                                </td>
+                                <td style="width:10% !important;"/>
+                                <td style="width:5% !important;"/>
+                                <td style="width:10% !important;"/>
+                                <td style="width:50% !important;"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table t-if="len(partner.get('lines')) > 0"
+                           style="width: 100%;border-collapse: separate;border-spacing: 0; font-size: 12px;">
+                        <thead style="background-color: white;">
+                            <tr rowspan="2">
+                                <td style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;">
+                                    Trx Number
+                                </td>
+                                <td style="border-top:1px solid black;border-bottom:1px solid black;">Trx Date</td>
+                                <td style="border-top:1px solid black;border-bottom:1px solid black;">Due Date</td>
+                                <td style="border-top:1px solid black;border-bottom:1px solid black;">Ref</td>
+                                <td style="border-top:1px solid black;border-bottom:1px solid black;">Debit Amount</td>
+                                <td style="border-top:1px solid black;border-bottom:1px solid black;">Credit Amount</td>
+                                <td style="border-top:1px solid black;border-bottom:1px solid black;">Balance</td>
+                                <td style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;">
+                                    Uncovered Balance
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="counter" t-value="1"></t>
+                            <t t-foreach="partner.get('lines')" t-as="line">
+                                <tr>
+                                    <t t-if="len(partner.get('lines')) == counter">
+                                        <td style="border-left:1px solid black;border-bottom:1px solid black;">
+                                            <t t-esc="line.get('trx_number')"/>
+                                        </td>
+                                        <td style="border-bottom:1px solid black;">
+                                            <t t-if="line.get('trx_date')">
+                                                <t t-esc="line.get('trx_date').strftime('%Y-%m-%d')"/>
+                                            </t>
+                                        </td>
+                                        <td style="border-bottom:1px solid black;">
+                                            <t t-esc="line.get('due_date')"/>
+                                        </td>
+                                        <td style="border-bottom:1px solid black;">
+                                            <t t-esc="line.get('ref')"/>
+                                        </td>
+                                        <td style="border-bottom:1px solid black;">
+                                            <t t-esc="line.get('debit')"/>
+                                        </td>
+                                        <td style="border-bottom:1px solid black;">
+                                            <t t-esc="line.get('credit')"/>
+                                        </td>
+                                        <td style="border-bottom:1px solid black;">
+                                            <t t-esc="line.get('balance')"/>
+                                        </td>
+                                        <td style="border-right:1px solid black;border-bottom:1px solid black;">
+                                            <t t-esc="line.get('uncovered_balance')"/>
+                                        </td>
+                                    </t>
+                                    <t t-else="">
+                                        <td style="border-left:1px solid black;">
+                                            <t t-esc="line.get('trx_number')"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-esc="line.get('trx_date')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('due_date')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('ref')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('debit')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('credit')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('balance')"/>
+                                        </td>
+                                        <td style="border-right:1px solid black;">
+                                            <t t-esc="line.get('uncovered_balance')"/>
+                                        </td>
+                                    </t>
+
+                                    <t t-set="counter" t-value="counter + 1"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <table style="width: 100%; font-size: 12px; text-align: center; border-collapse: collapse; margin-top: 10px; margin-bottom: 10px;">
+                        <!-- Row 1: Summary Row -->
+                        <tr style="border-bottom: 1px solid black;">
+                            <td colspan="2">
+                                <strong>Outstanding :- <t t-esc="partner.get('outstanding')"/> </strong>
+                            </td>
+                            <td>
+                                <strong>A PDCs :- <t t-esc="partner.get('applied_pdc_amount')"/></strong>
+                            </td>
+                            <td>
+                                <strong>U PDCs :- <t t-esc="partner.get('unapplied_pdc_amount')"/></strong>
+                            </td>
+                            <td>
+                                <strong>Total PDCs :- <t t-esc="partner.get('total_pdc_amount')"/></strong>
+                            </td>
+                            <td colspan="2">
+                                <strong>Uncovered :- <t t-esc="partner.get('total_uncovered_balance')"/></strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7"><span style="text-align:center;">Aging of Out standing Balance</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Current </strong>
+                                <br/>
+                                <t t-if="partner.get('aging_data')">
+                                    <t t-esc="partner.get('aging_data').get('current')"/>
+                                </t>
+                            </td>
+                            <td>
+                                <strong>&lt;30 Days</strong>
+                                <br/>
+                                <t t-if="partner.get('aging_data')">
+                                    <t t-esc="partner.get('aging_data').get('less_30')"/>
+                                </t>
+                            </td>
+                            <td>
+                                <strong>31-60 Days</strong>
+                                <br/>
+                                <t t-if="partner.get('aging_data')">
+                                    <t t-esc="partner.get('aging_data').get('30_60')"/>
+                                </t>
+                            </td>
+                            <td>
+                                <strong>61-90 Days</strong>
+                                <br/>
+                                <t t-if="partner.get('aging_data')">
+                                    <t t-esc="partner.get('aging_data').get('61_90')"/>
+                                </t>
+                            </td>
+                            <td>
+                                <strong>91-120 Days</strong>
+                                <br/>
+                                <t t-if="partner.get('aging_data')">
+                                    <t t-esc="partner.get('aging_data').get('91_120')"/>
+                                </t>
+                            </td>
+                            <td>
+                                <strong>&gt;120 Days</strong>
+                                <br/>
+                                <t t-if="partner.get('aging_data')">
+                                    <t t-esc="partner.get('aging_data').get('120_more')"/>
+                                </t>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

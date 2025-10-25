@@ -1,0 +1,17 @@
+<odoo noupdate="1">
+
+    <record id="account_deposit_cdc_multi_company_rule" model="ir.rule">
+        <field name="name">Deposit CDC Multi Company Rule</field>
+        <field name="model_id" ref="account_cdc.model_account_deposit_cdc"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="1"/>
+    </record>
+
+    <record id="account_hand_over_cdc_multi_company_rule" model="ir.rule">
+        <field name="name">Hand Over CDC Multi Company Rule</field>
+        <field name="model_id" ref="account_cdc.model_account_hand_over_cdc"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="1"/>
+    </record>
+
+</odoo>

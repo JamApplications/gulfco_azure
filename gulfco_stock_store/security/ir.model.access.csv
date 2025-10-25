@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_merchandise_stock_store,access_merchandise_stock_store,model_merchandise_stock_store,plnx_sales_team.group_sales_team_merchandiser,1,1,1,1
+access_merchandise_stock_store_lines,access_merchandise_stock_store_lines,model_merchandise_stock_store_lines,plnx_sales_team.group_sales_team_merchandiser,1,1,1,1

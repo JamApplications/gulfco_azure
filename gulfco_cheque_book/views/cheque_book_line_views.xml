@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List view for Cheque Book Line -->
+    <record id="view_cheque_book_line_tree" model="ir.ui.view">
+        <field name="name">cheque.book.line.tree</field>
+        <field name="model">cheque.book.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="cheque_number"/>
+                <field name="cheque_book_id"/>
+                <field name="bank_id"/>
+                <field name="journal_id"/>
+                <field name="issue_date"/>
+                <field name="due_date"/>
+                <field name="partner_id"/>
+                <field name="amount"/>
+                <field name="state"/>
+                <field name="payment_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for Cheque Book Line -->
+    <record id="view_cheque_book_line_form" model="ir.ui.view">
+        <field name="name">cheque.book.line.form</field>
+        <field name="model">cheque.book.line</field>
+        <field name="arch" type="xml">
+            <form string="Cheque Book Line">
+                <header>
+                    <button name="button_validate" type="object" string="Validate" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_set_issued" type="object" string="Set Issued" class="oe_highlight" invisible="state != 'available'"/>
+                    <button name="action_set_cleared" type="object" string="Set Cleared" class="oe_highlight" invisible="state != 'issued'"/>
+                    <button name="action_set_bounced" type="object" string="Bounce" class="oe_highlight" invisible="state not in ['issued', 'cleared']"/>
+                    <button name="action_set_cancelled" type="object" string="Cancel" class="btn-secondary" invisible="state not in ('available','issued')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,available,issued" invisible="state not in ['draft', 'available'] "/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" text="Bounced" bg_color="text-bg-secondary" invisible="state != 'bounced'" tooltip="This cheque has been returned unpaid and is no longer valid."/>
+                    <widget name="web_ribbon" text="Issued" bg_color="text-bg-primary" invisible="state != 'issued'" tooltip="This cheque has been issued and is awaiting clearance."/>
+                    <widget name="web_ribbon" text="Cleared" bg_color="text-bg-success" invisible="state != 'cleared'" tooltip="This cheque has been successfully cleared and amount has been debited from the account."/>
+                    <widget name="web_ribbon" text="Cancelled" bg_color="text-bg-danger" invisible="state != 'cancelled'" tooltip="This cheque has been cancelled and will not be processed."/>
+                    <div class="oe_title">
+                        <h1>
+                            <field options="{'line_breaks': False}" widget="text" class="text-break" name="cheque_number" readonly="0" default_focus="1" placeholder="Cheque Book Name"/>
+                        </h1>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_related_payment" type="object" class="oe_stat_button" icon="fa-money" string="Payment" invisible="not payment_id"/>
+                        <button name="action_open_related_journal_entries" type="object" class="oe_stat_button" icon="fa-book" string="Journal Entries" invisible="not payment_id or state in ['draft', 'available']"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="state not in ['draft', 'available']"/>
+                            <field name="cheque_book_id" readonly="state not in ['draft', 'available']"/>
+                            <field name="bank_id" readonly="state not in ['draft', 'available']"/>
+                            <field name="journal_id" readonly="state not in ['draft', 'available']"/>
+                            <field name="notes" readonly="state not in ['draft', 'available']"/>
+                        </group>
+                        <group>
+                            <field name="amount" readonly="state not in ['draft', 'available']"/>
+                            <field name="issue_date" readonly="state not in ['draft', 'available']"/>
+                            <field name="due_date" readonly="state not in ['draft', 'available']"/>
+                            <field name="payment_id" readonly="state not in ['draft', 'available']"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view for Cheque Book Line -->
+    <record id="view_cheque_book_line_search" model="ir.ui.view">
+        <field name="name">cheque.book.line.search</field>
+        <field name="model">cheque.book.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Cheque Book Lines">
+                <field name="cheque_number"/>
+                <field name="partner_id"/>
+                <field name="journal_id"/>
+                <field name="bank_id"/>
+                <field name="cheque_book_id"/>
+                <field name="state"/>
+
+                <separator/>
+
+                <!-- Group By Options -->
+                <filter name="group_by_partner" string="Partner" context="{'group_by': 'partner_id'}"/>
+                <filter name="group_by_journal" string="Journal" context="{'group_by': 'journal_id'}"/>
+                <filter name="group_by_bank" string="Bank" context="{'group_by': 'bank_id'}"/>
+                <filter name="group_by_cheque_book" string="Cheque Book" context="{'group_by': 'cheque_book_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Cheque Book Line -->
+    <record id="action_cheque_book_line" model="ir.actions.act_window">
+        <field name="name">Cheque Book Lines</field>
+        <field name="res_model">cheque.book.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <!-- Menu for Cheque Book Line -->
+    <menuitem id="menu_cheque_book_line" name="Cheque Book Lines" parent="menu_cheque_book_root" action="action_cheque_book_line"/>
+</odoo>

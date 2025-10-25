@@ -1,0 +1,19 @@
+<odoo noupdate="1">
+
+    <record id="seq_account_deposit_cdc" model="ir.sequence">
+        <field name="name">Account Deposit CDC</field>
+        <field name="code">account.deposit.cdc</field>
+        <field name="prefix">CDC</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_account_hand_over_cdc" model="ir.sequence">
+        <field name="name">Account Hand Over CDC</field>
+        <field name="code">account.hand.over.cdc</field>
+        <field name="prefix">CDC/TRANSFER/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="product_aging_report_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Product Aging Report</h2>
+                        <p>
+                            <strong>Date:</strong>
+                            <span t-field="o.date"/>
+                        </p>
+                        <table class="table table-sm table-bordered" style="width: 100%; font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Item Code</th>
+                                    <th>Item Description</th>
+                                    <th>UOM</th>
+                                    <th>Item Type</th>
+                                    <th>Inventory Category</th>
+                                    <th>Qty OH</th>
+                                    <th>Cost</th>
+                                    <th>Item Amount</th>
+                                    <th>&lt;=3</th>
+                                    <th>&lt;=6</th>
+                                    <th>&lt;=12</th>
+                                    <th>&lt;=18</th>
+                                    <th>&lt;=24</th>
+                                    <th>&lt;=30</th>
+                                    <th>&lt;=36</th>
+                                    <th>&gt;36</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="data" t-value="o.get_product_aging_report_data()"/>
+                                <t t-foreach="data" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="line.get('brand_name')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('default_code')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('item_name')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('uom')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('item_type')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('category')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('on_hand_qty')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('cost')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('item_amount')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('0_3') or '0.0'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('4_6') or '0.0'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('10_12') or '0.0'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('13_18') or '0.0'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('19_24') or '0.0'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('25_30') or '0.0'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('31_36') or '0.0'"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('over_36') or '0.0'"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    <record id="gulfco_product_aging_paperformat" model="report.paperformat">
+        <field name="name">Product Aging Paper format</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">52</field>
+        <field name="margin_bottom">32</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">52</field>
+        <field name="dpi">90</field>
+        <field name="css_margins" eval="True"/>
+    </record>
+    <record id="action_product_aging_report" model="ir.actions.report">
+        <field name="name">Product Aging Report</field>
+        <field name="model">product.aging.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gulfco_product_customized_data.product_aging_report_pdf</field>
+        <field name="report_file">gulfco_product_customized_data.product_aging_report_pdf</field>
+        <field name="print_report_name">'Product Aging Report'</field>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="gulfco_product_customized_data.gulfco_product_aging_paperformat"/>
+    </record>
+</odoo>

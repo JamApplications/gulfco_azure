@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="custom_external_layout_standard_receipt">
+            <div t-attf-class="row col-12 header o_company_#{company.id}_layout" style="padding-top:-20mm;">
+            </div>
+            <div t-attf-class="article o_report_layout_standard o_table_standard o_company_#{company.id}_layout o_snail_mail {{'o_report_layout_background' if company.layout_background != 'Blank' else ''}}"
+             t-attf-style="{{ 'background-image: url(%s);' % layout_background_url if layout_background_url else '' }}"
+             t-att-data-oe-model="o and o._name"
+             t-att-data-oe-id="o and o.id"
+             t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <h2 t-out="layout_document_title"/>
+            <t t-out="0"/>
+        </div>
+
+        <!-- <div t-attf-class="footer o_company_#{company.id}_layout {{report_type != 'pdf' and 'mt-auto'}}">
+            <div class="o_footer_content d-flex border-top pt-2">
+                <div class="flex-grow-1 text-start me-2" t-field="company.report_footer"/>
+                <div class="text-end text-muted">
+                    <div t-if="report_type == 'pdf' and display_name_in_footer" t-out="o.name">(document name)</div>
+                    <div t-if="report_type == 'pdf'" class="text-nowrap">Page
+                        <span class="page"/>
+                        /
+                        <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </template>
+
+
+    <template id="custom_external_layout_receipt">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+
+        <t t-call="stock_outbouding_operation.custom_external_layout_standard_receipt">
+            <t t-out="0"/>
+        </t>
+
+    </template>
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="domain" eval="[('move_type','in',['out_invoice','in_invoice']),('is_invoice_journal','=',True)]"/>
+    </record>
+    <record id="account.account_invoices_without_payment" model="ir.actions.report">
+        <field name="domain" eval="[('move_type','in',['out_invoice','in_invoice']),('is_invoice_journal','=',True)]"/>
+    </record>
+    <record id="account_invoices_without_payment" model="ir.actions.report">
+        <field name="name">Tax Credit Note</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">stock_outbouding_operation.report_invoice_button</field>
+        <field name="report_file">stock_outbouding_operation.report_invoice_button</field>
+        <field name="print_report_name">(object._get_report_base_filename())</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="domain" eval="[('move_type','in',['in_refund','out_refund'])]"/>
+    </record>
+    <template id="report_invoice_button">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang" t-value="o.partner_id.lang"/>
+                <t t-call="stock_outbouding_operation.report_invoice_document_custom_button" t-lang="lang"/>
+            </t>
+        </t>
+    </template>
+    <template id="report_invoice_document_custom_button">
+        <t t-call="stock_outbouding_operation.custom_external_layout_receipt">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <div class="page">
+                <div class="text-center">
+                    <h3>إشعار الدائن<br/>Tax Credit Note
+                    </h3>
+                </div>
+                <style>
+                    .custom-bill-table {
+                    width: 100%;
+                    border: 1px solid black;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    margin-top: 20px;
+                    }
+
+                    .custom-bill-table td {
+                    border: none;
+                    padding: 4px 8px;
+                    font-size: 12px;
+                    }
+
+                    .custom-bill-table td:nth-child(1) {
+                    width: 32%;
+                    }
+
+                    .custom-bill-table td:nth-child(2) {
+                    width: 40%;
+                    }
+
+                    .custom-bill-table td:nth-child(3) {
+                    width: 28%;
+                    direction: rtl
+                    }
+
+                </style>
+
+                <div style="width:100% !important; display: flex; justify-content: space-between;" class="row">
+                    <div style="width:49% !important;">
+                        <table class="custom-bill-table" style="padding: 0 5px !important;">
+
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>Bill To Customer No:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.partner_id.customer_code"/>
+                                    </td>
+                                    <td>
+                                        <strong>رقم العميل</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Name:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.partner_id.name"/>
+                                    </td>
+                                    <td>
+                                        <strong>اسم العميل</strong>
+                                    </td>
+                                </tr>
+<!--                                <tr>-->
+<!--                                    <td>-->
+<!--                                        <strong>Branch:</strong>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="o.partner_id.outlet_short_name"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <strong>الفرع</strong>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+                                <tr>
+                                    <td>
+                                        <strong>Address:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.partner_id.contact_address"/>
+                                    </td>
+                                    <td>
+                                        <strong>العنوان</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>TRN:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.partner_id.vat_trn"/>
+                                    </td>
+                                    <td>
+                                        <strong>الرقم الضريبي</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="custom-bill-table" style="padding: 0 5px !important;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>Ship To Customer No:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.partner_shipping_id.customer_code"/>
+                                    </td>
+                                    <td>
+                                        <strong>رقم العميل</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Name:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="(o.partner_shipping_id.street or '') + (o.partner_shipping_id.street2 or '')"/>
+                                        <t t-if="o.partner_shipping_id and o.partner_shipping_id.state_id"
+                                           t-esc="o.partner_shipping_id.state_id.name"/>
+                                    </td>
+                                    <td>
+                                        <strong>اسم العميل</strong>
+                                    </td>
+                                </tr>
+<!--                                <tr>-->
+<!--                                    <td>-->
+<!--                                        <strong>Branch:</strong>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <t t-esc="o.partner_shipping_id.outlet_short_name or ''"/>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <strong>الفرع</strong>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+                                <tr>
+                                    <td>
+                                        <strong>Address:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.partner_shipping_id.contact_address"/>
+                                    </td>
+                                    <td>
+                                        <strong>العنوان</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>TRN:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.partner_shipping_id.vat_trn"/>
+                                    </td>
+                                    <td>
+                                        <strong>الرقم الضريبي</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="width:49% !important; margin-left: 2%;">
+                        <table class="custom-bill-table" style="padding: 0 5px !important;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <strong>Tax Credit Note No:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.name"/>
+                                    </td>
+                                    <td>
+                                        <strong>رقم إشعار الدائن</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Tax Credit Note Date:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.invoice_date.strftime('%d-%m-%Y') or ''"/>
+                                    </td>
+                                    <td>
+                                        <strong>تاريخ الفاتورة</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Tax Credit Note Ref:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.ref"/>
+                                    </td>
+                                    <td>
+                                        <strong>مرجع إشعار الدائن</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>L.P.O No:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.po_number"/>
+                                    </td>
+                                    <td>
+                                        <strong>رقم طلب الشراء</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Salesman:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.user_id.name"/>
+                                    </td>
+                                    <td>
+                                        <strong>البائع</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Div:</strong>
+                                    </td>
+                                    <td><t t-esc="o.company_id.name"/> </td>
+                                    <td>
+                                        <strong>القسم</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Branch:</strong>
+                                    </td>
+                                    <td><t t-esc="o.branch"/> </td>
+                                    <td>
+                                        <strong>الفرع</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Outlet:</strong>
+                                    </td>
+                                    <td><t t-esc="o.partner_id.outlet_short_name"/> </td>
+                                    <td>
+                                        <strong>المحل</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>TRN No:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.company_id.vat"/>
+                                    </td>
+                                    <td>
+                                        <strong>الرقم الضريبي</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Address:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.company_id.partner_id.contact_address"/>
+                                    </td>
+                                    <td>
+                                        <strong>العنوان</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Currency Code:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.currency_id.name"/>
+                                    </td>
+                                    <td>
+                                        <strong>رمز العملة</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Exchange Rate to AED:</strong>
+                                    </td>
+                                    <td>
+                                        <t t-esc="o.invoice_currency_rate"/>
+                                    </td>
+                                    <td>
+                                        <strong>سعر الصرف لـ د.إ</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-2" style="width:100%">
+                    <table class="table table-bordered" style="padding: 0 5px !important;">
+                        <tr>
+                            <td style="line-height:10px;">
+                                <center>Additional Details</center>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <center><t t-esc="o.remark_invoice"/> </center>
+                            </td>
+                        </tr>
+                </table>
+                </div>
+                <table class="table table-sm mt8">
+                    <thead>
+                        <tr>
+                            <th>Item Code
+                                <br/>
+                                <span>رمز الصنف</span>
+                            </th>
+                            <th>Description
+                                <br/>
+                                <span>التفاصيل</span>
+                            </th>
+                            <th>Qty
+                                <br/>
+                                <span>الكمية</span>
+                            </th>
+                            <th>Price
+                                <br/>
+                                <span>سعر</span>
+                            </th>
+                            <th>Taxable Amount
+                                <br/>
+                                <span>إجمالي المبلغ الخاضع للضريبة</span>
+                            </th>
+                            <th>VAT%
+                                <br/>
+                                <span>النسبة المئوية للضريبة</span>
+                            </th>
+                            <th>VAT Amount
+                                <br/>
+                                <span>إجمالي مبلغ الضريبة</span>
+                            </th>
+                            <th>Total Price
+                                <br/>
+                                <span>إجمالي السعر</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="o.invoice_line_ids" t-as="line">
+                            <tr>
+                                <td>
+                                    <t t-esc="line.product_id.default_code"/>
+                                </td>
+                                <td>
+                                    <t t-esc="line.name"/>
+                                </td>
+                                <td>
+                                    <t t-esc="line.quantity"/>
+                                </td>
+                                <td>
+                                    <t t-esc="round(line.price_unit, 2)"/>
+                                </td>
+                                <td>
+                                    <t t-esc="line.price_subtotal"/>
+                                </td>
+                                <td>
+                                    <t t-esc="'%.2f' % (line.tax_ids[0].amount if line.tax_ids else 0)"/>
+                                </td>
+                                <td>
+                                    <t t-esc="'%.2f' % (line.price_total - line.price_subtotal)"/>
+                                </td>
+                                <td>
+                                    <t t-esc="line.price_total"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <table class="table table-borderless mt16">
+                    <tbody>
+                        <tr>
+                            <td class="col-3"></td>
+                            <td class="col-9">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <strong>Total Quantity:</strong>
+                                            </td>
+                                            <td>
+                                                <t t-esc="sum(line.quantity for line in o.invoice_line_ids)"/>
+                                            </td>
+                                            <td style="direction: rtl; text-align: right;">
+                                                <strong>إجمالي الكمية</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Total Taxable Value (AED):</strong>
+                                            </td>
+                                            <td>
+                                                <t t-esc="o.amount_untaxed"/>
+                                            </td>
+                                            <td style="direction: rtl; text-align: right;">
+                                                <strong>إجمالي القيمة الخاضعة للضريبة</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Total VAT (AED):</strong>
+                                            </td>
+                                            <td>
+                                                <t t-esc="round(o.amount_tax,2)"/>
+                                            </td>
+                                            <td style="direction: rtl; text-align: right;"><strong>مجموع الضريبة</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Total Inclusive of VAT (AED):</strong>
+                                            </td>
+                                            <td>
+                                                <t t-esc="round(o.amount_total, 2)"/>
+                                            </td>
+                                            <td style="direction: rtl; text-align: right;"><strong>المجموع شامل الضريبة</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table style="width:100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="border: 1px solid black; padding: 5px;">
+                            <strong>/Total Value Inclusive of VAT:AED المجموع</strong>
+                        </td>
+                        <td style="border: 1px solid black; padding: 5px;">
+                            <span t-field="o.amount_total" t-options='{"widget": "float", "precision": 2}'/>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+                <div class="row mt16">
+                    <div class="col-6 text-left">
+                        <strong>Signature Of Customer / Authorized Person:</strong>
+                        <br/>
+                        <strong>توقيع العميل / الشخص المخول</strong>
+                        <br/>
+                    </div>
+                    <div class="col-6 text-right">
+                        <strong>Signature Of Issuer / Authorized Person:</strong>
+                        <br/>
+                        <strong>التوقيع / الشخص المخول</strong>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="email_template_credit_hold_due_to_overdue" model="mail.template">
+            <field name="name">Credit Hold - Overdue Invoice</field>
+            <field name="email_from">{{ user.email_formatted or '' }}</field>
+            <field name="subject">{{ object.name }} Placed on Credit Hold</field>
+            <field name="email_to">{{ object.email or '' }}</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear Team,</p>
+                    <p>The customer
+                        <strong>
+                            <t t-out="object.name or ''"/>
+                        </strong>
+                        has overdue invoices older than 30 days.
+                    </p>
+                    <p>The customer has been placed on Credit Hold automatically.</p>
+                    <p>Please review the pending collections and release hold if appropriate.</p>
+
+                </div>
+            </field>
+        </record>
+
+        <record id="email_template_credit_hold_due_to_tl" model="mail.template">
+            <field name="name">Credit Hold - Expired TL</field>
+            <field name="email_from">{{ user.email_formatted or '' }}</field>
+            <field name="subject">Customer {{ object.name }} Placed on Credit Hold</field>
+            <field name="email_to">{{ object.email or '' }}</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear Team,</p>
+                    <p>The customer
+                        <strong>
+                            <t t-out="object.name or ''"/>
+                        </strong>
+                        has an expired Trade License (Expiry Date:<t t-out="object.tl_expiry_date or ''"/>)
+                    </p>
+                    <p>The customer has been put on <strong>Credit Hold</strong> automatically.
+                    </p>
+                    <p>Please take necessary action to lift the hold once valid documents are submitted.</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

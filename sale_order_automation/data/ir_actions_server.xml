@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Server Action for Sale Order Automation -->
+        <record id="action_server_automate_sale_workflow" model="ir.actions.server">
+            <field name="name">Automate Sale Workflow</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">
+for record in records:
+    record.action_automate_sale_workflow()
+            </field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+    </data>
+</odoo>

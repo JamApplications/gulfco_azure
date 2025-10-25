@@ -1,0 +1,114 @@
+<odoo>
+    <template id="portal_rma_create_page" name="My RMA">
+        <t t-call="portal.portal_layout">
+            <form>
+                <div id="card_header">
+                    <h5 class="mb-0">
+                        <span>
+                            RMA Request
+                        </span>
+                    </h5>
+                </div>
+
+                <div id="card_body">
+                    <div class="m-4" id="origin">
+                        <u>
+                            <h6>
+                                Original Delivery
+                            </h6>
+                        </u>
+                        <div class="row">
+                            <select type="char"
+                                    class="form-control"
+                                    id="origin_picking"
+                                    name="origin_picking"
+                                    data-fetch-url="/my/rma/picking_lines"
+                                    required="1">
+                                <option disabled="disabled" selected="selected" value="">Select Original Delivery
+                                </option>
+                                <t t-foreach="partner_pickings or []" t-as="picking">
+                                    <option t-att-value="picking.id">
+                                        <t t-esc="picking.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="m-4" id="products">
+                        <u>
+                            <h6>
+                                Products
+                            </h6>
+                        </u>
+                        <div class="row">
+                            <select type="char"
+                                    class="form-control col-md"
+                                    id="origin_move"
+                                    name="origin_move"
+                                    data-fetch-url="/my/rma/moves"
+                                    required="1">
+                                <option disabled="disabled" selected="selected" value="">Select Product</option>
+                                <t t-foreach="lines or []" t-as="line" class="col-12">
+                                    <option t-att-value="line['id']" class="col-8">
+                                        <t t-esc="line['product_id']['display_name']"/>
+                                    </option>
+                                </t>
+                            </select>
+                            <input type="text" name="quantity" id="quantity" class="col-2" required="1"
+                                   placeholder="Quantity"/>
+                        </div>
+                    </div>
+
+                    <div class="m-4" id="request">
+                        <u>
+                            <h6>
+                                Request Type
+                            </h6>
+                        </u>
+                        <div class="row">
+
+                            <select type="char"
+                                    class="form-control col-md"
+                                    id="request_type" name="request_type"
+                                    required="1">
+                                <option disabled="disabled" selected="selected" value=""></option>
+                                <t t-foreach="operation_types or []" t-as="operation" class="col-12">
+                                    <option t-att-value="operation['id']" class="col-8">
+                                        <t t-esc="operation['display_name']"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="m-4" id="customer">
+                        <u>
+                            <h6>
+                                Customer
+                            </h6>
+                        </u>
+                        <div class="row">
+                            <input type="text" name="customer" class="form-control" disabled="disabled" t-att-value="request.env.user.name"/>
+                        </div>
+                    </div>
+
+                    <div class="m-4" id="description">
+                        <u>
+                            <h6>
+                                Description
+                            </h6>
+                        </u>
+                        <div class="row">
+                            <input type="text" name="description" class="form-control" required="1"/>
+                        </div>
+                    </div>
+                </div>
+                <div id="card_footer" class="m-4">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </t>
+    </template>
+
+</odoo>

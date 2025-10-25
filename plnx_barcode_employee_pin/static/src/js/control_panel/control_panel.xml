@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ActivityControlPanelExtended" t-inherit="web.ControlPanel" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_cp_pager')]" position="before">
+<!--            <span t-esc="state.emp_id"/>-->
+<!--            <span t-esc="this"/>-->
+<!--            <span>hi</span>-->
+<!--            <span t-esc="this.actionService.currentController.action.xml_id "/>-->
+<!--            <span t-esc="this.actionService.currentController.action.id"/>-->
+<!--            <span t-esc="this.actionService.currentController.displayName"/>-->
+<!--            <span>ppppp</span>-->
+<!--            <span t-esc="state.isBarcodeOps"/>-->
+
+
+            <t t-if="state.isBarcodeOps and this.actionService and this.actionService.currentController and this.actionService.currentController.action and this.actionService.currentController.action.xml_id == 'stock_barcode.stock_picking_type_action_kanban'">
+<!--            <t t-if="state.isBarcodeOps">-->
+                <Dropdown position="'bottom-end'" state="dropdown">
+                    <div style="margin-top: 5px; cursor: pointer;">
+                        <i class="fa fa-lg fa-clock-o" role="img" aria-label="Activities"></i>
+<!--                        <span class="o-mail-ActivityMenu-counter badge rounded-pill bg-primary">-->
+                            <!-- Optional counter -->
+                              <span class="o-mail-ActivityMenu-counter position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <t t-esc="state.pickings.length"/>
+                            </span>
+<!--                        </span>-->
+                    </div>
+                    <t t-set-slot="content">
+                        <div class="o-mail-ActivityMenu p-2">
+                            <t t-if="state.pickings.length === 0">
+                                <div class="text-muted text-center">No pickings assigned to you.</div>
+                            </t>
+                            <t t-foreach="state.pickings" t-as="picking" t-key="picking.id">
+                                <div class="list-group-item p-2 o-clickable"
+                                     style="cursor: pointer;"
+                                     t-on-click="() => this.get_pik_operation([picking])">
+                                    <strong><t t-esc="picking.name" />
+<!--                                        <t t-if="picking.picking_type_name">-->
+<!--                                            [<t t-esc="picking.picking_type_name" />]-->
+<!--                                        </t>-->
+                                    </strong>
+                                    <t t-if="picking.origin">
+                                    - <small class="text-muted"><t t-esc="picking.origin" /></small>
+                                    </t>
+                                </div>
+                            </t>
+
+
+                            <div class="text-center mt-2">
+                                <button class="o_button_inventory btn btn-block btn-info mb-3 p-3 w-100"
+                                        t-on-click="() => this.get_pik_operation(state.pickings)">
+                                            View all
+                                 </button>
+                            </div>
+                        </div>
+                    </t>
+                </Dropdown>
+            </t>
+        </xpath>
+    </t>
+
+
+</templates>
+
+

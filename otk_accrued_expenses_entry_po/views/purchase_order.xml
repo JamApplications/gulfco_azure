@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+
+    <record id="view_purchase_form_purchase_order_inherit" model="ir.ui.view">
+        <field name="name">view.purchase.form.purchase.order.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='partner_ref']" position="before">
+                <field name="accrued_account_id" required="po_type == 'non_tradable' and has_service_products"/>
+            </xpath>
+            
+            <xpath expr="//field[@name='order_line']//list//field[@name='qty_received']" position="before">
+                <field name="qty_service_received" string="Service Qty Received" readonly="1" column_invisible="parent.po_type != 'non_tradable' and not parent.has_service_products"/>
+            </xpath>
+            <div class="oe_button_box" position="inside">
+                <button name="action_view_service_journal_entries" type="object" string="Service Journal Entry" invisible="service_journal_entry_count == 0" class="oe_stat_button" icon="fa-book">
+                    <field name="service_journal_entry_count" string="Service Journal Entry" widget="statinfo"/>
+                </button>                
+                <button name="action_view_service_grns" type="object" string="Service GRNs" invisible="service_grn_count == 0" class="oe_stat_button" icon="fa-truck">
+                    <field name="service_grn_count" string="Service GRNs" widget="statinfo"/>
+                </button>
+            </div>
+            <xpath expr="//header" position="inside">
+                <!-- <button name="action_generate_accrued_entry"
+                        string="Generate Accrued Entry"
+                        type="object"
+                        class="btn-primary"
+                        invisible="po_type != 'non_tradable' or state != 'purchase' or not has_service_products or not can_generate_accrued_entry"/> -->
+                
+                <button name="action_generate_backorder_grn"
+                        string="Generate Backorder GRN"
+                        type="object"
+                        class="btn-primary"
+                        invisible="po_type != 'non_tradable' or state != 'purchase' or not has_service_products or not can_generate_accrued_entry"/>
+            </xpath>            
+        </field>
+    </record>
+
+
+
+</odoo>

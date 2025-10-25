@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <odoo>
+    <data>
+        <record id="purchase_budget_line_values_pivot_view" model="ir.ui.view">
+            <field name="name">purchase.budget.line.values.pivot</field>
+            <field name="model">purchase.budget.line.values</field>
+            <field name="arch" type="xml">
+                <pivot string="purchase.budget.line.values">
+                    <field name="start_date" type="start_date" interval="month"/>
+                    <field name="partner_id" type="row"/>
+                    <field name="description" type="row"/>
+                    <field name="month" type="col"/>
+<!--                    <field name="category_id"/>-->
+                    <field name="lead_time_month"/>
+                    <field name="value" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+    <record id="purchase_budget_line_values_view_tree" model="ir.ui.view">
+        <field name="name">purchase.budget.line.values.tree.view</field>
+        <field name="model">purchase.budget.line.values</field>
+        <field name="arch" type="xml">
+            <list create="0" editable="bottom" edit="1" delete="1">
+<!--                <field name="purchase_budget_line_id" readonly="1"/>-->
+                <field name="name"  readonly="1" optional="hide"/>
+                <field name="partner_id"  readonly="1" optional="hide"/>
+                <field name="lead_time_month"  readonly="1" optional="hide"/>
+                <field name="inventory_cover"  readonly="1" optional="hide"/>
+<!--                <field name="category_id"  readonly="1" optional="hide"/>-->
+                <field name="description" invisible="0"  readonly="1" optional="show"/>
+                <field name="month" invisible="0"  readonly="1"/>
+                <field name="value" invisible="0" readonly="description not in ['A_opening_stock', 'D_sales', 'C_arrival'] "/>
+<!--                readonly="description != 'D_sales'"/>-->
+<!--                <field name="start_date" invisible="0"/>-->
+<!--                <field name="end_date" invisible="0"/>-->
+<!--                <field name="opening_stock" invisible="0"/>-->
+<!--                <field name="order" invisible="0"/>-->
+<!--                <field name="arrival" invisible="0"/>-->
+<!--                <field name="sales" invisible="0"/>-->
+<!--                <field name="closing_stock" invisible="0"/>-->
+<!--                <field name="mos" invisible="0"/>-->
+
+<!--                <field name="jan_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="jan_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="jan_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="jan_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="jan_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="feb_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="feb_purchase_value" string="purchase Value" sum="Total purchase Volume" />-->
+<!--                <field name="feb_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="feb_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="feb_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="march_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="march_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="march_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="march_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="march_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="april_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="april_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="april_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="april_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="april_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="may_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="may_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="may_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="may_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="may_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="june_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="june_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="june_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="june_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="june_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="july_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="july_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="july_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="july_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="july_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="aug_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="aug_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="aug_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="aug_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="aug_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="sep_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="sep_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="sep_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="sep_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="sep_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="oct_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="oct_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="oct_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="oct_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="oct_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="nov_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="nov_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="nov_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="nov_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="nov_gp" string="GP(%)" sum="Total GP"/>-->
+
+<!--                <field name="dec_purchase_volume" string="purchase Volume" sum="Total purchase Volume"/>-->
+<!--                <field name="dec_purchase_value" string="purchase Value" sum="Total purchase value"/>-->
+<!--                <field name="dec_cogs" string="Cogs" sum="Total Cogs"/>-->
+<!--                <field name="dec_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>-->
+<!--                <field name="dec_gp" string="GP(%)" sum="Total GP"/>-->
+
+
+<!--                <field name="jan_opening_stock"/>-->
+<!--                <field name="jan_order"/>-->
+<!--                <field name="jan_arrival"/>-->
+<!--                <field name="jan_sales"/>-->
+<!--                <field name="jan_mos"/>-->
+<!--                <field name="jan_opening_stock"/>-->
+
+<!--                <field name="feb_opening_stock"/>-->
+<!--                <field name="feb_order"/>-->
+<!--                <field name="feb_arrival"/>-->
+<!--                <field name="feb_sales"/>-->
+<!--                <field name="feb_mos"/>-->
+<!--                <field name="feb_opening_stock"/>-->
+
+<!--                <field name="march_opening_stock"/>-->
+<!--                <field name="march_order"/>-->
+<!--                <field name="march_arrival"/>-->
+<!--                <field name="march_sales"/>-->
+<!--                <field name="march_mos"/>-->
+<!--                <field name="march_opening_stock"/>-->
+
+<!--                <field name="april_opening_stock"/>-->
+<!--                <field name="april_order"/>-->
+<!--                <field name="april_arrival"/>-->
+<!--                <field name="april_sales"/>-->
+<!--                <field name="april_mos"/>-->
+<!--                <field name="april_opening_stock"/>-->
+
+<!--                <field name="may_opening_stock"/>-->
+<!--                <field name="may_order"/>-->
+<!--                <field name="may_arrival"/>-->
+<!--                <field name="may_sales"/>-->
+<!--                <field name="may_mos"/>-->
+<!--                <field name="may_opening_stock"/>-->
+
+<!--                <field name="june_opening_stock"/>-->
+<!--                <field name="june_order"/>-->
+<!--                <field name="june_arrival"/>-->
+<!--                <field name="june_sales"/>-->
+<!--                <field name="june_mos"/>-->
+<!--                <field name="june_opening_stock"/>-->
+
+<!--                <field name="july_opening_stock"/>-->
+<!--                <field name="july_order"/>-->
+<!--                <field name="july_arrival"/>-->
+<!--                <field name="july_sales"/>-->
+<!--                <field name="july_mos"/>-->
+<!--                <field name="july_opening_stock"/>-->
+
+
+<!--                <field name="aug_opening_stock"/>-->
+<!--                <field name="aug_order"/>-->
+<!--                <field name="aug_arrival"/>-->
+<!--                <field name="aug_sales"/>-->
+<!--                <field name="aug_mos"/>-->
+<!--                <field name="aug_opening_stock"/>-->
+
+<!--                <field name="sep_opening_stock"/>-->
+<!--                <field name="sep_order"/>-->
+<!--                <field name="sep_arrival"/>-->
+<!--                <field name="sep_sales"/>-->
+<!--                <field name="sep_mos"/>-->
+<!--                <field name="sep_opening_stock"/>-->
+
+<!--                <field name="oct_opening_stock"/>-->
+<!--                <field name="oct_order"/>-->
+<!--                <field name="oct_arrival"/>-->
+<!--                <field name="oct_sales"/>-->
+<!--                <field name="oct_mos"/>-->
+<!--                <field name="oct_opening_stock"/>-->
+
+
+<!--                <field name="nov_opening_stock"/>-->
+<!--                <field name="nov_order"/>-->
+<!--                <field name="nov_arrival"/>-->
+<!--                <field name="nov_sales"/>-->
+<!--                <field name="nov_mos"/>-->
+<!--                <field name="nov_opening_stock"/>-->
+
+<!--                <field name="dec_opening_stock"/>-->
+<!--                <field name="dec_order"/>-->
+<!--                <field name="dec_arrival"/>-->
+<!--                <field name="dec_sales"/>-->
+<!--                <field name="dec_mos"/>-->
+<!--                <field name="dec_opening_stock"/>-->
+
+
+
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_budget_line_values_action" model="ir.actions.act_window">
+        <field name="name">Purchase Budget Line Values</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.budget.line.values</field>
+        <field name="view_mode">list,pivot</field>
+<!--        <field name="context">{'from_purchase_budget_line_values' : 1}</field>-->
+    </record>
+</odoo>

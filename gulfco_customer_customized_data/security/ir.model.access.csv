@@ -1,0 +1,9 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+fleet_vehicle_res-partner_model_access_right_user,res.partner,model_res_partner,base.group_user,1,1,1,1
+fleet_vehicle_res-partner_model_access_right_sale,sales.men,model_sales_men,base.group_user,1,1,1,1
+fleet_vehicle_res-partner_division_management,division.management,model_division_management,base.group_user,1,1,1,1
+access_customer_product_shelf_life,customer.product.shelf.life,model_customer_product_shelf_life,base.group_user,1,1,1,1
+access_customer_group,customer.group,model_customer_group,base.group_user,1,1,1,1
+access_customer_subdivision,customer.subdivision,model_customer_subdivision,base.group_user,1,1,1,1
+access_customer_status,customer.status,model_customer_status,base.group_user,1,1,1,1
+access_customer_class,customer.class,model_customer_class,base.group_user,1,1,1,1

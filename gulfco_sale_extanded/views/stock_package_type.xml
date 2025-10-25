@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="stock_package_type_form_inherit_gulfco_sale">
+            <field name="name">stock.package.type.form.inherit.gulfco.sale</field>
+            <field name="model">stock.package.type</field>
+            <field name="inherit_id" ref="stock_delivery.stock_package_type_form_delivery"/>
+            <field name="arch" type="xml">
+                <field name="shipper_package_code" position="after">
+                    <field name="is_each"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

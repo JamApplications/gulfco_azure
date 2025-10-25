@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-inherit="web.ListRenderer" t-inherit-mode="extension">
+        <xpath expr="//thead/tr[1]" position="before">
+            <tr t-if="this.props.list._config.resModel == 'sales.budget.line' and 'from_budget_lines' in this.props.list._config.context">
+                <th/>
+                <td colspan="5" class="text-center" style="width:400px;">
+                    <b>Jan</b>
+                </td>
+                <td colspan="5" class="text-center" style="width:400px!important;">
+                    <b>Feb</b>
+                </td>
+                <td colspan="5" class="text-center" style="width:400px!important;">
+                    <b>March</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>April</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>May</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>June</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>July</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>Aug</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>Sep</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>Oct</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>Nov</b>
+                </td>
+                <td colspan="5" class="text-center" style="width: 400px!important;">
+                    <b>Dec</b>
+                </td>
+            </tr>
+        </xpath>
+    </t>
+</templates>

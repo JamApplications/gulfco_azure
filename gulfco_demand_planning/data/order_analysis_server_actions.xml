@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <record id="action_record_button_to_approve" model="ir.actions.server">-->
+<!--        <field name="name">Order Analysis Approve</field>-->
+<!--        <field name="model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>-->
+<!--        <field name="binding_model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>-->
+<!--        <field name="binding_view_types">list</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">records.mapped('request_id').filtered(lambda s:s.state == 'draft').button_to_approve()-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="action_purchase_request_record_reset" model="ir.actions.server">
+        <field name="name">Reset</field>
+        <field name="model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>
+        <field name="binding_model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.mapped('request_id').filtered(lambda s:s.state != 'draft').button_draft()
+        </field>
+    </record>
+
+    <record id="action_purchase_request_button_approved" model="ir.actions.server">
+        <field name="name">Approve</field>
+        <field name="model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>
+        <field name="binding_model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.mapped('request_id').filtered(lambda s:s.state == 'to_approve').button_approved()
+        </field>
+    </record>
+
+    <record id="action_purchase_request_button_rejected" model="ir.actions.server">
+        <field name="name">Reject</field>
+        <field name="model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>
+        <field name="binding_model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.mapped('request_id').filtered(lambda s:s.state in ['to_approve','approved']).button_rejected()
+        </field>
+    </record>
+
+    <record id="action_purchase_request_button_done" model="ir.actions.server">
+        <field name="name">Done</field>
+        <field name="model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>
+        <field name="binding_model_id" ref="gulfco_demand_planning.model_purchase_request_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.mapped('request_id').filtered(lambda s:s.state == 'approved').button_done()
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sales_budget_line_view_tree" model="ir.ui.view">
+        <field name="name">sales.budget.line.tree.view</field>
+        <field name="model">sales.budget.line</field>
+        <field name="arch" type="xml">
+            <list create="0" editable="bottom" edit="1" delete="0">
+                <field name="jan_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="jan_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="jan_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="jan_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="jan_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="feb_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="feb_sales_value" string="Sales Value" sum="Total Sales Volume" />
+                <field name="feb_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="feb_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="feb_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="march_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="march_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="march_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="march_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="march_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="april_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="april_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="april_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="april_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="april_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="may_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="may_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="may_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="may_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="may_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="june_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="june_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="june_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="june_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="june_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="july_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="july_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="july_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="july_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="july_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="aug_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="aug_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="aug_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="aug_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="aug_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="sep_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="sep_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="sep_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="sep_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="sep_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="oct_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="oct_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="oct_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="oct_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="oct_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="nov_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="nov_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="nov_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="nov_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="nov_gp" string="GP(%)" sum="Total GP"/>
+
+                <field name="dec_sales_volume" string="Sales Volume" sum="Total Sales Volume"/>
+                <field name="dec_sales_value" string="Sales Value" sum="Total Sales value"/>
+                <field name="dec_cogs" string="Cogs" sum="Total Cogs"/>
+                <field name="dec_gross_margin" string="Gross Margin" sum="Total Gross Margin"/>
+                <field name="dec_gp" string="GP(%)" sum="Total GP"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sales_budget_line_action" model="ir.actions.act_window">
+        <field name="name">Sales Budget Line</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sales.budget.line</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'from_budget_lines' : 1}</field>
+    </record>
+</odoo>

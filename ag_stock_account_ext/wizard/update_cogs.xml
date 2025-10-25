@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="product_cogs_update_form" model="ir.ui.view">
+        <field name="name">product.cogs.update.form</field>
+        <field name="model">product.cogs.update</field>
+        <field name="arch" type="xml">
+            <form string="Cogs Update">
+                <group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_update_cogs" string="Update Cogs" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ag_update_cogs" model="ir.actions.act_window">
+        <field name="name">Update Cogs</field>
+        <field name="res_model">product.cogs.update</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="product_cogs_update_form"/>
+    </record>
+
+
+    <!-- This Menu Item must have a parent and an action -->
+
+
+    <menuitem id="action_update_cogs" name="Update Cogs" parent="stock.menu_stock_warehouse_mgmt" action="ag_update_cogs" sequence="20"/>
+
+
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="barcode_stock_move_line_product_selector" model="ir.ui.view">
+        <field name="name">stock.product.selector.production_date</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock_barcode.stock_move_line_product_selector"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='tracking_number']" position="before">
+
+                <div name="production_date" class="row" groups="stock.group_production_lot">
+                    <div class="text-black-50 mt-2 fs-5">
+                        <span class="fa fa-calendar me-1"/>
+                        <label for="production_date" string="Production Date" class="p-0"/>
+                    </div>
+                    <field name="production_date" placeholder="Production Date"/>
+                </div>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

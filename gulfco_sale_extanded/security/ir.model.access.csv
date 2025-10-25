@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customer_article,access_customer_article,model_customer_article,base.group_user,1,1,1,1
+access_customer_specification,access_customer_specification,gulfco_sale_extanded.model_customer_specification,,1,1,1,1

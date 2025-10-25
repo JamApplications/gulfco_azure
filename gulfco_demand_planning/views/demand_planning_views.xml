@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_demand_planning" model="ir.actions.client">
+        <field name="name">Demand Planning</field>
+        <field name="res_model">demand.planning</field>
+        <field name="tag">demand_planning_client_action</field>
+    </record>
+
+    <menuitem
+            id="menu_purchase_demand_planning"
+            name="Demand Planning"
+            action="action_demand_planning"
+            sequence="2"
+            parent="purchase.menu_purchase_root"/>
+</odoo>

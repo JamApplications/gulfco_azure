@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="gulfco_stock_request_report_paperformat" model="report.paperformat">
+            <field name="name">Stock Request Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">52</field>
+            <field name="margin_bottom">32</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">52</field>
+            <field name="dpi">90</field>
+            <field name="css_margins" eval="True"/>
+        </record>
+        <template id="stock_request_report_sample_consum_scap_template">
+            <div class="page">
+                <style>
+                    .table td, .table th {
+                    word-wrap: break-word;
+                    white-space: normal;
+                    overflow-wrap: break-word;
+                    border: 1px solid black !important;
+                    }
+                </style>
+                <div class="row">
+                    <div class="col-3">
+                        <strong>Request No :-</strong>
+                        <span t-esc="o.name" style="padding-left:5px;"/>
+                    </div>
+                    <div class="col-3">
+                        <strong>Request Date :-</strong>
+                        <span t-esc="o.create_date.strftime('%Y-%m-%d')" style="padding-left:5px;"/>
+                    </div>
+                    <div class="col-3">
+                        <strong>Requester Name :-</strong>
+                        <span t-esc="o.create_uid.name" style="padding-left:5px;"/>
+                    </div>
+                    <div class="col-3">
+                        <strong>Approved by :-</strong>
+                        <span style="padding-left:5px;" t-esc="o.approved_by.name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <strong>Source Warehouse Name :-</strong>
+                        <t t-if="o.location_id">
+                            <span t-esc="o.location_id.warehouse_id.display_name" style="padding-left:5px;"/>
+                        </t>
+                    </div>
+                    <div class="col-3">
+                        <strong>Source Warehouse Code :-</strong>
+                        <t t-if="o.location_id">
+                            <span t-esc="o.location_id.warehouse_id.code" style="padding-left:5px;"/>
+                        </t>
+                    </div>
+                    <div class="col-3">
+                        <strong>Customer Name :-</strong>
+                        <span t-esc="o.customer_id.name" style="padding-left:5px;"/>
+                    </div>
+                    <div class="col-3">
+                        <strong>Contact No :-</strong>
+                        <span style="padding-left:5px;" t-esc="o.customer_id.mobile"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <strong>Operation :-</strong>
+                        <t t-if="o.direction">
+                            <span style="padding-left:5px;" t-esc="dict(o.fields_get(allfields=['direction'])['direction']['selection'])[o.direction]"/>
+                        </t>
+                    </div>
+                    <div class="col-3"/>
+                    <div class="col-3">
+                        <div class="row">
+                            <strong>Address :-</strong>
+                            <span style="padding-left:5px;" t-field="o.customer_id"
+                                  t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                        </div>
+                    </div>
+                    <div class="col-3"/>
+                </div>
+                <div class="row">
+                    <div class="col-3"/>
+                    <div class="col-3"/>
+                    <div class="col-3">
+                        <strong>Remarks :-</strong>
+                        <span style="padding-left:5px;" t-esc="o.remarks"/>
+                    </div>
+                    <div class="col-3"/>
+                </div>
+                <div class="row">
+                    <div class="col-3"/>
+                    <div class="col-3"/>
+                    <div class="col-3">
+                        <strong>Vehicle No :-</strong>
+                        <span style="padding-left:5px;" t-esc="o.vehicle_no"/>
+                    </div>
+                    <div class="col-3"/>
+                </div>
+                <br/>
+                <table class="table table-condensed w-100">
+                    <thead>
+                        <tr>
+                            <td style="text-align: center;">SN.</td>
+                            <td style="text-align: center;">Request Line No.</td>
+                            <td style="text-align: center;">
+                                <span>Item Code</span>
+                                <br/>
+                                <span>Description</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <span>Source Location</span>
+                                <br/>
+                                <span>Destination Location</span>
+                            </td>
+                            <td style="text-align: center;">Unit Qty Transferred</td>
+                            <td style="text-align: center;">Package Qty</td>
+                            <td style="text-align: center;">Package</td>
+                            <td style="text-align: center;">Trx Date</td>
+                            <td style="text-align: center;">Package Conversion</td>
+                            <td style="text-align: center;">Lot Unit Qty</td>
+                            <td style="text-align: center;">Lot Number</td>
+                            <td style="text-align: center;">Expiry Date</td>
+                            <td style="text-align: center;">Remarks</td>
+                        </tr>
+                    </thead>
+                    <tbody t-if="o.stock_request_ids">
+                        <t t-set="sn" t-value="1"/>
+                        <tr t-foreach="o.stock_request_ids" t-as="line">
+                            <t t-set="ctn_package"
+                               t-value="line.product_id.packaging_ids.filtered(lambda s:s.package_type_id.type == 'ctn')"/>
+                            <t t-if="o.picking_id">
+                                <t t-set="move_line"
+                                   t-value="o.picking_id.move_line_ids.filtered(lambda s:s.product_id == line.product_id)"/>
+                            </t>
+                            <t t-else="">
+                                <t t-set="move_line" t-value="False"/>
+                            </t>
+                            <t t-set="box_package"
+                               t-value="line.product_id.packaging_ids.filtered(lambda s: s.package_type_id.type == 'box')"/>
+                            <td>
+                                <span t-esc="sn"/>
+                            </td>
+                            <td>
+                                <span t-esc="line.name"/>
+                            </td>
+                            <td>
+                                <t t-if="line.product_id.default_code">
+                                    <span t-esc="line.product_id.default_code"/>
+                                    <br/>
+                                </t>
+                                <span t-esc="line.product_id.name"/>
+                            </td>
+                            <td>
+                                <t t-if="line.location_id">
+                                    <span t-esc="line.location_id.display_name"/>
+                                    <br/>
+                                </t>
+                                <span t-esc="line.order_id.destination_id.display_name"/>
+                            </td>
+                            <td>
+                                <span t-esc="line.qty_done"/>
+                            </td>
+                            <td>
+                                <t t-if="ctn_package and ctn_package[0].qty > 0.0">
+                                    <span t-esc="line.qty_done/ctn_package[0].qty"/>
+                                </t>
+                                <t t-else="">
+                                    <span>0.0</span>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="ctn_package">
+                                    <span t-esc="ctn_package[0].name"/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.picking_id">
+                                    <span t-esc="o.picking_id.scheduled_date"/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="ctn_package">
+                                    <span>1 CTN =<t t-esc="ctn_package[0].qty"/>&#160;&#160;<t
+                                            t-esc="line.product_uom_id.name"/>
+                                    </span>
+                                </t>
+                                <t t-if="box_package">
+                                    <span>1 BOX =<t t-esc="box_package[0].qty"/>&#160;&#160;<t
+                                            t-esc="line.product_uom_id.name"/>
+                                    </span>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.picking_id">
+                                    <t t-if="move_line">
+                                        <span t-esc="move_line.quantity"/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.picking_id">
+                                    <t t-if="move_line and move_line.lot_id">
+                                        <span t-esc="move_line.lot_id.name"/>
+                                    </t>
+                                    <t t-elif="move_line and move_line.lot_name">
+                                        <span t-esc="move_line.lot_name"/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.picking_id">
+                                    <t t-if="move_line and move_line.expiration_date">
+                                        <span t-esc="move_line.expiration_date"/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <span t-esc="line.remarks"/>
+                            </td>
+                            <t t-set="sn" t-value="sn+1"/>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+        <template id="stock_request_report_branch_internal_van">
+            <div class="page">
+                <style>
+                    .table td, .table th {
+                    word-wrap: break-word;
+                    white-space: normal;
+                    overflow-wrap: break-word;
+                    border: 1px solid black !important;
+                    }
+                </style>
+                <div class="row">
+                    <div class="col-3">
+                        <strong>Request No :-</strong>
+                        <span t-esc="o.name" style="padding-left:5px;"/>
+                    </div>
+                    <div class="col-3">
+                        <strong>Request Date :-</strong>
+                        <span t-esc="o.create_date.strftime('%Y-%m-%d')" style="padding-left:5px;"/>
+                    </div>
+                    <div class="col-3">
+                        <strong>Requester Name :-</strong>
+                        <span t-esc="o.create_uid.name" style="padding-left:5px;"/>
+                    </div>
+                    <div class="col-3">
+                        <strong>Approved by :-</strong>
+                        <span style="padding-left:5px;" t-esc="o.approved_by.name"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <strong>Source Warehouse Name :-</strong>
+                        <t t-if="o.location_id">
+                            <span t-esc="o.location_id.warehouse_id.display_name" style="padding-left:5px;"/>
+                        </t>
+                    </div>
+                    <div class="col-3">
+                        <strong>Source Warehouse Code :-</strong>
+                        <t t-if="o.location_id">
+                            <span t-esc="o.location_id.warehouse_id.code" style="padding-left:5px;"/>
+                        </t>
+                    </div>
+                    <div class="col-3">
+                        <strong>Destination Warehouse Name:-</strong>
+                        <span t-esc="o.destination_id.warehouse_id.display_name" style="padding-left:5px;"/>
+                    </div>
+                    <div class="col-3">
+                        <strong>Destination Warehouse Code :-</strong>
+                        <span style="padding-left:5px;" t-esc="o.destination_id.warehouse_id.code"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <strong>Operation :-</strong>
+                        <t t-if="o.direction">
+                            <span style="padding-left:5px;" t-esc="dict(o.fields_get(allfields=['direction'])['direction']['selection'])[o.direction]"/>
+                        </t>
+                    </div>
+                    <div class="col-3"/>
+                    <div class="col-3">
+                        <strong>Remarks :-</strong>
+                        <span style="padding-left:5px;" t-esc="o.remarks"/>
+                    </div>
+                    <div class="col-3"/>
+                </div>
+                <br/>
+                <table class="table table-condensed w-100">
+                    <thead>
+                        <tr>
+                            <td style="text-align: center;">SN.</td>
+                            <td style="text-align: center;">Request Line No.</td>
+                            <td style="text-align: center;">
+                                <span>Item Code</span>
+                                <br/>
+                                <span>Description</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <span>Source Location</span>
+                                <br/>
+                                <span>Destination Location</span>
+                            </td>
+                            <td style="text-align: center;">Unit Qty Transferred</td>
+                            <td style="text-align: center;">Package Qty</td>
+                            <td style="text-align: center;">Package</td>
+                            <td style="text-align: center;">Trx Date</td>
+                            <td style="text-align: center;">Package Conversion</td>
+                            <td style="text-align: center;">Lot Unit Qty</td>
+                            <td style="text-align: center;">Lot Number</td>
+                            <td style="text-align: center;">Expiry Date</td>
+                            <td style="text-align: center;">Remarks</td>
+                        </tr>
+                    </thead>
+                    <tbody t-if="o.stock_request_ids">
+                        <t t-set="sn" t-value="1"/>
+                        <tr t-foreach="o.stock_request_ids" t-as="line">
+                            <t t-set="ctn_package"
+                               t-value="line.product_id.packaging_ids.filtered(lambda s:s.package_type_id.type == 'ctn')"/>
+                            <t t-if="o.picking_id">
+                                <t t-set="move_line"
+                                   t-value="o.picking_id.move_line_ids.filtered(lambda s:s.product_id == line.product_id)"/>
+                            </t>
+                            <t t-else="">
+                                <t t-set="move_line" t-value="False"/>
+                            </t>
+                            <t t-set="box_package"
+                               t-value="line.product_id.packaging_ids.filtered(lambda s: s.package_type_id.type == 'box')"/>
+                            <td>
+                                <span t-esc="sn"/>
+                            </td>
+                            <td>
+                                <span t-esc="line.name"/>
+                            </td>
+                            <td>
+                                <t t-if="line.product_id.default_code">
+                                    <span t-esc="line.product_id.default_code"/>
+                                    <br/>
+                                </t>
+                                <span t-esc="line.product_id.name"/>
+                            </td>
+                            <td>
+                                <t t-if="line.location_id">
+                                    <span t-esc="line.location_id.display_name"/>
+                                    <br/>
+                                </t>
+                                <span t-esc="line.order_id.destination_id.display_name"/>
+                            </td>
+                            <td>
+                                <span t-esc="line.qty_done"/>
+                            </td>
+                            <td>
+                                <t t-if="ctn_package and ctn_package[0].qty > 0.0">
+                                    <span t-esc="line.qty_done/ctn_package[0].qty"/>
+                                </t>
+                                <t t-else="">
+                                    <span>0.0</span>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="ctn_package">
+                                    <span t-esc="ctn_package[0].name"/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.picking_id">
+                                    <span t-esc="o.picking_id.scheduled_date"/>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="ctn_package">
+                                    <span>1 CTN =<t t-esc="ctn_package[0].qty"/>&#160;&#160;<t
+                                            t-esc="line.product_uom_id.name"/>
+                                    </span>
+                                </t>
+                                <t t-if="box_package">
+                                    <span>1 BOX =<t t-esc="box_package[0].qty"/>&#160;&#160;<t
+                                            t-esc="line.product_uom_id.name"/>
+                                    </span>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.picking_id">
+                                    <t t-if="move_line">
+                                        <span t-esc="move_line.quantity"/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.picking_id">
+                                    <t t-if="move_line and move_line.lot_id">
+                                        <span t-esc="move_line.lot_id.name"/>
+                                    </t>
+                                    <t t-elif="move_line and move_line.lot_name">
+                                        <span t-esc="move_line.lot_name"/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <t t-if="o.picking_id">
+                                    <t t-if="move_line and move_line.expiration_date">
+                                        <span t-esc="move_line.expiration_date"/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td>
+                                <span t-esc="line.remarks"/>
+                            </td>
+                            <t t-set="sn" t-value="sn+1"/>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+        <template id="stock_request_report_template">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-if="o.direction in ['sample_issue_out','consumable_issuance','scrap_issuance']">
+                            <t t-call="stock_request_direction.stock_request_report_sample_consum_scap_template"/>
+                        </t>
+                        <t t-elif="o.direction in ['branch_transfer','internal_transfer','van_load','van_off_load']">
+                            <t t-call="stock_request_direction.stock_request_report_branch_internal_van"/>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <record id="action_stock_request_order_report" model="ir.actions.report">
+            <field name="name">Stock Request Report</field>
+            <field name="model">stock.request.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">stock_request_direction.stock_request_report_template</field>
+            <field name="report_file">stock_request_direction.stock_request_report_template</field>
+            <field name="print_report_name">'Stock Request Report'</field>
+            <field name="binding_model_id" ref="stock_request_direction.model_stock_request_order"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="stock_request_direction.gulfco_stock_request_report_paperformat"/>
+        </record>
+    </data>
+</odoo>

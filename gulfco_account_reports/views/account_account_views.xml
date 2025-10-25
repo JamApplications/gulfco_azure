@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_account_list_inherit_gulfco_account_reports" model="ir.ui.view">
+    <field name="name">account.account.view.list.inherit</field>
+    <field name="model">account.account</field>
+    <field name="inherit_id" ref="account.view_account_list"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='account_type']" position="after">
+        <field name="vat_detail_type" />
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

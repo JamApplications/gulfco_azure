@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_request_percentage,stock.request.percentage,model_stock_request_percentage,base.group_system,1,1,1,1
+access_stock_request_percentage_line,stock.request.percentage.line,model_stock_request_percentage_line,base.group_system,1,1,1,1
+access_stock_request_percentage_load,stock.request.percentage.load,model_stock_request_percentage_load,base.group_system,1,1,1,1
+access_stock_request_percentage_load_line,stock.request.percentage.load.line,model_stock_request_percentage_load_line,base.group_system,1,1,1,1

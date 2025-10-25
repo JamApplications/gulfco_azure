@@ -1,0 +1,38 @@
+<odoo>
+    <record id="account_payment_cdc_collect_form" model="ir.ui.view">
+        <field name="name">account.payment.cdc.collect.form</field>
+        <field name="model">account.payment.cdc.collect</field>
+        <field name="arch" type="xml">
+            <form string="Payment Collect Wizard">
+                <group>
+                        <field name="collect_date" invisible="context.get('re_collect', False)" string="Collect Date"/>
+                        <field name="collect_date" invisible="not context.get('re_collect', False)" string="Re-Deposit Date"/>
+                        <field name="payment_id" invisible="1"/>
+                    <field name="payment_ref" invisible="1"/>
+                    <field name="payment_cdc_state" invisible="1"/>
+                    <field name="allowed_partner_ids" invisible="1"/>
+                    <field name="allow_merge_cdc" invisible="1"/>
+                    <field name="partner_id"
+                               domain="[('id', 'in', allowed_partner_ids)]"
+                           invisible="1"/>
+                </group>
+                <notebook invisible="1">
+                    <page string="Related CDC" invisible="1">
+                        <field name="related_payment_ids"/>
+                    </page>
+                </notebook>
+                <footer>
+                    <button string="Collect CDC" name="action_collect_cdc" type="object"
+                            invisible="context.get('re_collect', False)"
+                            class="oe_highlight"/>
+                    <!-- <button string="Re-Deposit CDC" name="action_collect_cdc" type="object" -->
+                    <button string="Re-Deposit CDC" name="action_redeposit_cdc" type="object"
+                            invisible="not context.get('re_collect', False)"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

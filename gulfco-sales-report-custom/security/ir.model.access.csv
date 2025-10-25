@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sales_order_rma_report_delivery_user,"sales.order.rma.report.delivery user",model_sales_order_rma_report_delivery,base.group_user,1,1,1,1
+access_sales_order_report_wizard_user,sales.order.report.wizard user,model_sales_order_report_wizard,base.group_user,1,1,1,1
+access_sales_order_rma_report_wizard_user,sales.order.rma.report.wizard user,model_sales_order_rma_report_wizard,base.group_user,1,1,1,1
+
+
+

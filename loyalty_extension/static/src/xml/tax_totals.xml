@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-inherit="account.TaxTotalsField" t-inherit-mode="extension" owl="1">
+        <xpath expr="//tr[@name='total_discount_tr']" position="before">
+             <tr t-if="totals.reward_discount_amount">
+                <td class="o_td_label">Reward Discount<label class="o_form_label o_tax_total_label"/></td>
+                <td class="o_tax_group"><span t-out="totals.reward_discount_amount"/></td>
+            </tr>
+        </xpath>
+    </t>
+</templates>

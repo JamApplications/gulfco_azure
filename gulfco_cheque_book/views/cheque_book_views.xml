@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List view for Cheque Book list -->
+    <record id="view_cheque_book_tree" model="ir.ui.view">
+        <field name="name">cheque.book.tree</field>
+        <field name="model">cheque.book</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="bank_id"/>
+                <field name="journal_id"/>
+                <field name="start_number"/>
+                <field name="end_number"/>
+                <field name="issue_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <!-- Form view for Cheque Book -->
+    <record id="view_cheque_book_form" model="ir.ui.view">
+        <field name="name">cheque.book.form</field>
+        <field name="model">cheque.book</field>
+        <field name="arch" type="xml">
+            <form string="Cheque Book">
+                <header>
+                    <button name="action_generate_cheques" type="object" string="Generate Cheques" class="btn-primary" invisible="cheque_lines_ids"/>
+                    <field name="state" widget="statusbar" invisible="state != 'draft'"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" text="In Use" bg_color="text-bg-success" invisible="state != 'in_use'" />
+                    <widget name="web_ribbon" text="Used Up" bg_color="text-bg-primary" invisible="state != 'used_up'" />
+
+                    <div class="oe_title">
+                        <h1>
+                            <field options="{'line_breaks': False}" widget="text" class="text-break" name="name" default_focus="1" placeholder="Cheque Book Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bank_id" required="0"/>
+                            <field name="journal_id"/>
+                        </group>
+                        <group>
+                            <field name="start_number"/>
+                            <field name="end_number"/>
+                            <field name="issue_date"/>
+                        </group>
+                    </group>
+                    <!-- Smart buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_available_cheques" type="object" invisible="available_cheques_count == 0" class="oe_stat_button" icon="fa-ticket">
+                            <field name="available_cheques_count" widget="statinfo" string="Available Cheques"/>
+                        </button>
+                        <button name="action_view_issued_cheques" type="object" invisible="issued_cheques_count == 0" class="oe_stat_button" icon="fa-share">
+                            <field name="issued_cheques_count" widget="statinfo" string="Issued Cheques"/>
+                        </button>
+                        <button name="action_view_bounced_cheques" type="object" invisible="bounced_cheques_count == 0" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="bounced_cheques_count" widget="statinfo" string="Bounced Cheques"/>
+                        </button>
+                        <button name="action_view_cancelled_cheques" type="object" invisible="cancelled_cheques_count == 0" class="oe_stat_button" icon="fa-ban">
+                            <field name="cancelled_cheques_count" widget="statinfo" string="Cancelled Cheques"/>
+                        </button>
+                        <button name="action_view_cleared_cheques" type="object" invisible="cleared_cheques_count == 0" class="oe_stat_button" icon="fa-check-circle">
+                            <field name="cleared_cheques_count" widget="statinfo" string="Cleared Cheques"/>
+                        </button>
+                    </div>
+                    <notebook>
+                        <page string="Cheques">
+                            <field name="cheque_lines_ids" context="{'default_order':'cheque_number_numeric asc'}">
+                                <list editable="bottom">
+                                    <field name="cheque_number"/>
+                                    <field name="issue_date"/>
+                                    <field name="due_date"/>
+                                    <field name="partner_id"/>
+                                    <field name="amount"/>
+                                    <field name="currency_id"/>
+                                    <field name="state" readonly="1"/>
+                                    <field name="payment_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Action for Cheque Book -->
+    <record id="action_cheque_book" model="ir.actions.act_window">
+        <field name="name">Cheque Books</field>
+        <field name="res_model">cheque.book</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu for Cheque Book -->
+    <menuitem id="menu_cheque_book_root" name="Cheque Book" parent="account.menu_finance_payables" sequence="100"/>
+    <menuitem id="menu_cheque_book" name="Cheque Books" parent="menu_cheque_book_root" action="action_cheque_book"/>
+</odoo>

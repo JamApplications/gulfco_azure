@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_budget_tree_view" model="ir.ui.view">
+        <field name="name">purchase.budget.tree.view</field>
+        <field name="model">purchase.budget</field>
+        <field name="arch" type="xml">
+            <list string="purchase Budget">
+                <field name="name"/>
+                <field name="responsible"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="company_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="purchase_budget_form_view" model="ir.ui.view">
+        <field name="name">purchase.budget.form.view</field>
+        <field name="model">purchase.budget</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="button_confirm" invisible="state != 'draft'" string="Submit" type="object" class="oe_highlight" data-hotkey="q"/>
+                    <button name="button_approve" invisible="state != 'approved'" string="Approve" type="object" class="oe_highlight" data-hotkey="i"/>
+                    <button name="button_cancel" invisible="state not in ('draft','approved', 'done')" string="Cancel" type="object" class="oe_highlight" data-hotkey="r"/>
+
+                    <button name="button_reset_draft" invisible="state not in ('cancel')" string="Rest To Draft" type="object" class="oe_highlight" data-hotkey="a"/>
+                    <field name="state"
+
+                           statusbar_visible="draft,approved,done"/>
+<!--widget="statusbar"-->
+                    </header>
+                <sheet>
+
+                    <div name="button_box" position="inside">
+                        <button name="open_action_view_purchase_budget_line" type="object" class="oe_stat_button">
+                                <span class="o_stat_text">View Line Report</span>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="responsible"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <label for="start_date" string="Period"/>
+                            <div>
+                                <field name="start_date" class="oe_inline" readonly="state in ['cancel', 'done']"/> - <field name="end_date" class="oe_inline" readonly="state in ['cancel', 'done']"/>
+                            </div>
+<!--                            <field name="start_date"/>-->
+<!--                            <field name="end_date"/>-->
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="lines" string="Lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+<!--                                    <field name="purchase_budget_id" invisible="0"/>-->
+                                    <field name="partner_id"/>
+                                    <field name="lead_time_month"/>
+                                    <field name="inventory_cover"/>
+<!--                                    <field name="category_id"/>-->
+
+<!--                                    <field name="product_id" context="{'from_purchase_budget' : 1}" string="Product Code"/>-->
+<!--                                    <field name="product_name"/>-->
+<!--                                    <field name="product_type"/>-->
+<!--                                    <field name="brand_id"/>-->
+<!--                                    <field name="price_to_trade"/>-->
+<!--                                    <field name="item_landed_cost"/>-->
+<!--                                    <field name="gp_percentage"/>-->
+<!--                                    <field name="total_purchase_volume" sum="Total purchase Volume"/>-->
+<!--                                     <field name="total_purchase_value" sum="Total purchase Value"/>-->
+<!--                                     <field name="total_cogs" sum="Total Cogs"/>-->
+<!--                                     <field name="total_gross_margin" sum="Total Gross Margin"/>-->
+<!--                                     <field name="total_gp" sum="Total GP"/>-->
+                                    <button
+                                        name="action_show_details"
+                                        type="object"
+                                        icon="fa-list"
+                                        title="Show Details"
+                                        width="0.1"
+                                        options='{"warn": true}'
+                                    />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_budget" model="ir.actions.act_window">
+        <field name="name">Purchase Budget</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.budget</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('purchase_budget_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('purchase_budget_form_view')})]"/>
+    </record>
+
+
+    <menuitem
+            id="menu_purchase_budget"
+            name="Purchase Budget"
+            action="action_purchase_budget"
+            parent="account.menu_finance_entries"/>
+
+</odoo>

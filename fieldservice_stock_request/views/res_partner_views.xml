@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<odoo>
+     <record id="fieldservice.action_workers" model="ir.actions.act_window">
+         <field name="context">{'default_company_type':'person','default_fsm_person': True, 'default_contact_type': 'worker','from_dashboard_worker':1}</field>
+     </record>
+     <record id="field_service_worker_partner_kanban_view" model="ir.ui.view">
+            <field name="name">field.service.worker.partner.kanban.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//footer/div" position="inside">
+                    <a class="btn btn-primary btn-sm"
+                        groups="plnx_sales_team.group_sales_team_van_sale"
+                        name="action_van_load"
+                        role="button"
+                        type="object"
+                        invisible="not context.get('from_dashboard_worker')">
+                        Load
+                    </a>
+                    <a class="btn btn-info btn-sm ml4"
+                        groups="plnx_sales_team.group_sales_team_van_sale"
+                        name="action_van_off_load"
+                        role="button"
+                        type="object"
+                        invisible="not context.get('from_dashboard_worker')">
+                        Off Load
+                    </a>
+                </xpath>
+            </field>
+        </record>
+</odoo>
+

@@ -1,0 +1,66 @@
+<odoo>
+    <record id="account_payment_register_form_primary_inherit" model="ir.ui.view">
+        <field name="name">account.payment.register.form.primary.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='journal_id']" position="attributes">
+                 <attribute name="domain">[('company_id', '=', company_id)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='amount']" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="force_save">1</attribute>
+                <attribute name="readonly">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_register_form_inherit" model="ir.ui.view">
+        <field name="name">account.payment.register.form.inherit</field>
+        <field name="model">account.payment.register</field>
+        <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='journal_id']" position="after">
+                <field name="is_cdc_payment" invisible="1"/>
+                <field name="can_be_cdc_payable" invisible="1"/>
+                <field name="is_cdc_payable"  invisible="can_be_cdc_payable == False"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_date']" position="replace">
+                <field name="payment_date"  invisible="is_cdc_payable == False" string="Reg. Date"/>
+                <field name="payment_date" invisible="is_cdc_payment == True or is_cdc_payable == True"/>
+
+
+            </xpath>
+            <xpath expr="//field[@name='communication']" position="replace">
+                <field name="communication" />
+
+                <field name="cheque_number"
+                       invisible="(can_edit_wizard == False or is_cdc_payment == False or is_cdc_payable == True) or (can_group_payments == True and group_payment == False)"
+                       required="is_cdc_payment == True"/>
+                <field name="cheque_number"
+                       invisible="is_cdc_payable == False"
+                       required="is_cdc_payable == True" string="Cheque No."/>
+            </xpath>
+            <xpath expr="//group[@name='group2']" position="inside">
+                <field name="cdc_bank_id"  invisible="is_cdc_payment == False"
+                       required="is_cdc_payment == True"
+                       options="{'no_open': True, 'no_create': True}"/>
+                <field name="due_date" invisible="is_cdc_payment == False" required="is_cdc_payment == True"/>
+                <field name="beneficiary_id"  invisible="1" required="is_cdc_payment == True" options="{'no_open': True, 'no_create': True}"/>
+                <field name="beneficiary_name"  invisible="is_cdc_payment == False" required="is_cdc_payment == True"/>
+                <field name="cheque_owner_id" invisible="1" required="0" options="{'no_open': True, 'no_create': True}"/>
+                <field name="cheque_scanning" widget="image"  invisible="is_cdc_payment == False and is_cdc_payable ==False" />
+            </xpath>
+            <xpath expr="//field[@name='journal_id']" position="after">
+                <field name="due_date"  invisible="is_cdc_payable == False" required="is_cdc_payable == True" string="Due Date"/>
+                <field name="cdc_payable_note" invisible="is_cdc_payable == False" string="Notes"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Inherit the original template -->
+    <t t-inherit="stock_barcode.MainMenu" t-inherit-mode="extension">
+
+        <!-- Replace the Operations button using XPath -->
+        <xpath expr="//footer/button[contains(@class, 'o_button_operations')]" position="replace">
+            <button class="o_button_operations btn btn-block btn-primary mb-3 p-3 w-100"
+                    t-on-click="onClickOperations">
+                Operations
+            </button>
+        </xpath>
+
+        <xpath expr="//footer/button[contains(@class, 'o_button_inventory')]" position="replace">
+
+             <button class="o_button_inventory btn btn-block btn-info mb-3 p-3 w-100"
+                     t-on-click="onClickInventoryCount">
+<!--                            t-on-click="() => this.actionService.doAction('stock_barcode.stock_barcode_inventory_client_action')">-->
+                        Inventory Count
+                        <span t-if="this.quantCount" class="ms-2 p-1 px-2 bg-light rounded-circle text-primary" t-out="this.quantCount"/>
+             </button>
+        </xpath>
+
+    </t>
+
+</templates>

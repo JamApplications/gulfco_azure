@@ -1,0 +1,497 @@
+<odoo>
+    <data>
+
+        <!--        <record id="gulfco_sale_extanded_view_order_tree" model="ir.ui.view">-->
+        <!--            <field name="name">Sale Order Tree</field>-->
+        <!--            <field name="model">sale.order</field>-->
+        <!--            <field name="inherit_id" ref="sale.view_order_tree"/>-->
+        <!--            <field name="arch" type="xml">-->
+
+        <!--                <xpath expr="//field[@name='invoice_status']" position="after">-->
+        <!--                    <field name="discount_approval_state"/>-->
+        <!--                </xpath>-->
+
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='partner_details']//field[@name='partner_invoice_id']" position="attributes">
+                    <attribute name="domain">[('id','child_of',partner_id)]</attribute>
+                </xpath>
+                <xpath expr="//group[@name='partner_details']//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="domain">[('id','child_of',partner_id)]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="invisible">state in ['pending','approved', 'rejected']</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state']" position="after">
+                    <field name="state" widget="statusbar" invisible="state not in ['pending','approved','rejected']"
+                           statusbar_visible="draft,sent,pending,rejected,approved,sale"/>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button name="approve_discount" class="btn-primary"
+                            groups="gulfco_sale_extanded.discount_approvel_group"
+                            type="object" string="Approve"
+                            invisible="state not in ['pending', 'approve']"/>
+                    <button name="reject_discount" class="btn-danger"
+                            groups="gulfco_sale_extanded.discount_approvel_group"
+                            type="object" string="Reject"
+                            invisible="state != 'pending'"/>
+                </xpath>
+
+                <xpath expr="//button[@name='action_confirm'][2]" position="replace"/>
+                <xpath expr="//button[@name='action_confirm'][1]" position="replace">
+                    <button name="action_confirm" id="action_confirm" data-hotkey="q" string="Confirm"
+                            class="btn-primary" type="object" context="{'validate_analytic': True}"
+                            invisible="state in ['pending', 'rejected', 'cancel', 'sale']"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="groups">gulfco_contact_registration_custom.group_ccd_approval</attribute>
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="before">
+                    <field name="payment_term_id" placeholder="Immediate" options="{'no_open': True, 'no_create': True}" readonly="1"
+                       groups="!gulfco_contact_registration_custom.group_ccd_approval" force_save="1"/>
+                </xpath>
+                <xpath expr="//button[@name='action_open_discount_wizard']" position="attributes">
+                    <attribute name="invisible">state == 'sale'</attribute>
+                </xpath>
+                <xpath expr="//label[@for='commitment_date']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+
+
+                <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                    <field name="customer_partner_channel"/>
+                    <field name="re_customer_group_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="is_discount_panding" invisible="1"/>
+                    <field name="order_creation_source" readonly="1" force_save="1"/>
+                    <field name="po_number" required="order_creation_source == 'back_office'"/>
+                    <field name="po_date" required="order_creation_source == 'back_office'"/>
+                    <field name="commitment_date" required="order_creation_source == 'back_office'" widget="date" string="Delivery Request Date"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="delivery_required"/>
+                    <field name="warehouse_id"/>
+                    <field name="order_type"/>
+                    <field name="is_discount_panding" invisible="1"/>
+                    <field name="is_po_amount_panding" invisible="1"/>
+                    <field name="is_po_exp_date_panding" invisible="1"/>
+                    <field name="po_expiry_date" required="order_creation_source == 'back_office'" readonly="state == 'sale'"/>
+                    <field name="remarks"/>
+                    <field name="po_amount_without_vat" required="order_creation_source == 'back_office'" readonly="state == 'sale'"/>
+<!--                    <field name="po_amount_without_vat_char" required="order_creation_source == 'back_office'" readonly="state == 'sale'"/>-->
+<!--                    <field name="user_id" readonly="1"/>-->
+                </xpath>
+              <field name="client_order_ref" position="after">
+                       <field name="quotation_number" invisible="state not in ['sale']" readonly="1"/>    
+              </field>
+                <!--                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list/field[@name='product_id']"-->
+                <!--                       position="before">-->
+                <!--                    <field name="line_sequence" string="#"/>-->
+                <!--                    <field name="item_code"/>-->
+                <!--                </xpath>-->
+                <!--                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list/field[@name='product_template_id']"-->
+                <!--                       position="after">-->
+                <!--                    <field name="barcode"/>-->
+                <!--                    <field name="available_qty_selected" readonly="1" force_save="1"/>-->
+                <!--                    <field name="available_qty_other" readonly="1" force_save="1"/>-->
+                <!--                    <field name="forecasted_qty" readonly="1" force_save="1"/>-->
+                <!--                </xpath>-->
+                <!--                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list/field[@name='price_unit']"-->
+                <!--                       position="after">-->
+                <!--                    <field name="excise_total_amount"/>-->
+                <!--                    <field name="division"/>-->
+                <!--                </xpath>-->
+                <!--                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list/field[@name='discount']"-->
+                <!--                       position="after">-->
+                <!--                    <field name="discount_approval_state" column_invisible="1" force_save="1"/>-->
+                <!--                </xpath>-->
+
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
+                <xpath expr="//group[@name='sale_shipping']/field[@name='warehouse_id'][1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_shipping']/field[@name='warehouse_id'][2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list" position="replace">
+                    <list string="Sales Order Lines" editable="bottom" limit="200"
+                          decoration-warning="(state in ['draft', 'sent'] and is_product_archived) or ((recompute_delivery_price and is_delivery))">
+                        <control>
+                            <create name="add_product_control" string="Add a product"/>
+                            <create name="add_section_control" string="Add a section"
+                                    context="{'default_display_type': 'line_section'}"/>
+                            <create name="add_note_control" string="Add a note"
+                                    context="{'default_display_type': 'line_note'}"/>
+                            <button name="action_add_from_catalog" string="Catalog" type="object" class="px-4 btn-link"
+                                    context="{'order_id': parent.id}"/>
+                        </control>
+
+                        <field name="sequence" widget="handle" on_change="1"/>
+                        <!-- We do not display the type because we don't want the user to be bothered with that information if he has no section or note. -->
+                        <field name="display_type" column_invisible="True" on_change="1"/>
+                        <field name="product_uom_category_id" column_invisible="True"/>
+                        <field name="product_type" column_invisible="True"/>
+                        <field name="product_updatable" column_invisible="True"/>
+                        <field name="is_downpayment" column_invisible="True"/>
+                        <field name="line_sequence" string="#"/>
+                        <field name="item_code" column_invisible="True"/>
+                        <field name="product_id" string="Product Variant" readonly="not product_updatable"
+                               required="not display_type and not is_downpayment" force_save="1"
+                               context="{'is_article': True,'partner_id': parent.partner_id,'quantity': product_uom_qty,'pricelist': parent.pricelist_id,                                         'uom':product_uom,                                         'company_id': parent.company_id,                                         'default_lst_price': price_unit,                                         'default_uom_id': product_uom,                                     }"
+                               options="{'no_open': True,}"
+                               optional="hide" domain="[('sale_ok', '=', True)]" widget="sol_product_many2one"
+                               on_change="1"
+                               can_create="True" can_write="True"/>
+                        <field name="list_of_mapped_items" column_invisible="True"/>
+                        <field name="product_template_id" string="Product" readonly="id and not product_updatable"
+                               required="not display_type and not is_downpayment"
+                               context="{'is_article': True,'partner_id': parent.partner_id, 'quantity': product_uom_qty,                         'pricelist': parent.pricelist_id,                         'uom':product_uom, 'company_id': parent.company_id, 'default_list_price': price_unit,                         'default_uom_id': product_uom,}"
+                               options="{'no_open': True,}" optional="show"
+                               domain="[('sale_ok', '=', True), ('id', 'in', list_of_mapped_items)]"
+                               widget="sol_product_many2one"
+                               placeholder="Type to find a product..." column_invisible="not parent.fsm_order_id"
+                               on_change="1"
+                               can_create="True" can_write="True"/>
+                        <field name="product_template_id" string="Product" readonly="id and not product_updatable"
+                               required="not display_type and not is_downpayment"
+                               context="{'is_article':True,'partner_id': parent.partner_id, 'quantity': product_uom_qty,                         'pricelist': parent.pricelist_id,                         'uom':product_uom, 'company_id': parent.company_id, 'default_list_price': price_unit,                         'default_uom_id': product_uom,}"
+                               options="{'no_open': True,}" optional="show" domain="[('sale_ok', '=', True)]"
+                               widget="sol_product_many2one" placeholder="Type to find a product..."
+                               column_invisible="parent.fsm_order_id" on_change="1" can_create="True" can_write="True"/>
+                        <field name="product_template_attribute_value_ids" column_invisible="1"/>
+                        <field name="product_custom_attribute_value_ids" column_invisible="1">
+                            <list>
+                                <field name="custom_product_template_attribute_value_id"/>
+                                <field name="custom_value"/>
+                            </list>
+                        </field>
+                        <field name="product_no_variant_attribute_value_ids" column_invisible="1" can_create="True"
+                               can_write="True"/>
+                        <field name="is_configurable_product" column_invisible="1"/>
+                        <field name="linked_line_id" column_invisible="1" on_change="1" can_create="True"
+                               can_write="True"/>
+                        <field name="virtual_id" column_invisible="1"/>
+                        <field name="linked_virtual_id" column_invisible="1"/>
+                        <field name="selected_combo_items" column_invisible="1"/>
+                        <field name="combo_item_id" column_invisible="1" can_create="True" can_write="True"/>
+                        <field name="name" widget="sol_text" optional="show"/>
+
+
+
+                        <field name="product_packaging_id" invisible="not product_id"
+                               context="{'default_product_id': product_id, 'list_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"
+                               optional="show" on_change="1" can_create="True" can_write="True"/>
+                        <field name="product_packaging_qty" invisible="not product_id or not product_packaging_id"
+                               optional="show"
+                               on_change="1"/>
+                        <field name="product_packaging_price" invisible="not product_id or not product_packaging_id"
+                               optional="show"
+                               on_change="1"/>
+                        <field name="barcode"/>
+                        <field name="product_uom" force_save="1" string="UoM" readonly="product_uom_readonly"
+                               required="not display_type and not is_downpayment"
+                               context="{'company_id': parent.company_id}"
+                               options="{&quot;no_open&quot;: True}" width="60px" optional="show" on_change="1"
+                               can_create="True"
+                               can_write="True"/>
+                        <field name="price_unit" readonly="(qty_invoiced &gt; 0) or (is_reward_line)" on_change="1"/>
+                        <field name="product_uom_qty"
+                               decoration-info="(not display_type and invoice_status == 'to invoice')"
+                               decoration-bf="(not display_type and invoice_status == 'to invoice')"
+                               context="{'partner_id': parent.partner_id,'quantity': product_uom_qty,                                         'pricelist': parent.pricelist_id,                                         'uom': product_uom,                                         'company_id': parent.company_id                                     }"
+                               readonly="(is_downpayment) or (is_reward_line)" on_change="1"/>
+                        <field name="available_qty_selected" readonly="1" force_save="1"/>
+                        <field name="available_qty_other" readonly="1" force_save="1"/>
+                        <field name="division"/>
+                        <field name="exercise_price"/>
+                        <field name="price_subtotal" column_invisible="parent.company_price_include == 'tax_included'"
+                               invisible="is_downpayment" string="Total Before Tax" on_change="1"/>
+                        <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"
+                               domain="[('type_tax_use', '=', 'sale'), ('company_id', 'parent_of', parent.company_id), ('country_id', '=', parent.tax_country_id)]"
+                               context="{'active_test': True}"
+                               readonly="(qty_invoiced &gt; 0 or is_downpayment) or (is_reward_line)" optional="show"
+                               on_change="1"
+                               can_create="True" can_write="True"/>
+                        <field name="price_total" column_invisible="parent.company_price_include == 'tax_included'"
+                               optional="hide" force_save="1"
+                               invisible="is_downpayment" string="Tax Incl."/>
+                        <field name="price_total" column_invisible="parent.company_price_include == 'tax_excluded'"
+                               invisible="is_downpayment" string="Amount" force_save="1"/>
+                        <field name="discount" string="Disc.%" width="50px" optional="show" on_change="1" readonly="reward_id"/>
+                        <field name="customer_article_code" readonly="1"/>
+                        <field name="forecasted_qty" readonly="1" force_save="1"/>
+                        <field name="analytic_distribution" widget="analytic_distribution" optional="hide"
+                               options="{'product_field': 'product_id', 'business_domain': 'sale_order', 'amount_field': 'price_subtotal'}"/>
+                        <field name="route_id" options="{'no_create': True}" optional="hide" on_change="1"
+                               can_create="True"
+                               can_write="True"/>
+                        <field name="is_reward_line" column_invisible="True"/>
+                        <field name="qty_delivered"
+                               decoration-info="(not display_type and invoice_status == 'to invoice')"
+                               decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Delivered"
+                               column_invisible="parent.state != 'sale'"
+                               readonly="qty_delivered_method != 'manual' or is_downpayment" optional="show"
+                               on_change="1"/>
+                        <!-- below fields are used in the widget qty_at_date_widget -->
+                        <field name="virtual_available_at_date" column_invisible="True"/>
+                        <field name="qty_available_today" column_invisible="True"/>
+                        <field name="free_qty_today" column_invisible="True"/>
+                        <field name="scheduled_date" column_invisible="True"/>
+                        <field name="forecast_expected_date" column_invisible="True"/>
+                        <field name="warehouse_id" column_invisible="True" on_change="1"/>
+                        <field name="move_ids" column_invisible="True" on_change="1"/>
+                        <field name="qty_to_deliver" column_invisible="True"/>
+                        <field name="is_mto" column_invisible="True"/>
+                        <field name="display_qty_widget" column_invisible="True"/>
+                        <widget name="qty_at_date_widget" width="20px"/>
+                        <field name="qty_delivered_method" column_invisible="True" on_change="1"/>
+                        <field name="qty_invoiced"
+                               decoration-info="(not display_type and invoice_status == 'to invoice')"
+                               decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Invoiced"
+                               column_invisible="parent.state != 'sale'" optional="show" on_change="1"/>
+                        <field name="qty_to_invoice" column_invisible="True" on_change="1"/>
+                        <field name="product_uom_readonly" column_invisible="True"/>
+                        <field name="customer_lead" optional="hide" width="80px"
+                               readonly="parent.state not in ['draft', 'sent', 'sale'] or is_downpayment"
+                               on_change="1"/>
+                        <field name="recompute_delivery_price" column_invisible="True"/>
+                        <field name="is_delivery" column_invisible="True"/>
+                        <field name="technical_price_unit" column_invisible="1"/>
+                        <field name="discount_approval_state" column_invisible="1" force_save="1"/>
+                        <field name="is_downpayment" column_invisible="True"/>
+                        <!-- Others fields -->
+                        <field name="tax_calculation_rounding_method" column_invisible="True"/>
+                        <field name="state" column_invisible="True" on_change="1"/>
+                        <field name="invoice_status" column_invisible="True" on_change="1"/>
+                        <field name="currency_id" column_invisible="True"/>
+                        <field name="price_tax" column_invisible="True"/>
+                        <field name="company_id" column_invisible="True" on_change="1"/>
+                        <field name="product_document_ids" column_invisible="1" can_create="True" can_write="True"/>
+                        <field string="Related Task" name="task_id" optional="hidden" can_create="True"
+                               can_write="True"/>
+                        <field name="is_product_archived" column_invisible="True" readonly="True"
+                               data-used-by="decoration-warning=&quot;(state in ['draft', 'sent'] and is_product_archived) or ((recompute_delivery_price and is_delivery))&quot; (list,None)"/>
+                        <field name="order_id" column_invisible="True" readonly="True"
+                               data-used-by="domain=&quot;[('order_id', '=', order_id)]&quot; (field,linked_line_id)"
+                               on_change="1"/>
+                        <field name="available_product_document_ids" column_invisible="True" readonly="True"
+                               data-used-by="domain=&quot;[('id', 'in', available_product_document_ids)]&quot; (field,product_document_ids)"
+                               on_change="1"/>
+                    </list>
+                </xpath>
+
+
+<!--                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list" position="replace">-->
+<!--                    <list string="Sales Order Lines" editable="bottom" limit="200"-->
+<!--                          decoration-warning="(state in ['draft', 'sent'] and is_product_archived) or ((recompute_delivery_price and is_delivery))">-->
+<!--                        <control>-->
+<!--                            <create name="add_product_control" string="Add a product"/>-->
+<!--                            <create name="add_section_control" string="Add a section"-->
+<!--                                    context="{'default_display_type': 'line_section'}"/>-->
+<!--                            <create name="add_note_control" string="Add a note"-->
+<!--                                    context="{'default_display_type': 'line_note'}"/>-->
+<!--                            <button name="action_add_from_catalog" string="Catalog" type="object" class="px-4 btn-link"-->
+<!--                                    context="{'order_id': parent.id}"/>-->
+<!--                        </control>-->
+
+<!--                        <field name="sequence" widget="handle" on_change="1"/>-->
+<!--                        &lt;!&ndash; We do not display the type because we don't want the user to be bothered with that information if he has no section or note. &ndash;&gt;-->
+<!--                        <field name="display_type" column_invisible="True" on_change="1"/>-->
+<!--                        <field name="product_uom_category_id" column_invisible="True"/>-->
+<!--                        <field name="product_type" column_invisible="True"/>-->
+<!--                        <field name="product_updatable" column_invisible="True"/>-->
+<!--                        <field name="is_downpayment" column_invisible="True"/>-->
+<!--                        <field name="line_sequence" string="#"/>-->
+<!--                        <field name="item_code" column_invisible="True"/>-->
+<!--                        <field name="product_id" string="Product Variant" readonly="not product_updatable"-->
+<!--                               required="not display_type and not is_downpayment" force_save="1"-->
+<!--                               context="{'is_article': True,'partner_id': parent.partner_id,'quantity': product_uom_qty,'pricelist': parent.pricelist_id,                                         'uom':product_uom,                                         'company_id': parent.company_id,                                         'default_lst_price': price_unit,                                         'default_uom_id': product_uom,                                     }"-->
+<!--                               options="{'no_open': True,}"-->
+<!--                               optional="hide" domain="[('sale_ok', '=', True)]" widget="sol_product_many2one"-->
+<!--                               on_change="1"-->
+<!--                               can_create="True" can_write="True"/>-->
+<!--                        <field name="list_of_mapped_items" column_invisible="True"/>-->
+<!--                        <field name="product_template_id" string="Product" readonly="id and not product_updatable"-->
+<!--                               required="not display_type and not is_downpayment"-->
+<!--                               context="{'is_article':True,'partner_id': parent.partner_id, 'quantity': product_uom_qty,                         'pricelist': parent.pricelist_id,                         'uom':product_uom, 'company_id': parent.company_id, 'default_list_price': price_unit,                         'default_uom_id': product_uom,}"-->
+<!--                               options="{'no_open': True,}" optional="show" domain="[('sale_ok', '=', True)]"-->
+<!--                               widget="sol_product_many2one" placeholder="Type to find a product..."-->
+<!--                               column_invisible="parent.fsm_order_id" on_change="1" can_create="True" can_write="True"/>-->
+<!--                        <field name="product_template_id" string="Product" readonly="id and not product_updatable"-->
+<!--                               required="not display_type and not is_downpayment"-->
+<!--                               context="{'is_article': True,'partner_id': parent.partner_id, 'quantity': product_uom_qty,                         'pricelist': parent.pricelist_id,                         'uom':product_uom, 'company_id': parent.company_id, 'default_list_price': price_unit,                         'default_uom_id': product_uom,}"-->
+<!--                               options="{'no_open': True,}" optional="show"-->
+<!--                               domain="[('sale_ok', '=', True), ('id', 'in', list_of_mapped_items)]"-->
+<!--                               widget="sol_product_many2one"-->
+<!--                               placeholder="Type to find a product..." column_invisible="not parent.fsm_order_id"-->
+<!--                               on_change="1"-->
+<!--                               can_create="True" can_write="True"/>-->
+<!--                        <field name="product_template_attribute_value_ids" column_invisible="1"/>-->
+<!--                        <field name="product_custom_attribute_value_ids" column_invisible="1">-->
+<!--                            <list>-->
+<!--                                <field name="custom_product_template_attribute_value_id"/>-->
+<!--                                <field name="custom_value"/>-->
+<!--                            </list>-->
+<!--                        </field>-->
+<!--                        <field name="product_no_variant_attribute_value_ids" column_invisible="1" can_create="True"-->
+<!--                               can_write="True"/>-->
+<!--                        <field name="is_configurable_product" column_invisible="1"/>-->
+<!--                        <field name="linked_line_id" column_invisible="1" on_change="1" can_create="True"-->
+<!--                               can_write="True"/>-->
+<!--                        <field name="virtual_id" column_invisible="1"/>-->
+<!--                        <field name="linked_virtual_id" column_invisible="1"/>-->
+<!--                        <field name="selected_combo_items" column_invisible="1"/>-->
+<!--                        <field name="combo_item_id" column_invisible="1" can_create="True" can_write="True"/>-->
+<!--                        <field name="name" widget="sol_text" optional="show"/>-->
+<!--                        <field name="product_uom" force_save="1" string="UoM" readonly="product_uom_readonly"-->
+<!--                               required="not display_type and not is_downpayment"-->
+<!--                               context="{'company_id': parent.company_id}"-->
+<!--                               options="{&quot;no_open&quot;: True}" width="60px" optional="show" on_change="1"-->
+<!--                               can_create="True"-->
+<!--                               can_write="True"/>-->
+<!--                        <field name="barcode"/>-->
+<!--                        <field name="product_uom_qty"-->
+<!--                               decoration-info="(not display_type and invoice_status == 'to invoice')"-->
+<!--                               decoration-bf="(not display_type and invoice_status == 'to invoice')"-->
+<!--                               context="{'partner_id': parent.partner_id,'quantity': product_uom_qty,                                         'pricelist': parent.pricelist_id,                                         'uom': product_uom,                                         'company_id': parent.company_id                                     }"-->
+<!--                               readonly="(is_downpayment) or (is_reward_line)" on_change="1"/>-->
+<!--                        <field name="available_qty_other" readonly="1" force_save="1"/>-->
+<!--                        <field name="available_qty_selected" readonly="1" force_save="1"/>-->
+<!--                        <field name="price_unit" readonly="(qty_invoiced &gt; 0) or (is_reward_line)" on_change="1"/>-->
+<!--                        <field name="exercise_price"/>-->
+<!--                        <field name="price_subtotal" column_invisible="parent.company_price_include == 'tax_included'"-->
+<!--                               invisible="is_downpayment" string="Total Before Tax" on_change="1"/>-->
+<!--                        <field name="tax_id" widget="many2many_tags" options="{'no_create': True}"-->
+<!--                               domain="[('type_tax_use', '=', 'sale'), ('company_id', 'parent_of', parent.company_id), ('country_id', '=', parent.tax_country_id)]"-->
+<!--                               context="{'active_test': True}"-->
+<!--                               readonly="(qty_invoiced &gt; 0 or is_downpayment) or (is_reward_line)" optional="show"-->
+<!--                               on_change="1"-->
+<!--                               can_create="True" can_write="True"/>-->
+<!--                        <field name="price_total" column_invisible="parent.company_price_include == 'tax_included'"-->
+<!--                               optional="hide" force_save="1"-->
+<!--                               invisible="is_downpayment" string="Tax Incl."/>-->
+<!--                        <field name="price_total" column_invisible="parent.company_price_include == 'tax_excluded'"-->
+<!--                               invisible="is_downpayment" string="Amount" force_save="1"/>-->
+<!--                        <field name="division"/>-->
+<!--                        <field name="forecasted_qty" readonly="1" force_save="1"/>-->
+<!--                        <field name="analytic_distribution" widget="analytic_distribution" optional="hide"-->
+<!--                               options="{'product_field': 'product_id', 'business_domain': 'sale_order', 'amount_field': 'price_subtotal'}"/>-->
+<!--                        <field name="route_id" options="{'no_create': True}" optional="hide" on_change="1"-->
+<!--                               can_create="True"-->
+<!--                               can_write="True"/>-->
+<!--                        <field name="is_reward_line" column_invisible="True"/>-->
+<!--                        <field name="qty_delivered"-->
+<!--                               decoration-info="(not display_type and invoice_status == 'to invoice')"-->
+<!--                               decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Delivered"-->
+<!--                               column_invisible="parent.state != 'sale'"-->
+<!--                               readonly="qty_delivered_method != 'manual' or is_downpayment" optional="show"-->
+<!--                               on_change="1"/>-->
+<!--                        &lt;!&ndash; below fields are used in the widget qty_at_date_widget &ndash;&gt;-->
+<!--                        <field name="virtual_available_at_date" column_invisible="True"/>-->
+<!--                        <field name="qty_available_today" column_invisible="True"/>-->
+<!--                        <field name="free_qty_today" column_invisible="True"/>-->
+<!--                        <field name="scheduled_date" column_invisible="True"/>-->
+<!--                        <field name="forecast_expected_date" column_invisible="True"/>-->
+<!--                        <field name="warehouse_id" column_invisible="True" on_change="1"/>-->
+<!--                        <field name="move_ids" column_invisible="True" on_change="1"/>-->
+<!--                        <field name="qty_to_deliver" column_invisible="True"/>-->
+<!--                        <field name="is_mto" column_invisible="True"/>-->
+<!--                        <field name="display_qty_widget" column_invisible="True"/>-->
+<!--                        <widget name="qty_at_date_widget" width="20px"/>-->
+<!--                        <field name="qty_delivered_method" column_invisible="True" on_change="1"/>-->
+<!--                        <field name="qty_invoiced"-->
+<!--                               decoration-info="(not display_type and invoice_status == 'to invoice')"-->
+<!--                               decoration-bf="(not display_type and invoice_status == 'to invoice')" string="Invoiced"-->
+<!--                               column_invisible="parent.state != 'sale'" optional="show" on_change="1"/>-->
+<!--                        <field name="qty_to_invoice" column_invisible="True" on_change="1"/>-->
+<!--                        <field name="product_uom_readonly" column_invisible="True"/>-->
+<!--                        <field name="customer_lead" optional="hide" width="80px"-->
+<!--                               readonly="parent.state not in ['draft', 'sent', 'sale'] or is_downpayment"-->
+<!--                               on_change="1"/>-->
+<!--                        <field name="product_packaging_qty" invisible="not product_id or not product_packaging_id"-->
+<!--                               optional="show"-->
+<!--                               on_change="1"/>-->
+<!--                        <field name="product_packaging_id" invisible="not product_id"-->
+<!--                               context="{'default_product_id': product_id, 'list_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}"-->
+<!--                               optional="show" on_change="1" can_create="True" can_write="True"/>-->
+<!--                        <field name="recompute_delivery_price" column_invisible="True"/>-->
+<!--                        <field name="is_delivery" column_invisible="True"/>-->
+<!--                        <field name="technical_price_unit" column_invisible="1"/>-->
+<!--                        <field name="discount" string="Disc.%" width="50px" optional="show" on_change="1" readonly="reward_id"/>-->
+<!--                        <field name="discount_approval_state" column_invisible="1" force_save="1"/>-->
+<!--                        <field name="is_downpayment" column_invisible="True"/>-->
+<!--                        &lt;!&ndash; Others fields &ndash;&gt;-->
+<!--                        <field name="tax_calculation_rounding_method" column_invisible="True"/>-->
+<!--                        <field name="state" column_invisible="True" on_change="1"/>-->
+<!--                        <field name="invoice_status" column_invisible="True" on_change="1"/>-->
+<!--                        <field name="currency_id" column_invisible="True"/>-->
+<!--                        <field name="price_tax" column_invisible="True"/>-->
+<!--                        <field name="company_id" column_invisible="True" on_change="1"/>-->
+<!--                        <field name="product_document_ids" column_invisible="1" can_create="True" can_write="True"/>-->
+<!--                        <field string="Related Task" name="task_id" optional="hidden" can_create="True"-->
+<!--                               can_write="True"/>-->
+<!--                        <field name="is_product_archived" column_invisible="True" readonly="True"-->
+<!--                               data-used-by="decoration-warning=&quot;(state in ['draft', 'sent'] and is_product_archived) or ((recompute_delivery_price and is_delivery))&quot; (list,None)"/>-->
+<!--                        <field name="order_id" column_invisible="True" readonly="True"-->
+<!--                               data-used-by="domain=&quot;[('order_id', '=', order_id)]&quot; (field,linked_line_id)"-->
+<!--                               on_change="1"/>-->
+<!--                        <field name="available_product_document_ids" column_invisible="True" readonly="True"-->
+<!--                               data-used-by="domain=&quot;[('id', 'in', available_product_document_ids)]&quot; (field,product_document_ids)"-->
+<!--                               on_change="1"/>-->
+<!--                    </list>-->
+<!--                </xpath>-->
+
+
+            </field>
+        </record>
+
+        <record id="sale_order_view_search_inherit_quotation_custom" model="ir.ui.view">
+            <field name="name">sale.order.search.inherit.custom</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter name="state" string="Discount Approvel Status" domain="[]"
+                            context="{'group_by': 'state'}"/>
+                </xpath>
+
+
+                <xpath expr="//field[@name='name']" position="replace">
+                    <field name="name" string="Order" filter_domain="['|', '|', '|', ('name', 'ilike', self),
+                    ('client_order_ref', 'ilike', self), ('partner_id', 'child_of', self), ('quotation_number', 'ilike', self)]"/>
+                    <field name="quotation_number"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="discount_approval_action" model="ir.actions.act_window">
+            <field name="name">Discount Approval</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="domain">[("state", "in", ["pending", "rejected"])]</field>
+            <field name="context">{'search_default_my_quotation': 1, 'search_default_state': 1}
+            </field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <menuitem id="menu_sale_quotations_discount_approval" name="pending Quatation (Discount)"
+                  action="discount_approval_action"
+                  groups="sales_team.group_sale_salesman"
+                  parent="sale.sale_order_menu"
+                  sequence="10"/>
+
+    </data>
+</odoo>

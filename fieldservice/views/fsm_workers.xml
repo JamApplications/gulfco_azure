@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+        <record id="action_workers" model="ir.actions.act_window">
+            <field name="name">Worker</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,list,form,activity</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="context">{'default_company_type':'person',
+                'default_fsm_person': True, 'default_contact_type': 'worker'}
+            </field>
+            <field name="domain">[('contact_type', '=', 'worker'), ('fsm_person', '=', True)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a Contact in your Vendor Registration book
+                </p>
+                <p>
+                    Odoo helps you track all activities related to your contacts.
+                </p>
+            </field>
+        </record>
+
+
+</odoo>

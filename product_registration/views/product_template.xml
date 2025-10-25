@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_registration_template_search_view" model="ir.ui.view">
+        <field name="name">product.registration.search.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='type']" position="after">
+                <separator/>
+                <filter string="Registration Status" name="product_registration_state" context="{'group_by':'registration_status'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_registration_list_view_custom_mine" model="ir.ui.view">
+        <field name="name">product.registration.list.view</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="is_favorite" widget="boolean_favorite" optional="show" nolabel="1"/>
+                <field name="name"/>
+                <field name="municipality_status" optional="show"/>
+                <field name="registration_status" widget="badge"
+                       decoration-success="registration_status == 'approved'"
+                       decoration-danger="registration_status == 'rejected'"
+                       decoration-warning="registration_status == 'returned_for_correction'"
+                       decoration-info="registration_status == 'pending_internal_approval'"/>
+                <field name="default_code"/>
+                <field name="purchase_ok" optional="show"/>
+                <field name="responsible_id" optional="hide" widget="many2one_avatar_user"/>
+                <field name="product_tag_ids" widget="many2many_tags"/>
+                <field name="website_ribbon_id" optional="hide"/>
+                <field name="barcode" optional="hide"/>
+<!--                <field name="pos_categ_ids" optional="hide"/>-->
+<!--                <field name="available_in_pos" optional="hide"/>-->
+<!--                <field name="self_order_available" optional="hide"/>-->
+                <field name="categ_id" optional="hide"/>
+                <field name="type" optional="hide"/>
+                <field name="list_price"  widget='monetary' options="{'currency_field': 'cost_currency_id'}" optional="show"/>
+                <field name="standard_price"  widget='monetary' options="{'currency_field': 'cost_currency_id'}" optional="show" readonly="1"/>
+                <field name="qty_available" optional="show"/>
+                <field name="virtual_available" optional="show"/>
+                <field name="uom_id" optional="show"/>
+                <field name="expiration_time" optional="show"/>
+
+            </list>
+        </field>
+    </record>
+
+    <record id="product_registration_list_view" model="ir.ui.view">
+        <field name="name">product.registration.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="municipality_status" invisible="1"/>
+                <field name="registration_status" widget="badge"
+                       decoration-success="registration_status == 'approved'"
+                       decoration-danger="registration_status == 'rejected'"
+                       decoration-warning="registration_status == 'returned_for_correction'"
+                       decoration-info="registration_status == 'pending_internal_approval'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_registration_form_view" model="ir.ui.view">
+        <field name="name">product.registration.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="js_class">is_not_unarchive</attribute>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="is_all_edit" invisible="1"/>
+                <button class="btn-primary" invisible="registration_status not in ['approved', 'approve_without_municipality'] or is_all_edit == True" name="view_edit_update" type="object" string="Update" context="{'is_update':1}"/>
+                <field name="registration_status" widget="statusbar"
+                       statusbar_visible="draft,pending_internal_approval,approved_to_submit_in_municipality,approve_without_municipality"/>
+                <button string="Submit for Muncipality Registration" name="action_pending_internal_approval"
+                        type="object" class="oe_highlight"
+                        invisible="not context.get('registration_mode') or registration_status != 'draft'"
+                        groups="product_registration.group_submit_for_municipality_registration"/>
+                <!--                <button string="Approve to Submit in Municipality"-->
+                <!--                        invisible="not context.get('registration_mode') or registration_status != 'pending_internal_approval'"-->
+                <!--                        name="action_approved_to_submit_in_municipality" type="object" class="oe_highlight"/>-->
+                <button name="action_approve_municipality" string="Approve"
+                        type="object" class="oe_highlight"
+                        invisible="not context.get('registration_mode') or registration_status != 'pending_internal_approval'"
+                        groups="product_registration.group_pending_internal_approval"/>
+                <button name="action_approved" string="Approve"
+                        type="object" class="oe_highlight"
+                        invisible="not context.get('registration_mode') or registration_status != 'submit_to_item_activation'"
+                        groups="product_registration.group_submit_item_activation_approval"
+                />
+                <button name="action_approved" string="Approve"
+                        type="object" class="oe_highlight"
+                        invisible="not context.get('registration_mode') or registration_status != 'submit_to_item_active_without_municipality'"
+                        groups="product_registration.group_item_activation_without_municipality_approval"/>
+                <button string="Reject"
+                        invisible="not context.get('registration_mode') or registration_status not in  ['pending_internal_approval']"
+                        name="action_rejected" type="object" class="oe_highlight"
+                        groups="product_registration.group_pending_internal_approval"/>
+                <button string="Reject"
+                        invisible="not context.get('registration_mode') or registration_status not in  ['submit_to_item_activation']"
+                        name="action_rejected" type="object" class="oe_highlight"
+                        groups="product_registration.group_submit_item_activation_approval"/>
+                <button string="Reject"
+                        invisible="not context.get('registration_mode') or registration_status not in  ['submit_to_item_active_without_municipality']"
+                        name="action_rejected" type="object" class="oe_highlight"
+                        groups="product_registration.group_item_activation_without_municipality_approval"/>
+                <button string="Return" name="action_returned_for_correction" type="object"
+                        invisible="not context.get('registration_mode') or registration_status not in ['pending_internal_approval']"
+                        class="oe_highlight"
+                        groups="product_registration.group_pending_internal_approval"/>
+                <button string="Submit To Item Activation" name="action_submit_item_activation"
+                        type="object" class="oe_highlight"
+                        invisible="not context.get('registration_mode') or registration_status != 'approved_to_submit_in_municipality'"
+                        groups="product_registration.group_submit_item_activation"/>
+                <button string="Submit To Item Activation without municipality"
+                        name="action_submit_item_activation_without_municipality"
+                        type="object" class="oe_highlight"
+                        invisible="not context.get('registration_mode') or registration_status != 'returned_for_correction'"
+                        groups="product_registration.group_submit_item_activation_without_municipality"/>
+                <button string="Submit To Item Activation without municipality"
+                        name="action_approve_without_municipality"
+                        type="object" class="oe_highlight"
+                        invisible="not context.get('registration_mode') or registration_status != 'approved_to_submit_in_municipality'"
+                        groups="product_registration.group_submit_item_activation_without_municipality"/>
+<!--                <button string="Delete"-->
+<!--                        invisible="not context.get('registration_mode') or registration_status not in ['submit_to_item_active_without_municipality']"-->
+<!--                        name="action_deleted" type="object" class="oe_highlight"-->
+<!--                        groups="product_registration.group_item_activation_without_municipality_approval"/>-->
+<!--                <button string="Delete"-->
+<!--                        invisible="not context.get('registration_mode') or registration_status not in ['submit_to_item_activation']"-->
+<!--                        name="action_deleted" type="object" class="oe_highlight"-->
+<!--                        groups="product_registration.group_submit_item_activation_approval"/>-->
+                <button string="Set To Draft"
+                        invisible="not context.get('registration_mode') or registration_status not in ['approved'] or active"
+                        name="action_set_to_draft" type="object" class="oe_highlight"/>
+                <!--                <button string="Approve"-->
+                <!--                        invisible="not context.get('registration_mode') or registration_status != 'approved_to_submit_in_municipality'"-->
+                <!--                        name="action_approved" type="object" class="oe_highlight"/>-->
+                <!--                <button string="Reject"-->
+                <!--                        invisible="not context.get('registration_mode') or registration_status != 'approved_to_submit_in_municipality'"-->
+                <!--                        name="action_rejected" type="object" class="oe_highlight"/>-->
+                <!--                <button string="Return" name="action_returned_for_correction" type="object"-->
+                <!--                        invisible="not context.get('registration_mode') or registration_status != 'approved_to_submit_in_municipality'"-->
+                <!--                        class="oe_highlight"/>-->
+                <!--                <button string="Delete"-->
+                <!--                        invisible="not context.get('registration_mode') or registration_status != 'approved_to_submit_in_municipality'"-->
+                <!--                        name="action_deleted" type="object" class="oe_highlight"/>-->
+            </xpath>
+            <xpath expr="//page[@name='general_information']" position="before">
+                <page string="Registration Form" name="registration_form" invisible="type in ['consu', 'service', 'combo'] and is_storable == False">
+<!--                <page string="Registration Form" name="registration_form">-->
+                    <group>
+                        <group string="Product Details">
+                            <field name="barcode" string="EAC Barcode" invisible="1"/>
+                            <field name="weight" string="Net weight" invisible="1"/>
+                            <!--              <field name="type" />-->
+                            <!--              <label for="is_storable" class="oe_inline" invisible="type != 'consu'" />-->
+                            <!--              <div class="o_row w-100" invisible="type != 'consu'">-->
+                            <!--                <field name="is_storable" />-->
+                            <!--                <field name="tracking" invisible="not is_storable"-->
+                            <!--                  groups="stock.group_production_lot" />-->
+                            <!--              </div>-->
+                            <!--              <field name="use_expiration_date" string="Expiration Date"-->
+                            <!--                invisible="tracking == 'none'" />-->
+                            <field name="ingredient_details"/>
+                            <field name="hs_code" invisible="1"/>
+                            <field name="country_of_origin"
+                                   options="{'no_open': True, 'no_create': True}" string="Country of Origin" invisible="1"/>
+                        </group>
+                        <group string="Supplier Agreement">
+                            <field name="is_supplier_agreement"/>
+                        </group>
+
+<!--                        <group string="Municipality Registration">-->
+<!--                            <field name="govt_auth_name" required="type == 'consu' and is_storable == True"/>-->
+<!--                            <field name="govt_comments" required="type == 'consu' and is_storable == True"/>-->
+<!--                        </group>-->
+
+                        <group string="Dates" name="expiry_and_lots" groups="stock.group_production_lot"
+                               invisible="1">
+                            <label for="expiration_time"/>
+                            <div>
+                                <field name="expiration_time" class="oe_inline"/>
+                                <span>days after receipt</span>
+                            </div>
+                            <label for="use_time"/>
+                            <div>
+                                <field name="use_time" class="oe_inline"/>
+                                <span>days before expiration date</span>
+                            </div>
+                            <label for="removal_time"/>
+                            <div>
+                                <field name="removal_time" class="oe_inline"/>
+                                <span>days before expiration date</span>
+                            </div>
+                            <label for="alert_time"/>
+                            <div>
+                                <field name="alert_time" class="oe_inline"/>
+                                <span>days before expiration date</span>
+                            </div>
+                        </group>
+
+<!--                        <group string="Municipality Registration">-->
+<!--                            -->
+<!--                            <field name="registration_no"/>-->
+<!--                            <field name="registration_date" required="type == 'consu' and is_storable == True"/>-->
+<!--                        </group>-->
+                        <group>
+                        </group>
+                    </group>
+                    <group string="Municipality Registration">
+                        <field name="govt_authority_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="certificate_no"/>
+                                    <field name="registration_date"/>
+                                    <field name="expiry_date"/>
+                                    <field name="c_f_g_a"/>
+                                    <field name="municipality_status"/>
+                                </list>
+                            </field>
+                        <group>
+                            <field name="municipality_status" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Attachments">
+                        <group>
+                            <field name="product_attachment" widget="binary"/>
+                            <field name="label_attachment" widget="binary"/>
+                            <field name="msds_attachment" widget="binary"/>
+                        </group>
+                        <group>
+                            <field name="freesale_attachment" widget="binary"/>
+                            <field name="analysis_attachment" widget="binary"/>
+                            <field name="ingredient_division_attachment" widget="binary"/>
+                            <field name="other_attachment" widget="binary"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='sales']" position="attributes">
+                <attribute name="invisible">not sale_ok or registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+            <xpath expr="//group[@name='purchase']" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_policy']" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="default_code" string="Gulfco code"
+                       invisible="not context.get('registration_mode')"
+                       required="registration_status != 'approved' and context.get('registration_mode')"/>
+                <field name="barcode"
+                       invisible="not context.get('registration_mode')"
+                       required="registration_status != 'approved' and context.get('registration_mode')"/>
+            </xpath>
+            <xpath expr="//field[@name='division']" position="attributes">
+                <attribute name="required">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+            <xpath expr="//page[@name='inventory']" position="attributes">
+                <attribute name="invisible">type in ['service', 'combo'] or item_type == 'consumable'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="gulfco_product_registration_only_detailed_data_inherit_accounting_form" model="ir.ui.view">
+        <field name="name">product.detailed.only.data.inherit.form.accounting</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="attributes">
+                <attribute name="readonly">registration_status != 'draft'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_template_property_form_stock_inherit_custom_form_view" model="ir.ui.view">
+        <field name="name">template.property.form.stock.inherit.custom.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_template_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='operations']" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+            <xpath expr="//group[@name='stock_property']" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='description_pickingin']/parent::group" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='description_pickingout']/parent::group" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+<!--            <xpath expr="//label[@for='is_storable']" position="attributes">-->
+<!--                <attribute name="invisible">type != 'consu' or item_type == 'consumable'</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//div[hasclass('o_row')]" position="attributes">-->
+<!--                <attribute name="invisible">type != 'consu' or item_type == 'consumable'</attribute>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+
+    <record id="view_account_product_template_inherit_custom_form_view" model="ir.ui.view">
+        <field name="name">account.product.template.inherit.custom.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_account_income_id']/parent::group" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='property_account_expense_id']/parent::group" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_form_view_inherit_account_intrastat_custom_form_view" model="ir.ui.view">
+        <field name="name">account.intrastat.product.template.inherit.custom.form.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account_intrastat.product_template_form_view_inherit_account_intrastat"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='intrastat']" position="attributes">
+                <attribute name="invisible">registration_status != 'approved' and context.get('registration_mode')
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+       <record id="product_registration_action_registration" model="ir.actions.act_window">
+            <field name="name">Products</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'registration_mode': True,'search_default_product_registration_state':1}</field>
+            <field name="domain">['|','&amp;',('active', 'in', [False]),('registration_status','=','approved'),'&amp;',('active',
+            'in', [False]),('registration_status','!=','approved')]
+            </field>
+            <field name="view_id" ref="product_registration_list_view_custom_mine"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                  Create a new purchasable product
+                </p>
+            </field>
+        </record>
+
+    <record id="product_registration_action" model="ir.actions.act_window">
+        <field name="name">Product Registration</field>
+        <field name="res_model">product.template</field>
+        <field name="context">{'registration_mode': True,'search_default_product_registration_state':1}</field>
+        <field name="domain">['|','&amp;',('active', 'in', [False]),('registration_status','=','approved'),'&amp;',('active',
+            'in', [False]),('registration_status','!=','approved')]
+        </field>
+        <field name="view_mode">list</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('product_registration_list_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('product_registration_form_view')}),
+            ]"/>
+    </record>
+
+    <record id="product_template_registration_form_view_procurement_button" model="ir.ui.view">
+        <field name="name">product.template.registration.form.view.procurement.button</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.product_template_form_view_procurement_button"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(stock.action_product_replenish)d']" position="attributes">
+                <attribute name="invisible">type != 'consu' or item_type == 'consumable'</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_view_stock_move_lines']" position="attributes">
+                <attribute name="invisible">type != 'consu' or item_type == 'consumable'</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="mrp_product_template_registration_form_view_bom_button" model="ir.ui.view">
+        <field name="name">mrp.product.template.registration.form.view.bom.button</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="mrp.product_template_form_view_bom_button"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(mrp.template_open_bom)d']" position="attributes">
+                <attribute name="invisible">type != 'consu' or item_type == 'consumable'</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_used_in_bom']" position="attributes">
+                <attribute name="invisible">type != 'consu' or used_in_bom_count == 0 or item_type == 'consumable'</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_view_mos']" position="attributes">
+                <attribute name="invisible">type != 'consu' or bom_count == 0 or mrp_product_qty == 0 or item_type == 'consumable'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock.menu_product_variant_config_stock" model="ir.ui.menu">
+        <field name="sequence">2</field>
+    </record>
+    <record id="stock.product_product_menu" model="ir.ui.menu">
+        <field name="sequence">3</field>
+    </record>
+    <menuitem id="product_registration_menu" name="Product Registration"
+              action="product_registration_action_registration"
+              parent="stock.menu_stock_inventory_control"
+              sequence="1"/>
+
+
+</odoo>

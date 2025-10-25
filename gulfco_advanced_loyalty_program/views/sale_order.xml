@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit Form View to Modify it -->
+        <record id="sale_order_view_form_inherit_sale_loyalty" model="ir.ui.view">
+            <field name="name">SaleOrder</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_loyalty.sale_order_view_form_inherit_sale_loyalty"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_open_reward_wizard']" position="after">
+                    <button name="apply_promotions" type="object" string="Advance Promotion" help="Update current promotional lines and select new rewards if applicable." class="btn btn-secondary"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_order_form_inherited_discount_custom" model="ir.ui.view">
+            <field name="name">sale.order.view.form.inherited.discount.custom</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list//field[@name='price_subtotal']" position="before">
+                    <field name="original_total"/>
+                </xpath>
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list//field[@name='discount']" position="after">
+                    <field name='test_discount' string="Test Disc.(%)" optional="hide" column_invisible="1"/>
+                    <field name='test_discount_value' string="Disc. in Value" optional="hide" column_invisible="1"/>
+                    <field name='sale_order_line_reward_ids' widget="many2many_tags" optional="hide"/>
+                    <field name='discount_unit_price' optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

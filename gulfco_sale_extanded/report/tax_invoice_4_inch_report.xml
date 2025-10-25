@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_tax_invoice_4_inch_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+
+                <t t-set="invoices" t-value="docs.invoice_ids"/>
+
+                <t t-if="invoices" t-foreach="invoices.sorted(key=lambda p: p.id)" t-as="inv">
+                <div class="page col-12 col-md-12">
+                    <t t-call="web.basic_layout">
+
+                    <t t-set="company" t-value="doc.company_id"/>
+
+<!--                    <div class="thermal-tax-invoice-receipt page" t-attf-style="background-image: url('/gulfco_sale_extanded/static/src/img/Cancelled.png');background-position: center; background-size: cover;">-->
+                    <div class="thermal-tax-invoice-receipt page o_image_40_cover oe_img_bg o_bg_img_center flex-shrink-0 rounded-3 me-3">
+                        <div class="text-center">
+                             <img style="max-width: 280px; max-height: 80px; width: auto; height: auto; object-fit: contain;" src="/gulfco_sale_extanded/static/src/img/company_logo.png" alt="Logo"/>
+                            <div class="mt4">
+                            <strong t-esc="company.name"/>
+                            </div>
+<!--                            <br/>-->
+                            <span t-esc="company.street"/>
+                            <br/>
+                            <span t-esc="company.vat"/>
+                            <br/>
+                            <strong>Tax Invoice</strong>
+                        </div>
+                        <hr/>
+<!--                        <t t-set="sale_orders" t-value="doc.line_ids.sale_line_ids.order_id"/>-->
+<!--                       style="font-size:8px;width: 100%; border: none; border-collapse: collapse; border-color:white!important;" -->
+                        <table class="table table-borderless">
+                            <tr>
+                                <td style=" ">
+                                    <strong>Customer Account #</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="doc.partner_id.customer_code"/>
+<!--                                    <t t-if="doc.partner_id.property_account_receivable_id">-->
+<!--                                        <span t-esc="doc.partner_id.property_account_receivable_id.display_name"/>-->
+<!--                                    </t>-->
+                                </td>
+                                <td style=" ">
+                                    <strong>Invoice Type</strong>
+                                </td>
+                                <td style=" ">
+
+                                    <t t-if="doc.partner_id.customer_type == 'cash'">
+                                        <span>Cash</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span>Credit</span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style=" ">
+                                    <strong>Customer Name</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="doc.partner_id.name"/>
+                                </td>
+                                <td style=" ">
+                                    <strong>Invoice Date</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="inv.invoice_date.strftime('%d-%m-%Y') if inv.invoice_date else ''"/>
+                                    <!--<span t-esc="doc.date_order.strftime('%d-%m-%Y') if doc.date_order else ''"/>-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style=" ">
+                                    <strong>Ship To</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="doc.partner_shipping_id.display_name"/>
+                                </td>
+                                <td style=" ">
+                                    <strong>Invoice No.</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="inv.name"/>
+<!--                                    <t t-if="doc.invoice_ids.filtered(lambda s:s.name)">-->
+<!--                                        <span t-esc="', '.join(doc.invoice_ids.filtered(lambda s:s.name).mapped('name'))"/>-->
+<!--                                    </t>-->
+                                </td>
+                            </tr>
+                             <tr>
+                                <td style=" ">
+                                    <strong>Site Number</strong>
+                                </td>
+                                <td style=" ">
+                                    <t t-set="site_number" t-value="''"/>
+                                    <t t-if="doc.partner_shipping_id.site_number">
+                                        <t t-set="site_number" t-value="site_number + doc.partner_shipping_id.site_number"/>
+                                    </t>
+                                    <t t-if="doc.partner_shipping_id.location">
+                                         <t t-set="site_number" t-value="site_number + '-' + doc.partner_shipping_id.location"/>
+                                    </t>
+                                    <span t-esc="site_number"/>
+                                </td>
+                                <td style=" ">
+<!--                                    <strong>Salesman</strong>-->
+                                </td>
+                                <td style=" ">
+<!--                                    <span t-esc="doc.assign_to.name"/>-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style=" ">
+                                    <strong>TRN No</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="doc.partner_id.vat_trn"/>
+                                </td>
+                                <td style=" ">
+                                    <strong>Salesman</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="doc.assign_to.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style=" ">
+                                    <strong>PO No</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="doc.po_number"/>
+                                </td>
+                                <td style=" ">
+                                    <strong>Payment Term</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="doc.payment_term_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style=" ">
+                                    <strong>Currency</strong>
+                                </td>
+                                <td style=" ">
+                                    <span t-esc="doc.currency_id.name"/>
+                                </td>
+                                <td style=" ">Notes</td>
+                                <td style=" ">
+                                    <span t-esc="doc.remarks"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <hr/>
+                        <div class="col-12">
+                            <style>
+                            .page-break {
+                                page-break-after: always !important;
+                            }
+                            </style>
+                        <table class="table table-sm table-borderless">
+                            <thead style="display: table-header-group">
+                                <tr style="border-bottom: 1px solid black;">
+                                    <th style="width:30%;"><b>Item Name </b></th>
+                                    <th>Package</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Dis%</th>
+                                    <th>Selling Price Per Unit</th>
+                                    <th>Excise Tax</th>
+                                    <th>Taxable Amount</th>
+                                    <th>Tax Rate</th>
+                                    <th>Tax Amount</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody style="page-break-inside: avoid;">
+                                <t t-set="customer_article_val" t-value="0"/>
+                                <t t-set="row_count" t-value="0"/>
+                                <t t-foreach="inv.invoice_line_ids.filtered(lambda l: l.product_id.type == 'consu')" t-as="line">
+
+                                    <tr>
+                                        <td><span t-esc="line.product_id.barcode"/></td>
+                                        <td>
+                                            <t t-if="line.product_packaging_qty and line.product_packaging_id">
+                                                <span t-esc="line.product_packaging_id.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-field="line.product_uom_id">units</span>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-if="line.product_packaging_qty">
+                                                <span t-esc="line.product_packaging_qty"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="line.quantity"/>
+                                            </t>
+                                        </td>
+                                        <td><span t-esc="('%.2f' % line.price_unit)"/></td>
+                                        <td style="text-align:center!important;"><span t-esc="line.discount"/></td>
+                                        <td>
+                                            <t t-if="line.quantity" t-set="selling_price_per_unit" t-value="line.price_unit - line.discount_amount/line.quantity"/>
+                                            <span t-esc="round(selling_price_per_unit,2)"/>
+                                        </td>
+                                        <td><span t-esc="round(line.exercise_price,2)"/></td>
+                                        <td>
+                                            <t t-if="selling_price_per_unit">
+                                                <t t-set="taxable_amount" t-value="round(line.price_subtotal,2)"/>
+                                                <span t-esc="round(taxable_amount,2)"/>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-set="taxes" t-value="', '.join([(tax.invoice_label or tax.name) for tax in line.tax_ids])"/>
+                                            <span t-esc="taxes"/>
+                                        </td>
+                                        <t t-set="price_tax" t-value="line.price_total - line.price_subtotal"/>
+                                        <td><span t-esc="round(price_tax,2)"/></td>
+                                        <td style="text-align:center!important;"><span t-field="line.price_total"/></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="11"><span t-esc="line.product_id.name"/></td>
+                                    </tr>
+
+                                    <tr style="border-bottom: 1px solid black;">
+                                        <td colspan="11">
+
+
+                                            <t t-foreach="line.product_id.customer_article_ids" t-as="article">
+                                                <t t-if="line.move_id.partner_id == article.partner_id">
+                                                    <t t-set="customer_article_val" t-value="article.name"/>
+                                                </t>
+                                            </t>
+
+                                            <div t-if="customer_article_val" class="row col-12">
+                                                <div class="col-6"><div>Customer Article</div></div>
+                                                <div class="col-6"> : <span t-esc="customer_article_val"/>
+<!--                                                    :<t t-foreach="line.product_id.customer_article_ids" t-as="article">-->
+<!--                                                        <span t-if="line.move_id.partner_id == article.partner_id" t-esc="article.name"/>-->
+<!--                                                    </t>-->
+                                                </div>
+                                            </div>
+
+                                            <t t-foreach="line.sale_line_ids.mapped('move_ids')" t-as="moves">
+                                                <t t-if="moves.picking_id.is_out_type" t-foreach="moves.move_line_ids" t-as="move">
+                                                    <div>
+                                                        <span t-esc="move.lot_id.name"/> -
+                                                        <span t-field="move.lot_id.expiration_date" t-options='{"widget": "date", "hide_seconds": True}'/> -
+                                                        <span t-esc="move.product_packaging_qty"/>(<span t-esc="move.product_packaging_id.name"/>) -
+                                                        <span t-esc="move.quantity"/>EAC
+                                                    </div>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+
+
+                                    <!-- row counter -->
+                                    <t t-set="row_count" t-value="row_count + 3"/> <!-- each item has 3 rows -->
+                                    <t t-if="row_count % 33 == 0">
+                                        <tr class="page-break"><td colspan="11"></td></tr>
+                                    </t>
+
+                                </t>
+                            </tbody>
+                        </table>
+
+                        </div>
+                        <br/>
+                        <div class="clearfix" name="so_total_summary" style="page-break-inside: avoid;">
+                            <div id="total" class="mt-n3" name="total" >
+                                <div t-attf-class="#{'col-7' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
+                                    <table class="total_table_json table table-bordered" >
+                                        <!-- Tax totals -->
+                                        <t t-call="account.document_tax_totals">
+                                            <t t-set="tax_totals" t-value="invoices.tax_totals"/>
+                                            <t t-set="currency" t-value="invoices.currency_id"/>
+                                        </t>
+<!--                                       <tr>-->
+<!--                                            <td><strong>Reward Discount</strong></td>-->
+<!--                                            <td class="text-end text-nowrap">-->
+<!--                                                <span t-if="doc.tax_totals['reward_discount_amount']" t-esc="doc.tax_totals['reward_discount_amount']"/>-->
+
+<!--                                            </td>-->
+<!--                                        </tr>-->
+                                         <tr>
+                                            <td><strong>Payment Received</strong></td>
+                                            <td class="text-end text-nowrap">
+                                                <span t-esc="inv.amount_total - inv.amount_residual"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Due Amount</strong></td>
+                                            <td class="text-end text-nowrap">
+                                                <span t-esc="inv.amount_residual"/>
+                                            </td>
+                                        </tr>
+
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+<!--                            <div class="col-12">-->
+                            <span><b>Invoice Value in Word :</b> <span t-esc="inv.currency_id.amount_to_text(inv.amount_total).replace(',', '')"/></span>
+<!--                            </div>-->
+                        </div>
+                        <br/>
+                        <div class="row">
+<!--                            <div class="col-12">-->
+                                <spa>Material Received in Good Condition.</spa>
+<!--                            </div>-->
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                               <span> Customer Signature</span>
+                            </div>
+                            <div class="col-6">
+                                <span>Salesman Signature</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </t>
+                </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_tax_invoice_4inch" model="report.paperformat">
+        <field name="format">custom</field>
+        <field name="name">Tax Invoice Receipt (4inch)</field>
+        <field name="format">custom</field>
+        <field name="page_width" eval="102"/>
+        <field name="page_height" eval="208"/>
+        <field name="margin_top" eval="2"/>
+        <field name="margin_bottom" eval="10"/>
+        <field name="margin_left" eval="2"/>
+        <field name="margin_right" eval="2"/>
+        <field name="orientation">Portrait</field>
+        <field name="dpi" eval="80"/>
+    </record>
+
+    <record id="action_report_tax_invoice_4_inch" model="ir.actions.report">
+        <field name="name">Tax Invoice(4inch)</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gulfco_sale_extanded.report_tax_invoice_4_inch_pdf</field>
+        <field name="report_file">gulfco_sale_extanded.report_tax_invoice_4_inch_pdf</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="gulfco_sale_extanded.paperformat_tax_invoice_4inch"/>
+    </record>
+</odoo>

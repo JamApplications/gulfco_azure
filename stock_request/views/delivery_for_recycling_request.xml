@@ -1,0 +1,35 @@
+<odoo>
+
+    <record id="delivery_for_recycle_wizard_form" model="ir.ui.view">
+        <field name="name">stock.request.order.recycle.wizard.form</field>
+        <field name="model">stock.request.order.recycle</field>
+        <field name="arch" type="xml">
+            <form string="Select Multiple Products">
+                <group>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="number_of_pallet"/>
+                    </group>
+                    <group>
+                        <field name="destruction_cert_name" invisible="1"/>
+                        <field name="destruction_cert_attachment" widget="binary" filename="caf_file_name"/>
+                    </group>
+
+                </group>
+                <footer>
+                    <button class="btn-primary" name="action_confirm" type="object" string="confirm"/>
+                    Or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_select_delivery_for_recycle" model="ir.actions.act_window">
+        <field name="name">Delivery For Recycle</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.request.order.recycle</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,48 @@
+# -*- coding: utf-8 -*-
+#############################################################################
+#
+#    Cybrosys Technologies Pvt. Ltd.
+#
+#    Copyright (C) 2024-TODAY Cybrosys Technologies(<https://www.cybrosys.com>)
+#    Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+#
+#    You can modify it under the terms of the GNU LESSER
+#    GENERAL PUBLIC LICENSE (LGPL v3), Version 3.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU LESSER GENERAL PUBLIC LICENSE (LGPL v3) for more details.
+#
+#    You should have received a copy of the GNU LESSER GENERAL PUBLIC LICENSE
+#    (LGPL v3) along with this program.
+#    If not, see <http://www.gnu.org/licenses/>.
+#
+#############################################################################
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
+
+
+class PurchaseRequisition(models.Model):
+    _inherit = "purchase.requisition"
+
+    is_complete_purchase = fields.Boolean('Complete purchasing')
+
+
+
+
+class PurchaseRequisitionCreateAlternative(models.TransientModel):
+    _inherit = 'purchase.requisition.create.alternative'
+
+    @api.model
+    def _get_alternative_line_value(self, order_line):
+        print("\n order: line:", order_line, order_line.read())
+        return {
+            'product_id': order_line.product_id.id,
+            'product_qty': order_line.product_qty,
+            'product_uom': order_line.product_uom.id,
+            'display_type': order_line.display_type,
+            'name': order_line.name or None,
+            **({'name': order_line.name} if order_line.display_type in ('line_section', 'line_note') else {}),
+        }
+

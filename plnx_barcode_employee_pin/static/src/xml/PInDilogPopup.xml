@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<templates xml:space="preserve">
+
+    <t t-name="PinInputDialog">
+    <div class="modal" t-att-class="'is-active' if props.isOpen else ''">
+        <div class="modal-background" t-on-click="close"></div>
+        <div class="modal-content">
+            <div class="box">
+                <h1>Enter Employee PIN</h1>
+                <div class="mt-2">
+                    <label class="col-form-label" for="barcode_emp_pin">Barcode Employee PIN</label>
+                    <input type="text" name="barcode_emp_pin" id="barcode_emp_pin_id" class="barcode_pin_class" t-model="props.empPin"/>
+                </div>
+                <button class="button is-primary" t-on-click="confirm">Save changes</button>
+                <button class="button is-secondary" t-on-click="close">Close</button>
+            </div>
+        </div>
+    </div>
+</t>
+</templates>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <record id="customer_registration_page" model="website.page">
+            <field name="url">/customer-registration</field>
+            <field name="is_published">False</field>
+            <field name="view_id" ref="gulfco_contact_registration_custom.customer_registration_template"/>
+            <field name="track">True</field>
+            <field name="website_meta_description">This is the customer registration page of the website</field>
+        </record>
+
+        <record id="vendor_registration_page" model="website.page">
+            <field name="url">/vendor-registration</field>
+            <field name="is_published">False</field>
+            <field name="view_id" ref="gulfco_contact_registration_custom.vendor_registration_template"/>
+            <field name="track">True</field>
+            <field name="website_meta_description">This is the vendor registration page of the website</field>
+        </record>
+
+
+        <!-- Define a new menu item -->
+        <record id="website_menu_vendor_registration" model="website.menu">
+            <field name="name">Vendor Registration</field>
+            <field name="url">/vendor-registration</field>
+            <field name="sequence">110</field>
+            <field name="parent_id" ref="website.main_menu"/> <!-- Attach to the main menu -->
+            <field name="page_id" ref="gulfco_contact_registration_custom.vendor_registration_page"/>
+        </record>
+
+         <record id="website_menu_customer_registration" model="website.menu">
+            <field name="name">Customer Registration</field>
+            <field name="url">/customer-registration</field>
+            <field name="sequence">120</field>
+            <field name="parent_id" ref="website.main_menu"/> <!-- Attach to the main menu -->
+            <field name="page_id" ref="gulfco_contact_registration_custom.customer_registration_page"/>
+        </record>
+
+
+    </data>
+
+
+
+
+
+
+</odoo>

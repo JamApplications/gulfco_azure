@@ -1,0 +1,50 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_return_caused_by_tree" model="ir.ui.view">
+        <field name="name">return.caused.by.tree</field>
+        <field name="model">rma.return.caused.by</field>
+        <field name="arch" type="xml">
+            <list string="Return Caused By">
+                <field name="sales_teams"/>
+                <field name="return_reason_ids" widget="many2many_tags" />
+<!--                <field name="return_caused_by"/>-->
+                <field name="return_caused_by_ids" widget="many2many_tags"/>
+                <field name="return_reason_type_ids" widget="many2many_tags" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_return_caused_by_form" model="ir.ui.view">
+        <field name="name">rma.return.caused.by.form</field>
+        <field name="model">rma.return.caused.by</field>
+        <field name="arch" type="xml">
+            <form string="Return Caused By">
+                <sheet>
+                    <group>
+                        <field name="sales_teams"/>
+                        <field name="return_reason_ids" widget="many2many_tags" />
+<!--                        <field name="return_caused_by"/>-->
+                        <field name="return_caused_by_ids" widget="many2many_tags" />
+                        <field name="return_reason_type_ids" widget="many2many_tags" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_return_caused_by" model="ir.actions.act_window">
+        <field name="name">Return Caused By</field>
+        <field name="res_model">rma.return.caused.by</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_return_caused_by_tree"/>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_return_caused_by"
+              name="Return Caused By"
+              parent="rma.rma_configuration_menu"
+              action="action_return_caused_by"
+              sequence="10"/>
+</odoo>

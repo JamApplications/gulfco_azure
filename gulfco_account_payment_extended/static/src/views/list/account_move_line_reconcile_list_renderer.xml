@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <t t-name="gulfco_account_payment_extended.AccountMoveLineReconcileListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="extension">
+        <thead position="inside">
+            <style>
+                .bg-transparent {
+                    background-color: transparent !important;
+                }
+            </style>
+           <tr t-if="props.list &amp;&amp; props.list.resModel === 'account.move.line' &amp;&amp; 
+                    props.list.context &amp;&amp; 
+                    props.list.context.from_reconciled" 
+                class="cursor-default" t-att-class="{o_sample_data_disabled: props.list.model.useSampleModel}">
+                <td t-if="hasSelectors" class="bg-transparent"/>
+                <t t-foreach="columns" t-as="column" t-key="column.id">
+                    <t t-set="aggregate" t-value="aggregates[column.name]"/>
+                    <td t-if="aggregate" class="o_list_number bg-transparent">
+                        <span t-esc="aggregate.value" t-att-data-tooltip="aggregate.help"/>
+                    </td>
+                    <td t-elif="column.type != 'field'" class="w-print-auto bg-transparent"/>
+                    <td t-else="" class="bg-transparent"/>
+                </t>
+                <td t-if="hasOpenFormViewColumn" class="w-print-0 p-print-0 bg-transparent"/>
+                <td t-if="displayOptionalFields or activeActions.onDelete" class="w-print-0 p-print-0 bg-transparent" />
+            </tr>
+        </thead>
+    </t>
+</odoo>

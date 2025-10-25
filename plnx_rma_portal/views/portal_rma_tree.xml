@@ -1,0 +1,14 @@
+<odoo>
+    <template id="portal_rma_breadcrumbs" name="rma_create" inherit_id="portal.portal_breadcrumbs"
+              priority="30">
+
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'rma_create'" t-attf-class="breadcrumb-item #{'active'}">
+                <a t-attf-href="/my/rmas">RMA Orders</a> /
+                RMA Request
+            </li>
+        </xpath>
+
+    </template>
+
+</odoo>

@@ -1,0 +1,55 @@
+<odoo>
+
+    <record id="view_cross_docking_mapping_form" model="ir.ui.view">
+        <field name="name">cross.docking.mapping.group.form</field>
+        <field name="model">cross.docking.mapping.group</field>
+        <field name="arch" type="xml">
+            <form string="Cross Docking Mapping">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="division"/>
+                        </group>
+                        <group>
+                        </group>
+                        <field name="line_ids">
+                            <list editable="bottom">
+                                <field name="wh_location_id"/>
+                                <field name="is_dxb"/>
+                                <field name="is_shj"/>
+                                <field name="is_adh"/>
+                                <field name="is_aln"/>
+                                <field name="is_rak"/>
+                                <field name="is_fuj"/>
+                                <field name="is_ne"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cross_docking_mapping_tree" model="ir.ui.view">
+        <field name="name">cross.docking.mapping.group.tree</field>
+        <field name="model">cross.docking.mapping.group</field>
+        <field name="arch" type="xml">
+            <list string="Cross Docking Mapping">
+                <field name="division"/>
+                <field name="is_normal"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_cross_docking_mapping_main" model="ir.actions.act_window">
+        <field name="name">Cross Docking Mapping</field>
+        <field name="res_model">cross.docking.mapping.group</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_cross_docking_root_main"
+              name="Cross Docking Mapping"
+              parent="stock.menu_delivery"
+              action="action_cross_docking_mapping_main"/>
+
+</odoo>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-inherit="web.ListRenderer" t-inherit-mode="extension">
+        <xpath expr="//thead/tr[1]" position="before">
+            <tr t-if="this.props.list._config.resModel == 'purchase.budget.line' and 'from_purchase_budget_lines' in this.props.list._config.context">
+                <th style="width:500px;"></th>
+                 <td colspan="18" class="text-center" style="width:1800px !important;">
+                    <b>Q1 </b>
+                </td>
+                <td colspan="18" class="text-center" style="width:1800px !important;">
+                    <b>Q2 </b>
+                </td>
+                <td colspan="18" class="text-center" style="width:1800px !important;">
+                    <b>Q3 </b>
+                </td>
+                <td colspan="18" class="text-center" style="width:1800px !important;">
+                    <b>Q4 </b>
+                </td>
+            </tr>
+            <tr t-if="this.props.list._config.resModel == 'purchase.budget.line' and 'from_purchase_budget_lines' in this.props.list._config.context">
+<!--                <th style="width:500px;">Description</th>-->
+                <th></th>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>Jan</b>
+                </td>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>Feb</b>
+                </td>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>March</b>
+                </td>
+
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>April</b>
+                </td>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>May</b>
+                </td>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>June</b>
+                </td>
+
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>July</b>
+                </td>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>Aug</b>
+                </td>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>Sep</b>
+                </td>
+
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>Oct</b>
+                </td>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>Nov</b>
+                </td>
+                <td colspan="6" class="text-center" style="width:600px !important;">
+                    <b>Dec</b>
+                </td>
+            </tr>
+
+<!--            <tr t-if="this.props.list._config.resModel == 'purchase.budget.line' and 'from_purchase_budget_lines' in this.props.list._config.context">-->
+<!--&lt;!&ndash;                <td style="width:500px;"><strong>Opening Stock</strong></td>&ndash;&gt;-->
+<!--                <th></th>-->
+<!--                <td colspan="12" class="text-center" style="width:600px !important;">-->
+<!--                    Data to be Added her-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr t-if="this.props.list._config.resModel == 'purchase.budget.line' and 'from_purchase_budget_lines' in this.props.list._config.context">-->
+<!--                <td style="width:500px;"><strong>Order</strong></td>-->
+<!--                <td colspan="12" class="text-center" style="width:600px !important;">-->
+<!--                    Data to be Added her-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr t-if="this.props.list._config.resModel == 'purchase.budget.line' and 'from_purchase_budget_lines' in this.props.list._config.context">-->
+<!--                <td style="width:500px;"><strong>Arrival</strong></td>-->
+<!--                <td colspan="12" class="text-center" style="width:600px !important;">-->
+<!--                    Data to be Added her-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--             <tr t-if="this.props.list._config.resModel == 'purchase.budget.line' and 'from_purchase_budget_lines' in this.props.list._config.context">-->
+<!--                <td style="width:500px;"><strong>Sales</strong></td>-->
+<!--                <td colspan="12" class="text-center" style="width:600px !important;">-->
+<!--                    Data to be Added her-->
+<!--                </td>-->
+<!--            </tr>-->
+
+<!--            <tr t-if="this.props.list._config.resModel == 'purchase.budget.line' and 'from_purchase_budget_lines' in this.props.list._config.context">-->
+<!--                <td style="width:500px;"><strong>Closing Stock</strong></td>-->
+<!--                <td colspan="12" class="text-center" style="width:600px !important;">-->
+<!--                    Data to be Added her-->
+<!--                </td>-->
+<!--            </tr>-->
+
+<!--            <tr t-if="this.props.list._config.resModel == 'purchase.budget.line' and 'from_purchase_budget_lines' in this.props.list._config.context">-->
+<!--                <td style="width:500px;"><strong>MOS</strong></td>-->
+<!--                <td colspan="12" class="text-center" style="width:600px !important;">-->
+<!--                    Data to be Added her-->
+<!--                </td>-->
+<!--            </tr>-->
+        </xpath>
+    </t>
+</templates>

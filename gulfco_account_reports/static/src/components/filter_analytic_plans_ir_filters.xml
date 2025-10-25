@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<templates>
+    <t t-name="gulfco_account_reports.AnalyticPlannLocationReportFiltersAccountDetails">
+
+        <Dropdown>
+            <button class="btn btn-secondary">
+                <i class="fa fa-filter me-1"/>Location plan:
+                <t t-out="selectedLocationPlanFilters"/>
+            </button>
+
+            <t t-set-slot="content">
+
+                <DropdownItem t-if="controller.options and controller.options.location_plan"
+                              class="{ 'selected': controller.options.location_plan.every(f => f.selected) }"
+                              onSelected="() => this.toggleSelectAll('location_plan')"
+                              closingMode="'none'">
+                    <t t-out="_t('Select All')"/>
+
+                </DropdownItem>
+                <hr class="dropdown-divider"/>
+
+                <t t-foreach="controller.options.location_plan" t-as="location_plan" t-key="location_plan_index">
+                    <DropdownItem
+                            class="{ 'selected': location_plan.selected }"
+                            onSelected="() => this.filterClicked({ optionKey: 'location_plan.' + location_plan_index + '.selected', reload: true})"
+                            closingMode="'none'"
+                            t-out="location_plan.name"
+                    />
+                </t>
+
+            </t>
+        </Dropdown>
+    </t>
+
+    <t t-name="gulfco_account_reports.AnalyticPlannDepartmentReportFiltersAccountDetails">
+        <Dropdown>
+
+            <button class="btn btn-secondary">
+                <i class="fa fa-filter me-1"/>Department plan:
+                <t t-out="selectedDepartmentPlanFilters"/>
+            </button>
+            <t t-set-slot="content">
+
+                <DropdownItem t-if="controller.options and controller.options.department_plan"
+                              class="{ 'selected': controller.options.department_plan.every(f => f.selected) }"
+                              onSelected="() => this.toggleSelectAll('department_plan')"
+                              closingMode="'none'">
+                    <t t-out="_t('Select All')"/>
+
+                </DropdownItem>
+                <hr class="dropdown-divider"/>
+                <t t-foreach="controller.options.department_plan" t-as="department_plan" t-key="department_plan_index">
+                    <DropdownItem
+                            class="{ 'selected': department_plan.selected }"
+                            onSelected="() => this.filterClicked({ optionKey: 'department_plan.' + department_plan_index + '.selected', reload: true})"
+                            closingMode="'none'"
+                            t-out="department_plan.name"
+                    />
+                </t>
+            </t>
+        </Dropdown>
+    </t>
+
+    <t t-name="gulfco_account_reports.AnalyticPlannChannelReportFiltersAccountDetails">
+        <Dropdown>
+            <button class="btn btn-secondary">
+                <i class="fa fa-filter me-1"/>Channel plan:
+                <t t-out="selectedChannelPlanFilters"/>
+            </button>
+            <t t-set-slot="content">
+                <DropdownItem t-if="controller.options and controller.options.channel_plan"
+                              class="{ 'selected': controller.options.channel_plan.every(f => f.selected) }"
+                              onSelected="() => this.toggleSelectAll('channel_plan')"
+                              closingMode="'none'">
+                    <t t-out="_t('Select All')"/>
+
+                </DropdownItem>
+                <hr class="dropdown-divider"/>
+                <t t-foreach="controller.options.channel_plan" t-as="channel_plan" t-key="channel_plan_index">
+                    <DropdownItem
+                            class="{ 'selected': channel_plan.selected }"
+                            onSelected="() => this.filterClicked({ optionKey: 'channel_plan.' + channel_plan_index + '.selected', reload: true})"
+                            closingMode="'none'"
+                            t-out="channel_plan.name"/>
+                </t>
+            </t>
+        </Dropdown>
+    </t>
+</templates>

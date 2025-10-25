@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_customer_detailed_data_inherit_custom_form" model="ir.ui.view">
+        <field name="name">res.partner.customer.detailed.data.custom.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='accounting_disabled']" position="inside">
+                <group>
+                    <group name="sale" string="Sales">
+                        <field string="Payment Terms" name="property_payment_term_id"
+                               options="{'no_open': True, 'no_create': True}"
+                               groups="account.group_account_invoice,account.group_account_readonly"/>
+                        <field string="Payment Method"
+                               name="property_inbound_payment_method_line_id"
+                               options="{'no_open': True, 'no_create': True}"
+                               groups="account.group_account_invoice,account.group_account_readonly"
+                        />
+                    </group>
+                    <group name="purchase" string="Purchase">
+                    <field string="Payment Terms" name="property_supplier_payment_term_id"
+                           options="{'no_open': True, 'no_create': True}"
+                           groups="account.group_account_invoice,account.group_account_readonly"/>
+                    <field string="Payment Method"
+                           name="property_outbound_payment_method_line_id"
+                           options="{'no_open': True, 'no_create': True}"
+                           groups="account.group_account_invoice,account.group_account_readonly"
+                    />
+                </group>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='accounting']//group[@id='invoice_send_settings']" position="before">
+                <group name="sale" string="Sales">
+                    <field string="Payment Terms" name="property_payment_term_id"
+                           options="{'no_open': True, 'no_create': True}"
+                           groups="account.group_account_invoice,account.group_account_readonly"/>
+                    <field string="Payment Method"
+                           name="property_inbound_payment_method_line_id"
+                           options="{'no_open': True, 'no_create': True}"
+                           groups="account.group_account_invoice,account.group_account_readonly"
+                    />
+                </group>
+                <group name="purchase" string="Purchase">
+                    <field string="Payment Terms" name="property_supplier_payment_term_id"
+                           options="{'no_open': True, 'no_create': True}"
+                           groups="account.group_account_invoice,account.group_account_readonly"/>
+                    <field string="Payment Method"
+                           name="property_outbound_payment_method_line_id"
+                           options="{'no_open': True, 'no_create': True}"
+                           groups="account.group_account_invoice,account.group_account_readonly"
+                    />
+                </group>
+
+            </xpath>
+            <xpath expr="//page[@name='accounting']//group//field[@name='credit_limit']"
+                   position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+
+            <!--   Sale fields         -->
+            <xpath expr="//field[@name='property_payment_term_id']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='property_inbound_payment_method_line_id']" position="replace">
+            </xpath>
+
+            <!--   Purchase fields         -->
+            <xpath expr="//field[@name='property_supplier_payment_term_id']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='property_outbound_payment_method_line_id']" position="replace">
+            </xpath>
+            <xpath expr="//label[@for='use_partner_credit_limit']" position="attributes">
+                <attribute name="string">Credit Limit</attribute>
+            </xpath>
+            <xpath expr="//group[@name='credit_limits']" position="inside">
+                <field name="previous_credit_limit" invisible="not use_partner_credit_limit" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="res_partner_customer_detailed_data_inherit_form" model="ir.ui.view">
+        <field name="name">res.partner.customer.detailed.data.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='child_ids']/form/sheet/group/group/field[@name='name']" position="attributes">
+                <attribute name="required">contact_type == 'customer'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']/form/sheet/group/group/field[@name='phone']" position="attributes">
+                <attribute name="required">contact_type == 'customer'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='child_ids']/form/sheet/group/group/field[@name='email']" position="attributes">
+                <attribute name="required">contact_type == 'customer'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="required">contact_type == 'customer'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='parent_id']" position="before">
+                <group>
+                    <field name="customer_code" readonly="contact_type == 'customer'"
+                           invisible="contact_type != 'customer'"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="vat_trn" required="contact_type in ['customer', 'both']"/>
+                <field name="po_box" invisible="contact_type == 'worker'"/>
+                <field name="worker_code" invisible="contact_type != 'worker'" required="contact_type == 'worker'"/>
+                <field name="customer_rank" invisible="1"/>
+                <field name="supplier_rank" invisible="1"/>
+                <field name="outlet_code" required="parent_id and contact_type in ['customer', 'both']" invisible="not parent_id or contact_type not in ('customer', 'both')"/>
+                <field name="outlet_short_name" invisible="not parent_id or contact_type not in ('customer', 'both')"
+                       required="parent_id and contact_type in ['customer', 'both']"/>
+            </xpath>
+
+            <xpath expr="//field[@name='function']" position="attributes">
+                <attribute name="invisible">contact_type == 'worker'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='website']" position="attributes">
+                <attribute name="invisible">contact_type == 'worker'</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Customer Details" name="detailed_customer_data" invisible="contact_type == 'supplier'">
+                    <group>
+                        <group string="Personal Info">
+                            <field name="create_source" readonly="1"/>
+                            <field name="makani_code"/>
+                            <field name="nationality_id"/>
+                            <field name="emirate" required="contact_type in ['customer', 'both']"/>
+                            <field name="tl_issued_emirate" required="contact_type in ['customer', 'both']"/>
+                            <field name="trade_number" />
+                        </group>
+
+                        <group string="Channels Info" name="channel_info">
+                            <div invisible="1">
+
+                            <field name="channel" required="contact_type in ['customer', 'both']"/>
+                            <field name="current_chanel" string="Current Channel" invisible="1"/>
+                            <field name="current_sub_channel" string="Current Channel 01" invisible="1"/>
+                            <!--                            All Channels-->
+                            <field name="channel_mt" required="current_chanel == 'MT'"
+                                   invisible="current_chanel != 'MT'" string="Outlet Classification"/>
+                            <field name="channel_gt" required="current_chanel == 'GT'"
+                                   invisible="current_chanel != 'GT'" string="Outlet Classification"/>
+                            <field name="channel_horeca" required="current_chanel == 'HORECA'"
+                                   invisible="current_chanel != 'HORECA'" string="Outlet Classification"/>
+                            <field name="channel_ecom" required="current_chanel == 'E-Com'"
+                                   invisible="current_chanel != 'E-Com'" string="Outlet Classification"/>
+                            <field name="channel_3pl" required="current_chanel == '3PL'"
+                                   invisible="current_chanel != '3PL'" string="Outlet Classification"/>
+                            <!--                            channel_mt-->
+                            <field name="channel_mt_hyper" required="current_sub_channel == 'HyperMarket'"
+                                   invisible="current_sub_channel != 'HyperMarket'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_mt_super" required="current_sub_channel == 'SuperMarket'"
+                                   invisible="current_sub_channel != 'SuperMarket'"
+                                   string="Outlet Sub Classification"/>
+                            <!--                            channel_gt-->
+                            <field name="channel_gt_grocery" required="current_sub_channel == 'Grocery'"
+                                   invisible="current_sub_channel != 'Grocery'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_gt_cs" required="current_sub_channel == 'ConvenienceStore'"
+                                   invisible="current_sub_channel != 'ConvenienceStore'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_gt_super" required="current_sub_channel == 'Supermarket'"
+                                   invisible="current_sub_channel != 'Supermarket'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_gt_petrol" required="current_sub_channel == 'PetrolStation'"
+                                   invisible="current_sub_channel != 'PetrolStation'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_gt_discount" required="current_sub_channel == 'DiscountCenter'"
+                                   invisible="current_sub_channel != 'DiscountCenter'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_gt_wholesale" required="current_sub_channel == 'Wholesale'"
+                                   invisible="current_sub_channel != 'Wholesale'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_gt_tc" required="current_sub_channel == 'TradingCompany'"
+                                   invisible="current_sub_channel != 'TradingCompany'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_gt_sc" required="current_sub_channel == 'SpecialAccounts'"
+                                   invisible="current_sub_channel != 'SpecialAccounts'"
+                                   string="Outlet Sub Classification"/>
+                            <!--                            channel_horeca-->
+                            <field name="channel_horeca_hr" required="current_sub_channel == 'HotelsandResorts'"
+                                   invisible="current_sub_channel != 'HotelsandResorts'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_horeca_rc" required="current_sub_channel == 'RestaurantandCafe'"
+                                   invisible="current_sub_channel != 'RestaurantandCafe'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_horeca_sa" required="current_sub_channel == 'SpecialAccount'"
+                                   invisible="current_sub_channel != 'SpecialAccount'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_horeca_caterings" required="current_sub_channel == 'Caterings'"
+                                   invisible="current_sub_channel != 'Caterings'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_horeca_tc" required="current_sub_channel == 'HORECATradingCompany'"
+                                   invisible="current_sub_channel != 'HORECATradingCompany'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_horeca_pc" required="current_sub_channel == 'PubsandClubs'"
+                                   invisible="current_sub_channel != 'PubsandClubs'"
+                                   string="Outlet Sub Classification"/>
+                            <!--                            channel_ecom-->
+                            <field name="channel_ecom_mp" required="current_sub_channel == 'OnlineMarketPlace'"
+                                   invisible="current_sub_channel != 'OnlineMarketPlace'"
+                                   string="Outlet Sub Classification"/>
+                            <field name="channel_ecom_app" required="current_sub_channel == 'DeliveryApps'"
+                                   invisible="current_sub_channel != 'DeliveryApps'"
+                                   string="Outlet Sub Classification"/>
+
+                            </div>
+                            <field name="department"/>
+                        </group>
+
+                        <group string="Owner Info">
+                            <field name="owner_name"/>
+                            <field name="owner_share"/>
+                        </group>
+
+
+                        <!-- <group string="Date Info">
+                            <field name="establish_data" required="contact_type in ['customer', 'both']"/>
+                            <field name="tl_expiry_date" required="contact_type in ['customer', 'both'] and trade_number != 'NA'"/>
+                            <field name="delivery_receive_time"/>
+                        </group> -->
+
+                        <group string="Finance Manager Info">
+                            <field name="finance_manager_id"/>
+                            <field name="finance_manager_contact"/>
+                            <field name="finance_manager_email"/>
+                        </group>
+
+                        <group string="Sales Info" invisible="1">
+                            <field name="sales_leader_id"/>
+                            <field name="sales_men_ids">
+                                <list editable="bottom">
+                                    <field name="sale_man_id"/>
+                                    <field name="sale_man_contact"/>
+                                    <field name="sale_man_mail"/>
+                                    <field name="division_id"/>
+                                    <field name="department"/>
+                                </list>
+
+                            </field>
+
+                        </group>
+
+                        <group string="Other Info">
+                            <field name="customer_group" invisible="1"/>
+                            <field name="customer_group_id"/>
+                            <field name="customer_class_id"/>
+                            <field name="customer_status_id"/>
+                            <field name="customer_subdivision_id"/>
+                            <field name="external_ref"/>
+                            <field name="category"/>
+                            <field name="business_type"/>
+                            <field name="is_van_sale_customer" required="contact_type in ['customer', 'both']"/>
+                        </group>
+
+                    </group>
+                </page>
+                <page string="Reservation Rule" name="product_shelf_life"
+                      invisible="contact_type not in ('customer', 'both')">
+                    <field name="product_shelf_life_ids">
+                        <list editable="bottom">
+                            <field name="division"/>
+                            <field name="product_category"/>
+                            <field name="product_id" context="{'custom_product_category': product_category}"/>
+                            <field name="country_of_origin_ids" widget="many2many_tags"/>
+                            <field name="shelf_life"/>
+                            <field name="percentage"/>
+                            <field name="production_year"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_customer_detailed_data_inherit_simple_form" model="ir.ui.view">
+        <field name="name">res.partner.customer.detailed.data.inherit.form.simple</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_view_form_private"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='email']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

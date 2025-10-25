@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_my_home_contract" name="Contacts" inherit_id="portal.portal_my_home" priority="47">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-3"
+                 id="portal_customer">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Customer</t>
+                    <t t-set="url" t-value="'/my/customer'"/>
+                    <t t-set="text">Access and Create New Customer</t>
+                    <t t-set="placeholder_count" t-value="'customer_count'"/>
+                </t>
+            </div>
+             <div class="o_portal_category row g-2 mt-3"
+                 id="portal_supplirt">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Supplier</t>
+                    <t t-set="url" t-value="'/my/supplier'"/>
+                    <t t-set="text">Access and Create New Supplier</t>
+                    <t t-set="placeholder_count" t-value="'supplier_count'"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_inventory_adjustment_line_list_view" model="ir.ui.view">
+        <field name="name">inventory.adjustment.line.list.view</field>
+        <field name="model">inventory.adjustment.line</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" edit="1" editable="bottom">
+                <field name="product_default_code"/>
+                <field name="product_id" readonly="1"/>
+                <field name="lot_id" readonly="1"/>
+                <field name="internal_ref_lot"/>
+                <field name="expiry_date" readonly="inventory_adjustment_id.state not in ['draft','in_progress']"/>
+                <field name="on_hand_qty" readonly="1" force_save="1"/>
+<!--                column_invisible="parent.state in ['draft','in_progress','counting_done']"/>-->
+                <field name="counted_qty" readonly="inventory_adjustment_id.state not in ['draft','in_progress']"/>
+                <field name="difference_qty" readonly="1" decoration-muted="difference_qty == 0"
+                       decoration-danger="difference_qty &lt; 0"
+                       decoration-success="difference_qty &gt; 0"
+                       decoration-bf="difference_qty != 0" />
+<!--                column_invisible="parent.state in ['draft','in_progress','counting_done']"/>-->
+            </list>
+        </field>
+    </record>
+    <record id="view_inventory_adjustment_line_form_view" model="ir.ui.view">
+        <field name="name">inventory.adjustment.line.form.view</field>
+        <field name="model">inventory.adjustment.line</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" edit="1">
+                <sheet>
+                    <group>
+                        <field name="product_default_code"/>
+                        <field name="product_id" readonly="1"/>
+                        <field name="lot_id" readonly="1"/>
+                        <field name="internal_ref_lot"/>
+                        <field name="expiry_date"
+                               readonly="inventory_adjustment_id.state not in ['draft','in_progress']"/>
+                        <field name="on_hand_qty" readonly="1" force_save="1" />
+<!--                        column_invisible="parent.state in ['draft','in_progress','counting_done']"/>-->
+                        <field name="counted_qty"
+                               readonly="inventory_adjustment_id.state not in ['draft','in_progress']"/>
+                        <field name="difference_qty" readonly="1" decoration-muted="difference_qty == 0"
+                               decoration-danger="difference_qty &lt; 0"
+                               decoration-success="difference_qty &gt; 0"
+                               decoration-bf="difference_qty != 0" />
+<!--                        column_invisible="parent.state in ['draft','in_progress','counting_done']"/>-->
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_stock_inventory_adjustment_list_view" model="ir.ui.view">
+        <field name="name">stock.inventory.adjustment.list.view</field>
+        <field name="model">stock.inventory.adjustment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="inventory_ref"/>
+                <field name="location_id" string="Inventoried Location"/>
+                <field name="inventory_date"/>
+                <field name="type" string="Inventory Type"/>
+                <field name="performed_by" string="User Detail (Committee) / Stock Count Performed by"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_stock_inventory_adjustment_form" model="ir.ui.view">
+        <field name="name">stock.inventory.adjustment.form.view</field>
+        <field name="model">stock.inventory.adjustment</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Adjustment">
+                <header>
+                    <button name="action_start_inventory" string="Start Inventory" type="object"
+                            invisible="state != 'draft'"/>
+                    <button name="action_end_count" string="End Count" type="object"
+                            invisible="state != 'in_progress'" groups="stock.group_stock_user"/>
+                    <button name="action_submit_report" string="Submit Report" type="object"
+                            invisible="state != 'counting_done'"/>
+                    <button name="action_confirm" string="Confirm" type="object"
+                            invisible="state != 'under_ssc_review'" groups="stock.group_stock_user"/>
+                    <button name="action_director_approvals" string="Director Approval" type="object"
+                            invisible="state != 'under_scm_review'"
+                            groups="stock_inventory_adjustment.group_director_approval"/>
+                    <button name="action_director_reject" string="Reject" type="object"
+                            invisible="state != 'under_scm_review'" groups="stock_inventory_adjustment.group_director_approval"
+                            context="{'from_director': 1}"/>
+                    <button name="action_finance_approvals" string="Finance Approval" type="object"
+                            invisible="state != 'director_approved'" groups="account.group_account_manager"/>
+                    <button name="action_finance_reject" string="Reject" type="object"
+                            invisible="state != 'director_approved'" groups="account.group_account_manager"
+                            context="{'from_finance': 1}"/>
+                    <button name="action_scd_approvals" string="SCD Approval" type="object"
+                            invisible="state != 'finance_approved'"
+                            groups="stock_inventory_adjustment.group_scd_approval"/>
+                    <button name="action_scd_reject" string="Reject" type="object"
+                            invisible="state != 'finance_approved'"
+                            groups="stock_inventory_adjustment.group_scd_approval"
+                            context="{'from_sdm': 1}"/>
+                    <button name="action_validate" string="Validate" type="object"
+                            invisible="state != 'scd_approved'" groups="stock.group_stock_manager"/>
+
+                    <!--                    <button-->
+                    <!--                            name="action_start_time"-->
+                    <!--                            string="Start"-->
+                    <!--                            invisible="start_time"-->
+                    <!--                            type="object"-->
+                    <!--                    />-->
+                    <!--                    <button-->
+                    <!--                            name="action_end_time"-->
+                    <!--                            string="END"-->
+                    <!--                            invisible="end_time or not start_time"-->
+                    <!--                            type="object"-->
+                    <!--                    />-->
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button class="oe_stat_button" type="object" name="action_discrepancy_report"
+                                invisible="state in ['draft','in_progress']">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Discrepancy Report</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_view_internal_picking"
+                                invisible="state not in ['validated','director_approved','finance_approved','scd_approved'] or not internal_picking_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Internal Transfer</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="inventory_ref" required="1" readonly="state != 'draft'"/>
+                            <field name="type" string="Inventory Type" readonly="state != 'draft'"/>
+                            <field name="adjustment_criteria"/>
+                            <field name="brand_id" invisible="adjustment_criteria != 'brand'" required="adjustment_criteria == 'brand'"/>
+                            <field name="warehouse_id"/>
+                            <field name="location_id" string="Inventoried Location" readonly="state != 'draft'"/>
+                            <field name="dest_location_id" string="Destination Location" invisible="type != 'internal'"
+                                   required="type == 'internal'" readonly="state != 'draft'"/>
+                            <field name="picking_type_id" invisible="type != 'internal'" required="type == 'internal'"
+                                   readonly="state != 'draft'"/>
+                            <field name="gl_journal_id" invisible="type != 'internal'" required="type == 'internal'"
+                                   readonly="state != 'draft'"/>
+                            <field name="inventory_date" readonly="state != 'draft'" force_save="1"/>
+                            <field name="performed_by" string="User Detail (Committee) / Stock Count Performed by"
+                                   readonly="state != 'draft'"/>
+                            <field name="custodian_details" readonly="state != 'draft'"/>
+                            <field name="scm_comments"
+                                   invisible="state in ['draft','in_progress','counting_done','under_ssc_review']"
+                                   groups="stock.group_stock_manager"/>
+                            <field name="director_reject_reason" invisible="not director_reject_reason" readonly="1"/>
+                            <field name="finance_reject_reason" invisible="not finance_reject_reason" readonly="1"/>
+                            <field name="sdm_reject_reason" invisible="not sdm_reject_reason" readonly="1"/>
+                        </group>
+                        <!--                        <group>-->
+                        <!--                            <field name="start_time" readonly="1" force_save="1"/>-->
+                        <!--                            <field name="end_time" readonly="1" force_save="1"/>-->
+                        <!--                            <field name="duration" readonly="1" force_save="1" widget="float_time"/>-->
+                        <!--                        </group>-->
+                    </group>
+                    <notebook>
+                        <page name="inventory_lines" string="Inventory Details">
+                            <field name="line_ids" invisible="type != 'internal'">
+                                <list editable="bottom" create="1" delete="0">
+                                    <field name="product_default_code"/>
+                                    <field name="product_id"
+                                           readonly="parent.type != 'internal' or parent.state not in ['draft','in_progress']"/>
+                                    <field name="lot_id"
+                                           readonly="parent.type != 'internal' or parent.state not in ['draft','in_progress']"/>
+                                    <field name="location_id" readonly="1"/>
+                                    <field name="internal_ref_lot"/>
+                                    <field name="expiry_date" readonly="parent.state not in ['draft','in_progress']"/>
+                                    <field name="on_hand_qty" readonly="1" force_save="1" column_invisible="parent.state in ['draft','in_progress','counting_done']"/>
+                                    <field name="counted_qty" readonly="parent.state not in ['draft','in_progress']"/>
+                                    <field name="difference_qty" readonly="1" decoration-muted="difference_qty == 0"
+                                           decoration-danger="difference_qty &lt; 0"
+                                           decoration-success="difference_qty &gt; 0"
+                                           decoration-bf="difference_qty != 0"
+                                    column_invisible="parent.state in ['draft','in_progress','counting_done']"/>
+                                </list>
+                            </field>
+                            <field name="line_ids" invisible="type == 'internal'">
+                                <list editable="bottom" create="1" delete="0">
+                                    <field name="product_default_code"/>
+                                    <field name="product_id"
+                                           readonly="parent.state not in ['draft','in_progress']"/>
+                                    <field name="lot_id"
+                                           readonly="parent.state not in ['draft','in_progress']"/>
+                                    <field name="location_id" readonly="1"/>
+                                    <field name="internal_ref_lot"/>
+                                    <field name="expiry_date" readonly="parent.state not in ['draft','in_progress']"/>
+                                    <field name="on_hand_qty" readonly="1" force_save="1" column_invisible="parent.state in ['draft','in_progress','counting_done']"/>
+                                    <field name="counted_qty" readonly="parent.state not in ['draft','in_progress']"/>
+                                    <field name="difference_qty" readonly="1" decoration-muted="difference_qty == 0"
+                                           decoration-danger="difference_qty &lt; 0"
+                                           decoration-success="difference_qty &gt; 0"
+                                           decoration-bf="difference_qty != 0"
+                                            column_invisible="parent.state in ['draft','in_progress','counting_done']"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <!--    <record id="stock_inventory_adjustment_view_search" model="ir.ui.view">-->
+    <!--        <field name="name">stock.inventory.adjustment.view.search</field>-->
+    <!--        <field name="model">stock.inventory.adjustment</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <search>-->
+    <!--                <field name="internal_ref_lot"/>-->
+    <!--                <field name="product_id"/>-->
+    <!--                <group expand="1" string="Group by">-->
+    <!--                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>-->
+    <!--                    <filter string="Internal Lot" name="group_internal_ref_lot"-->
+    <!--                            context="{'group_by': 'internal_ref_lot'}"/>-->
+    <!--                </group>-->
+    <!--            </search>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="inventory_adjustment_line_view_search" model="ir.ui.view">
+        <field name="name">inventory.adjustment.line.view.search</field>
+        <field name="model">inventory.adjustment.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="internal_ref_lot"/>
+                <field name="product_id"/>
+                <group expand="1" string="Group by">
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="Internal Lot" name="group_internal_ref_lot"
+                            context="{'group_by': 'internal_ref_lot'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_stock_inventory_adjustment" model="ir.actions.act_window">
+        <field name="name">Inventory Adjustment</field>
+        <field name="res_model">stock.inventory.adjustment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_stock_inventory_adjustment" name="Inventory Adjustment" parent="stock.menu_stock_adjustments"
+              action="action_stock_inventory_adjustment"/>
+</odoo>

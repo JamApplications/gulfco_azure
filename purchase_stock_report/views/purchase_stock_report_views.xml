@@ -1,0 +1,58 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_purchase_stock_report_tree" model="ir.ui.view">
+        <field name="name">purchase.stock.report.tree</field>
+        <field name="model">purchase.stock.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="reference"/>
+                <field name="product_id"/>
+                <field name="uom_id"/>
+                <field name="product_packaging_id"/>
+                <field name="product_packaging_qty"/>
+                <field name="ordered_qty"/>
+                <field name="ordered_cost"/>
+                <field name="received_qty"/>
+                <field name="received_cost"/>
+<!--                <field name="landed_cost"/>-->
+                <field name="total_cost"/>
+<!--                <field name="quantity"/>-->
+                <field name="purchase_order"/>
+                <field name="po_ordered_date"/>
+                <field name="currency_id"/>
+                <field name="supplier_id"/>
+<!--                <field name="asn_request_id"/>-->
+<!--                <field name="expiration_date"/>-->
+<!--                <field name="location_id"/>-->
+<!--                <field name="lot_id"/>-->
+<!--                <field name="package_id"/>-->
+<!--                <field name="source_document"/>-->
+                <field name="state"/>
+<!--                <field name="location_dest_id"/>-->
+
+<!--                <field name="picking_id"/>-->
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_purchase_stock_report" model="ir.actions.act_window">
+        <field name="name">Purchase Stock Report</field>
+        <field name="res_model">purchase.stock.report</field>
+        <field name="view_mode">list</field>
+    </record>
+
+<!--    &lt;!&ndash; Menu &ndash;&gt;-->
+<!--    <menuitem id="menu_purchase_stock_report_root"-->
+<!--              name="Purchase Stock Report"-->
+<!--              parent="stock.menu_stock_root"-->
+<!--              action="action_purchase_stock_report"/>-->
+
+    <!-- Menu -->
+    <menuitem id="menu_purchase_stock_report_root"
+              name="Purchase Stock Report"
+              parent="purchase.purchase_report_main"
+              action="action_purchase_stock_report"/>
+
+</odoo>

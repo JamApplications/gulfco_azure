@@ -1,0 +1,38 @@
+<odoo>
+    <record id="view_account_reconcile_wizard_inherit_partial_lines" model="ir.ui.view">
+        <field name="name">account.reconcile.wizard.form.inherit.partial.lines</field>
+        <field name="model">account.reconcile.wizard</field>
+        <field name="inherit_id" ref="account_accountant.view_account_reconcile_wizard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_line_ids']" position="after">
+                <field name="partial_move_line_ids" invisible="not allow_partials">
+                    <list  name="move_line_tree" string="Journal Items" create="false" edit="true" expand="context.get('expand', False)" multi_edit="1" sample="1" editable="bottom">
+                         <field name="move_name" string="Journal Entry" widget="open_move_widget"/>
+                        <field name="account_id" options="{'no_open': True, 'no_create': True}" domain="[('deprecated', '=', False), ('company_ids', 'parent_of', company_id)]" groups="account.group_account_readonly"/>
+                        <field name="partner_id" optional="show" readonly="move_type != 'entry'"/>
+                        <field name="ref" optional="hide" readonly="False"/>
+                        <field name="product_id" readonly="1" optional="hide"/>
+                        <field name="name" optional="show"/>
+                        <field name="analytic_distribution" widget="analytic_distribution" groups="analytic.group_analytic_accounting" optional="hide" options="{'product_field': 'product_id', 'account_field': 'account_id', 'force_applicability': 'optional'}"/>
+                        <field name="tax_ids" widget="many2many_tags" optional="hide" readonly="1"/>
+                        <field name="amount_currency" string="In Currency" groups="base.group_multi_currency" optional="hide" readonly="1" invisible="is_same_currency"/>
+                        <field name="currency_id" groups="base.group_multi_currency" optional="hide" string="Currency" readonly="1" invisible="is_same_currency"/>
+                        <field name="debit" sum="Total Debit" readonly="1"/>
+                        <field name="credit" sum="Total Credit" readonly="1"/>
+                        <field name="tax_tag_ids" string="Tax Grids" options="{'no_create': True, 'no_create_edit': True}" domain="[('applicability', '=', 'taxes')]" widget="many2many_tags" optional="hide"/>
+                        <field name="discount_date" string="Discount Date" optional="hide"/>
+                        <field name="discount_amount_currency" string="Discount Amount" optional="hide"/>
+                        <field name="tax_line_id" string="Originator Tax" optional="hide" readonly="1"/>
+                        <field name="date_maturity" readonly="1" optional="hide"/>
+                        <field name="balance" sum="Total Balance" optional="hide" readonly="1"/>
+                         <field name="payment_amount" readonly="0"/>
+                        <field name="payment_amount_currency"/>
+                        <field name="matching_reference"/>
+                        <field name="matching_number" string="Matching" readonly="1" optional="show"/>
+                        <field name="amount_residual" sum="Total Residual" string="Residual" optional="hide" readonly="1" invisible="not is_account_reconcile"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

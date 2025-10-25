@@ -1,0 +1,32 @@
+<odoo>
+    <record id="view_fsm_details_report_wizard_form" model="ir.ui.view">
+        <field name="name">fsm.details.report.wizard.form</field>
+        <field name="model">fsm.details.report</field>
+        <field name="arch" type="xml">
+            <form string="Details Report">
+                <group>
+                    <group>
+                        <field name="date" required="1"/>
+                        <field name="team_id" domain="[('team_type','=','merchandise')]" required="1" />
+                        <field name="export_type" required="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" type="object" string="Print" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_fsm_details_report_wizard" model="ir.actions.act_window">
+        <field name="name">Details Report</field>
+        <field name="res_model">fsm.details.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menu_action_fsm_details_report_wizard"
+              name="Details Report"
+              parent="fieldservice.reporting"
+              action="action_fsm_details_report_wizard"
+              sequence="10"/>
+</odoo>

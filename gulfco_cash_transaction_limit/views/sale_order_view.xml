@@ -1,0 +1,91 @@
+<odoo>
+    <record id="view_order_form_inherit_1" model="ir.ui.view">
+        <field name="name">sale.order.form.sale.1</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/sheet" position="before">
+                <div
+                         class="alert alert-warning" role="alert"
+                         invisible="not overdue_warning_message or partner_credit_warning">
+                        <field name="overdue_warning_message" readonly="1" invisible="partner_credit_warning or not overdue_warning_message"/>
+                    </div>
+
+            </xpath>
+
+            <xpath expr="//button[@name='action_confirm']" position="after">
+                <button name="action_approve_credit_override" type="object" string="Approve Credit Override"
+                        invisible="state != 'awaiting_credit_approval'"  class="btn-primary"
+                        groups="gulfco_cash_transaction_limit.group_access_bu_credit_limit"/>
+<!--                        groups="gulfco_contact_registration_custom.group_credit_officer_approval"/>-->
+
+                <button name="action_approve_order_limit" type="object" string="Release"
+                        invisible="state != 'waiting_for_release'"  class="btn-primary"
+                        groups="gulfco_contact_registration_custom.group_credit_officer_approval"/>
+
+<!--                <button name="action_reject_credit_override" type="object" string="Reject"-->
+<!--                        invisible="state not in ('waiting_for_release')"  class="btn-primary"-->
+<!--                        groups="gulfco_cash_transaction_limit.group_credit_officer_approval"/>-->
+
+<!--                <button name="action_reject_credit_override" type="object" string="Reject"-->
+<!--                        invisible="state not in ('awaiting_credit_approval')"  class="btn-primary"-->
+<!--                        groups="gulfco_cash_transaction_limit.group_access_bu_credit_limit"/>-->
+<!--&lt;!&ndash;                        groups="gulfco_contact_registration_custom.group_credit_officer_approval"/>&ndash;&gt;-->
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="credit_override_requested" invisible="1"/>
+                <field name="order_limit_requested" invisible="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="view_order_form_inherit_2" model="ir.ui.view">
+        <field name="name">sale.order.form.sale.2</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="gulfco_sale_extanded.view_order_form_inherit"/>
+        <field name="arch" type="xml">
+
+<!--            <xpath expr="//field[@name='state']" position="attributes">-->
+<!--                <attribute name="statusbar_visible">draft,sent,awaiting_credit_approval,approved,sale</attribute>-->
+<!--            </xpath>-->
+
+            <xpath expr="//button[@name='action_confirm']" position="replace">
+                <field name="order_limit_requested" invisible="1"/>
+                <field name="credit_override_requested" invisible="1"/>
+                <button name="action_confirm" id="action_confirm" data-hotkey="q" string="Confirm"
+                        class="btn-primary" type="object" context="{'validate_analytic': True}"
+                        invisible="state in ['awaiting_credit_approval','waiting_for_release','pending', 'rejected', 'cancel', 'sale']"/>
+
+                 <button name="action_confirm" id="action_confirm" data-hotkey="q" string="Confirm"
+                        class="btn-primary" type="object" context="{'validate_analytic': True}"
+                         groups="gulfco_contact_registration_custom.group_ccd_approval,!gulfco_cash_transaction_limit.group_access_bu_credit_limit"
+                        invisible="state not in ['awaiting_credit_approval']"/>
+
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_quotation_tree" model="ir.ui.view">
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.sale_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="order_creation_source"  optional="hide"/>
+                <field name="partner_credit_limit"  optional="hide"/>
+                <field name="payment_term_id"  optional="hide"/>
+                <field name="partner_outstanding"  optional="hide"/>
+                <field name="partner_code"  optional="hide"/>
+                <field name="partner_pdc_payment_count"  optional="hide"/>
+                <field name="partner_tl_expiry_date"  optional="hide"/>
+                <field name="partner_class_id"  optional="hide"/>
+                <field name="partner_is_credit_hold"  optional="hide"/>
+                <field name="partner_total_due_over30"  optional="hide"/>
+                <field name="partner_total_due_over90"  optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

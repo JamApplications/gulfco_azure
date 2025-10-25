@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_model_stock_landed_cost_summery_line,stock.landed.cost.summery.line,model_stock_landed_cost_summery_line,"",1,1,1,1
+access_total_cost_breakdown_wizard,total.cost.breakdown.wizard,model_total_cost_breakdown_wizard,base.group_user,1,1,1,0
+access_quant_data_fix_wizard,quant.data.fix.wizard,model_quant_data_fix_wizard,base.group_user,1,1,1,0

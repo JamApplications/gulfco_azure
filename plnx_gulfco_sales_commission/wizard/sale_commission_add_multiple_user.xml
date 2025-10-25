@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_commission_plan_user_wizard_inherit" model="ir.ui.view">
+        <field name="name">sale.commission.plan.user.wizard</field>
+        <field name="model">sale.commission.plan.user.wizard</field>
+        <field name="inherit_id" ref="sale_commission.sale_commission_plan_user_wizard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_ids']" position="replace">
+                <field name="partner_ids" widget="many2many_tags"/>
+                <field name="user_ids" widget="many2many_tags" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

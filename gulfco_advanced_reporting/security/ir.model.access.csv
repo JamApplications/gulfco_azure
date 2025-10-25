@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mw_sales_rma_report_user,access_mw_sales_rma_report_user,model_mw_sales_rma_report,gulfco_advanced_reporting.group_intelligence_report_group,1,1,1,1

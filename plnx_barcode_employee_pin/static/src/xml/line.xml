@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="stock_barcode.LineComponent" t-inherit-mode="extension" t-translation="off">
+        <xpath expr="//div[@name='package']" position="after">
+            <t t-debug=""/>
+            <div t-if="line.origin">
+                Source Document :- <span t-esc="line.origin"/>
+            </div>
+             <div t-if="line.location_id">
+                Source Location :- <span t-esc="line.location_id.display_name"/>
+            </div>
+             <div t-if="line.product_packaging_id">
+                Product Package :- <span t-esc="line.product_packaging_id.name"/>
+            </div>
+             <div t-if="line.product_packaging_qty">
+                Package Quantity :- <span t-esc="line.product_packaging_qty"/>
+            </div>
+        </xpath>
+    </t>
+</templates>

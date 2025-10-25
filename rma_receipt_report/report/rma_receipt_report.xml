@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="rma_report_receipt_custom_template">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                        <div class="page">
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>
+                                        Receipt Number:-
+                                        <t t-esc="o.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Customer:-
+                                        <t t-esc="o.partner_id.name"/>
+                                    </strong>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Warehouse:-
+                                        <t t-esc="o.location_dest_id.display_name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Receipt Date :-
+                                        <t t-if="o.date_done" t-esc="o.date_done.date()"/>
+                                    </strong>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>RMA No :-
+                                        <span t-field="o.origin"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Salesman :-
+                                        <span t-field="o.sale_id.user_id.name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>GRV/SO ref :-
+                                        <t t-if="o.sale_id" t-esc="o.sale_id.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-6">
+                                    <strong>Driver Detail :-
+                                        <span t-field="o.driver_detail"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+
+                                </div>
+                                <div class="col-6">
+                                    <strong>Approved By :-
+                                        <span t-field="o.approved_by_id"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <br/>
+                            <style>
+                                .table td, .table th {
+                                word-wrap: break-word;
+                                white-space: normal;
+                                overflow-wrap: break-word;
+                                }
+                            </style>
+                            <table class="table table-condensed w-100" style="table-layout: fixed;">
+                                <thead>
+                                    <tr style="background-color: #ccc;">
+                                        <th style="width: 4% !important;">No</th>
+                                        <th style="width: 10% !important;">Item Code</th>
+                                        <th style="width: 16% !important;">Description</th>
+                                        <th style="width: 8% !important;">Package Qty</th>
+                                        <th style="width: 8% !important;">Package</th>
+                                        <th style="width: 8% !important;">Unit Qty</th>
+                                        <th style="width: 10% !important;">Return Reason</th>
+                                        <th style="width: 12% !important;">QC Comments / Remarks</th>
+                                        <th style="width: 8% !important;">Lot / Batch Number</th>
+                                        <th style="width: 8% !important;">Expiry Date</th>
+                                        <th style="width: 8% !important;">Location</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="move_lines" t-value="o.move_ids_without_package"/>
+                                    <t t-set="counter" t-value="1"/>
+                                    <t t-foreach="move_lines" t-as="line">
+                                        <tr>
+                                            <t t-set="lot_ser_data"
+                                               t-value="line.move_line_ids.filtered(lambda m: m.product_id.id == line.product_id.id)"/>
+
+                                            <td style="width: 3% !important;">
+                                                <span>
+                                                    <t t-esc="counter"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 10% !important;">
+                                                <span>
+                                                    <t t-esc="line.product_id.default_code or ''"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 15% !important;">
+                                                <span>
+                                                    <t t-esc="line.description_picking or ''"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 8% !important;">
+                                                <span>
+                                                    <t t-esc="line.purchase_line_id.product_packaging_qty if line.purchase_line_id else 0"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 8% !important;">
+                                                <span>
+                                                    <t t-esc="line.product_packaging_id.name if line.product_packaging_id else ''"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 8% !important;">
+                                                <span>
+                                                    <t t-esc="line.quantity or 0"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 10% !important;">
+                                                <span>
+                                                    <t t-esc="line.return_reason_id.name or ''"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 12% !important;">
+                                                <span>
+                                                    <t t-esc="line.move_remark or ''"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 8% !important;">
+                                                <span>
+                                                    <t t-esc="', '.join(lot_ser_data.lot_id.mapped('name')) if lot_ser_data and lot_ser_data.lot_id  else ''"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 8% !important;">
+                                                <span>
+                                                    <t t-esc="', '.join([d.strftime('%d/%m/%Y') for d in lot_ser_data.mapped('expiration_date') if d])"/>
+                                                </span>
+                                            </td>
+                                            <td style="width: 10% !important;">
+                                                <span>
+                                                    <t t-esc="line.location_dest_id.display_name or ''"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <t t-set="counter" t-value="counter + 1"/>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <template id="rma_receipt">
+            <t t-call="rma_receipt_report.rma_report_receipt_custom_template"/>
+        </template>
+        <record id="action_rma_receipt_report" model="ir.actions.report">
+            <field name="name">RMA Receipt</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">rma_receipt_report.rma_receipt</field>
+            <field name="report_file">rma_receipt_report.rma_receipt</field>
+            <field name="print_report_name">'RMA Receipt'</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

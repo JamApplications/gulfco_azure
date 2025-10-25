@@ -1,0 +1,7 @@
+<templates xml:space="preserve">
+    <t t-name="stock_outbouding_operation.StatusLabelWidget">
+        <span t-attf-class="badge {{ colorClass }}">
+            <t t-esc="label"/>
+        </span>
+    </t>
+</templates>

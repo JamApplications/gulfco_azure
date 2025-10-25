@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Added asset code field on account asset form view  -->
+    <record id="view_account_asset_inherit_form" model="ir.ui.view">
+        <field name="name">view.account.asset.inherit.form</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+
+                <div class="oe_title" invisible="state != 'model'">
+                    <label for="model_code" name="code_label"/>
+                    <h1>
+                        <field name="model_code" placeholder="e.g. ELEC" required="state == 'model'"/>
+                    </h1>
+                </div>
+
+                <div class="oe_title" invisible="state == 'model'">
+                    <label for="code" name="code_label"/>
+                    <h1>
+                        <field name="code"/>
+                    </h1>
+                </div>
+
+            </xpath>
+
+            <xpath expr="//page[@name='main_page']" position="inside">
+                <field name="transfer" invisible="1"/>
+                <group string="Transfer Information" invisible="transfer != True">
+                    <field name="transfer_date"/>
+                    <field name="from_analytic_distribution" groups="analytic.group_analytic_accounting" widget="analytic_distribution" readonly="1"/>
+                    <field name="to_analytic_distribution" groups="analytic.group_analytic_accounting" widget="analytic_distribution" readonly="1"/>
+                    <field name="transfer_memo" readonly="1"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//button[@name='open_increase']" position="after">
+                <button class="oe_stat_button" name="action_open_transferred_asset_ids" type="object" icon="fa-chevron-circle-up" invisible="transfer == False">
+                    Transfer Info
+                </button>
+            </xpath>
+            <xpath expr="//group//group[2]//field[@name='account_asset_id']" position="attributes">
+                <attribute name="groups"/>
+            </xpath>
+            <xpath expr="//field[@name='original_value']" position="before">
+                <field name="old_ref"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="reclassification_move_ids" invisible="1"/>
+                 <button class="oe_stat_button" name="action_open_reclassification_entries" type="object" invisible="not reclassification_move_ids">
+                    Reclassification Entries
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Added asset code field on account asset tree view  -->
+    <record id="view_account_asset_inherit_tree" model="ir.ui.view">
+        <field name="name">view.account.asset.inherit.tree</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="code"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!--Added asset code field on account asset model tree view  -->
+    <record id="view_account_asset_model_inherit_tree" model="ir.ui.view">
+        <field name="name">view.account.asset.model.inherit.tree</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_model_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+
+                <field name="model_code"/>
+
+            </xpath>
+        </field>
+    </record>
+
+    <data noupdate="1">
+        <record id="action_asset_dispose" model="ir.actions.act_window">
+            <field name="name">Dispose</field>
+            <field name="res_model">asset.dispose</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="action_asset_dispose_wizard"/>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="account_asset.model_account_asset" />
+            <field name="binding_view_types">list</field>
+            <field name="context">{}</field>
+        </record>
+
+    </data>
+
+    <data noupdate="1">
+
+        <record id="action_asset_freeze" model="ir.actions.act_window">
+            <field name="name">Freeze</field>
+            <field name="res_model">asset.freeze</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="action_asset_freeze_wizard"/>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="account_asset.model_account_asset" />
+            <field name="binding_view_types">list</field>
+            <field name="context">{}</field>
+        </record>
+    </data>
+
+</odoo>

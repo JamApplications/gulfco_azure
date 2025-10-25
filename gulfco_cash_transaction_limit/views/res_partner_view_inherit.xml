@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_payment_buttons" model="ir.ui.view">
+        <field name="name">res.partner.form.payment.smart.buttons</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <!-- PDC Payments Button -->
+                <button name="action_view_pdc_payments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-money"
+                        string="PDC Payments"
+                        invisible="customer_rank == 0">
+                    <field name="pdc_payment_count" widget="statinfo"/>
+                </button>
+
+                <!-- CDC Payments Button -->
+                <button name="action_view_cdc_payments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-credit-card"
+                        string="CDC Payments"
+                        invisible="customer_rank == 0">
+                    <field name="cdc_payment_count" widget="statinfo"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+
+    <record id="res_partner_form_add_ccd_vendor" model="ir.ui.view">
+        <field name="name">res.partner.form.add.ccd.vendor</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <!-- Anchor on the notebook -->
+
+            <xpath expr="//page[@name='accounting']" position="after">
+            <!-- <xpath expr="//form/sheet/notebook" position="inside"> -->
+                <page name="ccd_page" string="CCD" invisible="contact_type not in ['customer', 'both']">
+                    <group>
+                         <group string="Date Info">
+                            <field name="establish_data" required="contact_type in ['customer', 'both']"/>
+                            <field name="tl_expiry_date" required="contact_type in ['customer', 'both'] and trade_number != 'NA'"/>
+                            <field name="delivery_receive_time"/>
+                        </group>
+                    </group>
+
+                    <group string="Credit Limits Section" name="credit_limits_section">
+                    <label for="is_credit_hold"/>
+                    <field name="is_credit_hold" readonly="1" string="Is Credit Hold"
+                        groups="!gulfco_contact_registration_custom.group_ccd_approval,!gulfco_contact_registration_custom.group_credit_officer_approval"/>
+
+                    <!-- <label for="is_credit_hold"/> -->
+                    <field name="is_credit_hold" readonly="0" string="Is Credit Hold"
+                        groups="gulfco_contact_registration_custom.group_credit_officer_approval,gulfco_contact_registration_custom.group_ccd_approval"/>
+
+                    <label for="credit_hold_reason_id"/>
+                    <field name="credit_hold_reason_id" string="Credit Hold Reason"
+                        invisible="not is_credit_hold"
+                        required="is_credit_hold and customer_type == 'credit'"/>
+
+                    <label for="reason" invisible="1"/>
+                    <field name="reason" invisible="1"/>
+
+                    <label for="credit_hold_reason"/>
+                    <field name="credit_hold_reason"
+                        invisible="reason != 'manual_reason'"
+                        required="reason == 'manual_reason'"/>
+
+                    <label for="is_key_account"/>
+                    <field name="is_key_account" string="Is Key Account"/>
+
+                        <group>
+                            <field name="order_on_hold" readonly="1"/>
+                            <field name="tl_expiry_date" readonly="1"/>
+                            <field name="trade_number" readonly="1"/>
+                            <field name="partner_channel_id" readonly="1"/>
+                            <field name="total_overdue" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="pdc_payment_count" readonly="1"/>
+                            <field name="cdc_payment_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                <field name="show_cash_limit" invisible="1"/>
+                <group string="Cash Limits"
+                       name="cash_limits"
+                       groups="account.group_account_invoice,account.group_account_readonly"
+                       invisible="not show_cash_limit or customer_type != 'cash'">
+                    <field name="cash_transaction_limit" readonly="1" invisible="show_cash_limit == False"
+                           groups="!base.group_system,!gulfco_cash_transaction_limit.group_access_override_cash_limit"/>
+                    <field name="cash_transaction_limit" readonly="0" invisible="show_cash_limit == False"
+                           groups="base.group_system,gulfco_cash_transaction_limit.group_access_override_cash_limit"/>
+                           
+                    </group>
+                <group string="Attachment" name="attachments">
+                    <group>
+                        <field name="trade_license_file_name" invisible="1"/>
+                        <field name="trade_license_attachment" widget="binary"
+                               filename="trade_license_file_name" required="contact_type in ['supplier', 'both']"/>
+
+                        <field name="caf_file_name" invisible="1"/>
+                        <field name="caf_attachment" widget="binary" filename="caf_file_name"/>
+
+                        <field name="guarantees_copy_file_name" invisible="1"/>
+                        <field name="guarantees_copy_attachment" widget="binary" filename="guarantees_copy_file_name"/>
+
+                        <field name="eid_file_name" invisible="1"/>
+                        <field name="eid_attachment" widget="binary" filename="eid_file_name"/>
+
+                        <field name="agreement_copy_file_name" invisible="1"/>
+                        <field name="agreement_copy_attachment" widget="binary" filename="agreement_copy_file_name"/>
+
+                        <field name="bank_statement_file_name" invisible="1"/>
+                        <field name="bank_statement_attachment" widget="binary" filename="bank_statement_file_name"/>
+
+                    </group>
+                    <group>
+                        <field name="vat_trn_file_name" invisible="1"/>
+                        <field name="vat_trn_attachment" widget="binary" filename="vat_trn_file_name"/>
+
+                        <field name="poer_attorney_file_name" invisible="1"/>
+                        <field name="poer_attorney_attachment" widget="binary" filename="poer_attorney_file_name"/>
+
+                        <field name="company_photo_file_name" invisible="1"/>
+                        <field name="company_photo_attachment" widget="binary" filename="company_photo_file_name"/>
+
+                        <field name="passport_copy_file_name" invisible="1"/>
+                        <field name="passport_copy_attachment" widget="binary" filename="passport_copy_file_name"/>
+
+                        <field name="memorandum_association_file_name" invisible="1"/>
+                        <field name="memorandum_association_attachment" widget="binary" filename="memorandum_association_file_name"/>
+                    </group>
+                </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_partner_property_form_cash_limit_base" model="ir.ui.view">
+        <field name="name">res.partner.form.cash.limit.base</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='accounting']//group[@name='credit_limits']"  position="attributes">
+                <attribute name="invisible">customer_type != 'credit'</attribute>
+            </xpath>
+
+            <xpath expr="//label[@for='use_partner_credit_limit']" position="before">
+                <label for="use_partner_order_limit" invisible="not use_partner_credit_limit"/>
+                        <div class="o_row" invisible="not use_partner_credit_limit">
+                            <field name="use_partner_order_limit" invisible="not use_partner_credit_limit"/>
+                            <field name="order_limit" class="oe_inline" widget="monetary" options="{'currency_field': 'currency_id'}" invisible="not use_partner_order_limit"/>
+                        </div>
+            </xpath>
+        </field>
+    </record>
+        
+    <record id="res_partner_inherit_list" model="ir.ui.view">
+       <field name="name">res.partner.inherit.list</field>
+       <field name="model">res.partner</field>
+       <field name="inherit_id" ref="base.view_partner_tree"/>
+       <field name="arch" type="xml">
+          <field name="user_id" position="after">
+                <field name="credit_limit"  optional="hide"/>
+                <field name="property_payment_term_id"  optional="hide"/>
+                <field name="property_inbound_payment_method_line_id"  optional="hide"/>
+                <field name="credit"  optional="hide"/>
+                <field name="customer_code"  optional="hide"/>
+                <field name="pdc_payment_count"  optional="hide"/>
+                <field name="tl_expiry_date"  optional="hide"/>
+                <field name="customer_class_id"  optional="hide"/>
+                <field name="is_credit_hold"  optional="hide"/>
+                <field name="order_on_hold"  optional="hide"/>
+                <field name="total_due_over30"  optional="hide"/>
+                <field name="total_due_over90"  optional="hide"/>
+           </field>
+       </field>
+   </record>
+</odoo>

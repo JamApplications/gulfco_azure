@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<data noupdate="1">
+
+    <record id="email_template_pdc_bounce" model="mail.template">
+            <field name="name">Cheque Bounce Notification</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="subject">Bounce Cheque Notification</field>
+            <field name="email_from">{{ (user.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email or '' }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="description">Sent to customer</field>
+            <field name="body_html" type="html">
+<div>
+    <p>
+        Hello <t t-out="object.partner_id.name or ''">Gemini Furniture</t>,<br/><br/>
+        This message has been sent to inform you that the cheque with the following details:
+    </p>
+    <p>
+        Cheque No.: <t t-out="object.pdc_ref or ''">Gemini Furniture</t>
+    </p>
+    <p>
+        Cheque Date: <t t-out="object.due_date or ''">Gemini Furniture</t>
+    </p>
+    <p>
+        Cheque Bank: <t t-out="object.pdc_bank_id.name or ''">Gemini Furniture</t>
+    </p>
+
+    <p>has been rejected by the bank.</p>
+    <br/>
+    Thank you,
+
+</div>
+            </field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+</data>
+

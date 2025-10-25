@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+plennix_mobile_app.access_mobile_auth_token,access_mobile_auth_token,plennix_mobile_app.model_mobile_auth_token,base.group_user,1,1,1,1
+access_van_daily_collection_wizard,access_van_daily_collection_wizard,plennix_mobile_app.model_van_daily_collection_wizard,base.group_user,1,1,1,1
+access_stock_request_van,access_stock_request_van,stock_request.model_stock_request_order,plnx_sales_team.group_sales_team_van_sale,1,1,1,0
+access_stock_request_van_line,access_stock_request_van_line,stock_request.model_stock_request,plnx_sales_team.group_sales_team_van_sale,1,1,1,0

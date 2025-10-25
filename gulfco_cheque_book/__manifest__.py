@@ -1,0 +1,20 @@
+{
+    'name': 'Gulfco Cheque Book',
+    'version': '18.0.0.0.0',
+    'summary': 'Cheque Book and Cheque Book Line management for PDC Payable',
+    'description': 'Manage cheque books and cheque book lines for PDC Payable operations.',
+    'author': 'Plennix Technologies',
+    'website': 'https://plennix.com',
+    'category': 'Accounting',
+    'depends': ['account', 'gulfco_account_payment_extended'],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/cheque_book_views.xml',
+        'views/cheque_book_line_views.xml',
+        'views/account_payment_views.xml',
+        'data/cheque_book_line_cron.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+}

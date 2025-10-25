@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_picking_form_inherit_claimable" model="ir.ui.view">
+        <field name="name">stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="is_claimable"
+                        column_invisible="parent.direction not in ['sample_issue_out', 'damage_expiry_issue_out','miscellaneous_issue_out']"/>
+                <field name="percentage"
+                        column_invisible="parent.direction not in ['sample_issue_out', 'damage_expiry_issue_out','miscellaneous_issue_out']"/>
+                <!--                <field name="cost"/>-->
+            </xpath>
+        </field>
+    </record>
+</odoo>

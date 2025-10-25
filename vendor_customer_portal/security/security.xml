@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function name="write" model="ir.rule">
+        <value model="ir.rule"  search="[
+            ('id', '=', ref('base.res_partner_portal_public_rule'))]"/>
+        <value eval="{
+            'active': False,
+        }"/>
+    </function>
+</odoo>

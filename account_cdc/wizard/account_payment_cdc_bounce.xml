@@ -1,0 +1,33 @@
+<odoo>
+    <record id="account_payment_cdc_bounce_form" model="ir.ui.view">
+        <field name="name">account.payment.cdc.bounce.form</field>
+        <field name="model">account.payment.cdc.bounce</field>
+        <field name="arch" type="xml">
+            <form string="Payment Bounce Wizard">
+                <group>
+                    <field name="payment_id" invisible="1"/>
+                    <field name="payment_ref" invisible="1"/>
+                    <field name="payment_cdc_state" invisible="1"/>
+                    <field name="allowed_partner_ids" invisible="1"/>
+                    <field name="cancel_id" />
+                    <field name="bounce_date"/>
+                    <field name="allow_merge_cdc" invisible="1"/>
+                    <field name="partner_id" invisible="1"/>
+                </group>
+                <notebook  invisible="1">
+                    <page string="Related CDC" invisible="1">
+                        <field name="related_payment_ids"/>
+                    </page>
+                </notebook>
+                <footer>
+                    <button string="Bounce CDC" name="action_bounce_cdc"
+                            type="object"
+                            class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

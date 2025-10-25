@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_purchase_bill_matching_report_tree" model="ir.ui.view">
+        <field name="name">purchase.bill.matching.report.tree</field>
+        <field name="model">purchase.bill.matching.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <header>
+                    <button name="action_custom_match_lines" type="object" string="Match"
+                            groups="account.group_account_invoice" class="btn btn-primary"/>
+                </header>
+                <field name="product_id"/>
+                <field name="purchase_line_id" column_invisible="1"/>
+                <field name="purchase_id" column_invisible="1"/>
+                <field name="billed_qty" column_invisible="1"/>
+                <field name="picking_id"/>
+                <field name="move_line_id" column_invisible="1"/>
+                <field name="received_qty" sum="Total"/>
+                <field name="total_amount" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="variance_qty" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_purchase_bill_matching_report" model="ir.actions.act_window">
+        <field name="name">Bill Matching Report</field>
+        <field name="res_model">purchase.bill.matching.report</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

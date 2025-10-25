@@ -1,0 +1,32 @@
+<odoo>
+    <record id="view_fsm_order_form_inherit_account" model="ir.ui.view">
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_start']" position="after">
+                <button
+                        id="action_collection"
+                        name="action_collection"
+                        string="Collection"
+                        class="oe_highlight"
+                        type="object"
+                        groups="plnx_sales_team.group_sales_team_van_sale,plnx_sales_team.group_sales_team_pre_sales"
+                />
+                <button
+                        id="action_outstanding"
+                        name="action_outstanding"
+                        string="Outstanding"
+                        class="oe_highlight"
+                        type="object"
+                        groups="plnx_sales_team.group_sales_team_van_sale"
+                />
+            </xpath>
+            <div name="button_box" position="inside">
+                <button name="action_view_payments" type="object" class="oe_stat_button" icon="fa-pencil-square-o"
+                        invisible="payment_count == 0">
+                    <field name="payment_count" widget="statinfo" string="Payments"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

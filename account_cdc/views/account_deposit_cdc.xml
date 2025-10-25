@@ -1,0 +1,72 @@
+<odoo>
+    <record id="account_deposit_cdc_form" model="ir.ui.view">
+        <field name="name">account.deposit.cdc.form</field>
+        <field name="model">account.deposit.cdc</field>
+        <field name="arch" type="xml">
+            <form string="Deposit CDC Form">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,deposit"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="button_open_journal_entry" type="object" class="oe_stat_button" icon="fa-bars">
+                                Journal Entry
+                            </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bank_journal_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="state != 'draft'" />
+                            <field name="deposit_date" readonly="state != 'draft'" />
+                        </group>
+                    </group>
+                    <separator/>
+                    <notebook>
+                        <page string="CDC Receivable" name="cdc_receivable">
+                            <field name="payment_ids"  invisible="state != 'draft'"
+                                   options="{'no_create': True}" widget="many2many"
+                                   context="{'list_view_ref': 'account_cdc.account_payment_cdc_receivable_tree_inherit_primary', 'form_view_ref': 'account_cdc.account_payment_cdc_receivable_form_inherit_primary'}"/>
+                            <field name="payment_deposit_ids" readonly="1"
+                                   invisible="state == 'draft'"
+                                   context="{'list_view_ref': 'account_cdc.account_payment_cdc_receivable_tree_inherit_primary', 'form_view_ref': 'account_cdc.account_payment_cdc_receivable_form_inherit_primary'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_deposit" invisible="state != 'draft'" type="object" string="Deposit" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="account_deposit_cdc_tree" model="ir.ui.view">
+        <field name="name">account.deposit.cdc.tree</field>
+        <field name="model">account.deposit.cdc</field>
+        <field name="arch" type="xml">
+            <list string="Deposit CDC Tree">
+                <field name="name"/>
+                <field name="bank_journal_id" optional="show"/>
+                <field name="deposit_date" optional="show"/>
+                <field name="payment_ids" optional="hide"/>
+                <field name="state" decoration-success="state == 'deposit'" decoration-info="state == 'draft'"
+                       widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="account_deposit_cdc_action" model="ir.actions.act_window">
+        <field name="name">Deposit CDC</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.deposit.cdc</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+</odoo>

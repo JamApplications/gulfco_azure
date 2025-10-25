@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="fsm_summary_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2><center>Summary Report</center></h2>
+                        <style>
+                            .summery_table > th{
+                                font-weight: 500;
+                            }
+                        </style>
+                        <div class="row col-12 mb-2 mt-2">
+                            <div class="col-6">
+                            </div>
+                            <div class="col-6">
+                                <center><h4><b>Activity</b></h4></center>
+                            </div>
+                        </div>
+                        <table class="summery_table" style="width: 100%; border-collapse: collapse;" border="1">
+                            <thead>
+                                <tr>
+                                    <th><b>Date</b></th>
+                                    <th><b>Staff No</b></th>
+                                    <th><b>Name</b></th>
+                                    <th><b>Customer Name</b></th>
+                                    <th><b>Account</b></th>
+                                    <th><b>First Start Time</b></th>
+                                    <th><b>Day End Time</b></th>
+                                    <th><b>SHELF DISPLAY</b></th>
+                                    <th><b>STOCK COUNT</b></th>
+                                    <th><b>RETURN REQUEST</b></th>
+                                    <th><b>PROMOTION</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="data" t-value="o.get_report_data()"/>
+                                <t t-foreach="data" t-as="line">
+                                    <tr>
+                                        <t t-foreach="line.items()" t-as="item">
+                                            <td>
+                                                <t t-esc="item[1]"/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    <record id="gulfco_fsm_summary_report_paperformat" model="report.paperformat">
+        <field name="name">FSM summary Report Peperformat</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">32</field>
+        <field name="margin_left">2</field>
+        <field name="margin_right">2</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">30</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="action_fsm_summary_report" model="ir.actions.report">
+        <field name="name">FSM summary Report</field>
+        <field name="model">fsm.summary.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fieldservice_shelf_display_management.fsm_summary_report_template</field>
+        <field name="report_file">fieldservice_shelf_display_management.fsm_summary_report_template</field>
+        <field name="print_report_name">'summary Report'</field>
+         <field name="paperformat_id" ref="fieldservice_shelf_display_management.gulfco_fsm_summary_report_paperformat"/>
+    </record>
+</odoo>

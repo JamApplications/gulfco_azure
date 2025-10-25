@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_cost_update,manage_product_cost_update,model_product_cost_update,base.group_user,1,1,1,1
+access_product_cogs_update,product_cogs_update,model_product_cogs_update,base.group_user,1,1,1,1
+access_val_update_jv,val_update_jv,model_val_update_jv,base.group_user,1,1,1,1
+access_correct_valuation,correct_valuation,model_correct_valuation,base.group_user,1,1,1,1
+
+
+
+

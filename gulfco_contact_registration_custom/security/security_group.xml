@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="group_scm_approval" model="res.groups">
+        <field name="name">SCM Approval</field>
+    </record>
+
+    <record id="group_customer_coordinator_approval" model="res.groups">
+        <field name="name">Approval</field>
+    </record>
+
+    <record id="group_auth_user_approval" model="res.groups">
+        <field name="name">Authorized User Approval</field>
+    </record>
+
+    <record id="group_line_manager" model="res.groups">
+      <field name="name">Line Manager Approval</field>
+    </record>
+
+    <record id="group_channel_head_approval" model="res.groups">
+        <field name="name">Channel Head Approval</field>
+    </record>
+
+    <record id="group_credit_officer_approval" model="res.groups">
+        <field name="name">Credit Officer Approval</field>
+    </record>
+
+    <record id="group_div_head_approval" model="res.groups">
+        <field name="name">Division Head Approval</field>
+    </record>
+    <record id="group_ccd_officer_approval" model="res.groups">
+        <field name="name">CCD Officer Approval</field>
+    </record>    
+    <record id="group_ccd_approval" model="res.groups">
+        <field name="name">CCD Manager Approval</field>
+    </record>
+
+    <!-- Groups for Customer Cash Approval Buttons -->
+    <record id="group_submit_cash_customer" model="res.groups">
+        <field name="name">Customer Creation Submit Cash Customer Request</field>
+    </record>
+
+    <record id="group_manager_cash_approval" model="res.groups">
+        <field name="name">Customer Creation  Manager Cash Approval</field>
+    </record>
+
+    <record id="group_reset_cash_customer" model="res.groups">
+        <field name="name">Customer Creation  Reset Cash Customer Draft</field>
+    </record>
+
+    <!-- Groups for Customer Credit Approval Buttons -->
+    <record id="group_submit_credit_customer" model="res.groups">
+        <field name="name">Customer Creation  Submit Credit Customer Request</field>
+    </record>
+
+    <record id="group_credit_officer_approval" model="res.groups">
+        <field name="name">Customer Creation  Credit Officer Approval </field>
+    </record>
+
+    <record id="group_ccd_credit_approval" model="res.groups">
+        <field name="name">Customer Creation CCD Credit Approval</field>
+    </record>
+
+    <record id="group_reset_credit_customer" model="res.groups">
+        <field name="name">Customer Creation Reset Credit Customer Draft</field>
+    </record>
+</odoo>

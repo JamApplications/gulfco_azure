@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_picking_custom_template">
+            <t t-call="web.html_container">
+                <t t-if="docs.env.context.get('active_model') == 'stock.move'">
+                    <t t-set="move_ids" t-value="docs.env['stock.move'].sudo().browse(docs.ids)"/>
+                    <t t-set="pickings" t-value="move_ids.mapped('picking_id')"/>
+                </t>
+                <t t-else="">
+                    <t t-set="pickings" t-value="docs"/>
+                </t>
+
+                <t t-foreach="pickings" t-as="o">
+                    <!--                <t t-foreach="docs" t-as="o">-->
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="row">
+                                <div class="col-4">
+                                    <strong>
+                                        Pick slip #
+
+                                        <t t-esc="o.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Creation Date :-
+                                        <span t-esc="o.create_date.strftime('%d-%m-%Y')"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Branch Transfer :-
+                                        <t t-esc="o.location_id.display_name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <strong>Warehouse :-
+                                        <t t-esc="o.picking_type_id.warehouse_id.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Assigned To :-
+                                        <span t-field="o.picker_partner_id"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Order :-
+                                        <span t-field="o.origin"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr style="background-color: #ccc;">
+                                        <th>Zone/Row</th>
+                                        <th>Location</th>
+                                        <th>Item Code</th>
+                                        <th>Description</th>
+                                        <th>Lot</th>
+                                        <th>Expiry Date</th>
+                                        <th>Lot Unit Qty</th>
+                                        <th>CTN Conversion</th>
+                                        <th>Qty to Pick</th>
+                                        <th>Source Ref - Destination</th>
+                                        <th>Source Unit Qty</th>
+                                    </tr>
+                                </thead>
+                                <t t-if="o.env.context.get('active_model') == 'stock.move'">
+                                    <t t-set="move_lines"
+                                       t-value="o.move_line_ids.filtered(lambda s:s.move_id.id in docs.ids)"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-set="move_lines" t-value="o.move_line_ids"/>
+                                </t>
+                                <tbody t-if="move_lines">
+                                    <t t-foreach="move_lines" t-as="line">
+                                        <t t-set="box_package"
+                                           t-value="line.product_id.packaging_ids.filtered(lambda s: s.package_type_id.type == 'box')"/>
+                                        <t t-set="ctn_package"
+                                           t-value="line.product_id.packaging_ids.filtered(lambda s: s.package_type_id.type == 'ctn')"/>
+                                        <tr>
+                                            <td>
+                                                <span style="display: block; text-align:center;">
+                                                    <span t-field="o.location_id.barcode"
+                                                          t-options="{
+                                                              'widget': 'barcode',
+                                                              'quiet': 0.5,
+                                                              'img_style': 'width:100px;height:40px;'
+                                                          }"/>
+                                                    <span style="font-size:12px; margin-top:4px; display:block;">
+                                                        <t t-esc="o.location_id.barcode"/>
+                                                    </span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line.location_id.display_name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line.product_id.default_code"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.product_id.name"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.lot_id.name or line.lot_name or '-'"/>
+                                            </td>
+                                            <td>
+<!--                                                <t t-out="line.expiration_date.strftime('%d/%m/%Y') if line.expiration_date else '-'"/>-->
+                                                <span t-field="line.expiration_date"  t-options='{"widget": "date", "hide_seconds": True}'/>
+<!--                                                <t t-esc="line.expiration_date or '-'"/>-->
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.quantity"/>
+                                            </td>
+                                            <td>
+                                                <t t-if="ctn_package">
+                                                    <span>1 CTN =<t t-esc="ctn_package[0].qty"/>&#160;&#160;<t
+                                                            t-esc="line.product_uom_id.name"/>
+                                                    </span>
+                                                </t>
+                                                <t t-if="box_package">
+                                                    <span>1 BOX =<t t-esc="box_package[0].qty"/>&#160;&#160;<t
+                                                            t-esc="line.product_uom_id.name"/>
+                                                    </span>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-set="ctn_qty" t-value="0"/>
+                                                <t t-if="ctn_package and ctn_package[0].qty > 0.0">
+                                                    <t t-set="ctn_qty" t-value="line.quantity/ctn_package[0].qty"/>
+                                                </t>
+                                                <t t-set="box_qty" t-value="0"/>
+                                                <t t-if="box_package and box_package[0].qty > 0.0">
+                                                    <t t-set="box_qty" t-value="line.quantity/box_package[0].qty"/>
+                                                </t>
+                                                <span><t t-esc="ctn_qty"></t>&#160;&#160; CTN
+                                                </span>
+                                                <br/>
+                                                <span><t t-esc="box_qty"></t>&#160;&#160;BOX
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="o.origin"/>
+                                                    -
+                                                    <t t-esc="o.location_dest_id.display_name"/>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <t t-set="source_quant"
+                                                   t-value="o.env['stock.quant'].sudo().search([('location_id','=',o.location_id.id),('product_id','=',line.product_id.id),('lot_id','=',line.lot_id.id)],limit=1)"/>
+                                                <t t-if="source_quant">
+                                                    <span t-esc="source_quant.quantity"/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <template id="report_picking_custom_template_move">
+            <t t-call="stock_outbouding_operation.report_picking_custom_template"/>
+        </template>
+
+        <template id="report_stock_move_return_slip">
+            <t t-if="docs.env.context.get('active_model') == 'stock.move'">
+                <t t-set="docs" t-value="docs.mapped('picking_id')"/>
+            </t>
+            <t t-else="">
+                <t t-set="docs" t-value="docs"/>
+            </t>
+            <t t-call="stock.report_return_slip"/>
+        </template>
+        <record id="gulfco_landscape_report_paperformat" model="report.paperformat">
+          <field name="name">Landscape Report Peperformat</field>
+          <field name="default" eval="True"/>
+          <field name="format">A4</field>
+          <field name="page_height">0</field>
+          <field name="page_width">0</field>
+          <field name="orientation">Landscape</field>
+          <field name="margin_top">50</field>
+          <field name="margin_bottom">32</field>
+          <field name="margin_left">2</field>
+          <field name="margin_right">2</field>
+          <field name="header_line" eval="False"/>
+          <field name="header_spacing">50</field>
+          <field name="dpi">90</field>
+        </record>
+        <record id="stock.action_report_picking" model="ir.actions.report">
+            <field name="name">Pick Slip</field>
+            <field name="paperformat_id" ref="stock_outbouding_operation.gulfco_landscape_report_paperformat"/>
+            <field name="report_name">stock_outbouding_operation.report_picking_custom_template</field>
+        </record>
+        <template id="report_delivery_document_operation_details" inherit_id="stock.report_delivery_document">
+            <xpath expr="//t[@t-set='lines']" position="replace">
+                <t t-if="o.env.context.get('active_model') == 'stock.move' and o.env.context.get('active_ids')">
+                    <t t-set="lines"
+                       t-value="o.move_ids.filtered(lambda x: x.product_uom_qty and x.id in o.env.context.get('active_ids'))"/>
+                </t>
+                <t t-else="">
+                    <t t-set="lines" t-value="o.move_ids.filtered(lambda x: x.product_uom_qty)"/>
+                </t>
+            </xpath>
+            <xpath expr="//t[@t-set='package_move_lines']" position="replace">
+                <t t-if="o.env.context.get('active_model') == 'stock.move' and o.env.context.get('active_ids')">
+                    <t t-set="move_ids" t-value="o.env.context.get('active_ids')"/>
+                    <t t-set="package_move_lines"
+                       t-value="o.move_line_ids.filtered(lambda l: l.result_package_id == package and l.move_id.id in move_ids)"/>
+                </t>
+                <t t-else="">
+                    <t t-set="package_move_lines"
+                       t-value="o.move_line_ids.filtered(lambda l: l.result_package_id == package)"/>
+                </t>
+            </xpath>
+            <xpath expr="//tr[@t-foreach='o.move_line_ids']" position="replace">
+                <t t-if="o.env.context.get('active_model') == 'stock.move' and o.env.context.get('active_ids')">
+                    <tr t-foreach="o.move_line_ids.filtered(lambda s:s.move_id.id in o.env.context.get('active_ids'))"
+                        t-as="move_line">
+                        <t t-call="stock.stock_report_delivery_has_serial_move_line"/>
+                    </tr>
+                </t>
+                <t t-else="">
+                    <tr t-foreach="o.move_line_ids" t-as="move_line">
+                        <t t-call="stock.stock_report_delivery_has_serial_move_line"/>
+                    </tr>
+                </t>
+            </xpath>
+            <xpath expr="//t[@t-set='move_lines']" position="replace">
+                <t t-if="o.env.context.get('active_model') == 'stock.move' and o.env.context.get('active_ids')">
+                    <t t-set="move_lines"
+                       t-value="o.move_line_ids.filtered(lambda l: not l.result_package_id and l.move_id.id in o.env.context.get('active_ids'))"/>
+                </t>
+                <t t-else="">
+                    <t t-set="move_lines" t-value="o.move_line_ids.filtered(lambda l: not l.result_package_id)"/>
+                </t>
+            </xpath>
+            <xpath expr="//t[@t-set='package_move_lines']" position="replace">
+                <t t-if="o.env.context.get('active_model') == 'stock.move' and o.env.context.get('active_ids')">
+                    <t t-set="move_ids" t-value="o.env.context.get('active_ids')"/>
+                    <t t-set="package_move_lines"
+                       t-value="o.move_line_ids.filtered(lambda l: l.result_package_id == package and l.move_id.id in move_ids)"/>
+                </t>
+                <t t-else="">
+                    <t t-set="package_move_lines"
+                       t-value="o.move_line_ids.filtered(lambda l: l.result_package_id == package)"/>
+                </t>
+            </xpath>
+            <xpath expr="//tr[@t-foreach='o.move_line_ids']" position="replace">
+                <t t-if="o.env.context.get('active_model') == 'stock.move' and o.env.context.get('active_ids')">
+                    <tr t-foreach="o.move_line_ids.filtered(lambda s:s.move_id.id in o.env.context.get('active_ids'))"
+                        t-as="move_line">
+                        <t t-call="stock.stock_report_delivery_has_serial_move_line"/>
+                    </tr>
+                </t>
+                <t t-else="">
+                    <tr t-foreach="o.move_line_ids" t-as="move_line">
+                        <t t-call="stock.stock_report_delivery_has_serial_move_line"/>
+                    </tr>
+                </t>
+            </xpath>
+            <xpath expr="//t[@t-set='move_lines']" position="replace">
+                <t t-if="o.env.context.get('active_model') == 'stock.move' and o.env.context.get('active_ids')">
+                    <t t-set="move_lines"
+                       t-value="o.move_line_ids.filtered(lambda l: not l.result_package_id and l.move_id.id in o.env.context.get('active_ids'))"/>
+                </t>
+                <t t-else="">
+                    <t t-set="move_lines" t-value="o.move_line_ids.filtered(lambda l: not l.result_package_id)"/>
+                </t>
+            </xpath>
+        </template>
+        <template id="report_deliveryslip_operation_custom">
+            <t t-set="pickings" t-value="docs.mapped('picking_id')"/>
+            <t t-foreach="pickings" t-as="picking">
+                <t t-set="o" t-value="picking"/>
+                <t t-call="stock.report_delivery_document" t-lang="o._get_report_lang()"/>
+            </t>
+        </template>
+
+        <!--       Receipt PO Repot      -->
+        <template id="report_po_receipt_custom_template">
+            <t t-call="web.html_container">
+                <t t-if="docs.env.context.get('active_model') == 'stock.move'">
+                    <t t-set="move_ids" t-value="docs.env['stock.move'].sudo().browse(docs.ids)"/>
+                    <t t-set="pickings" t-value="move_ids.mapped('picking_id')"/>
+                </t>
+                <t t-else="">
+                    <t t-set="pickings" t-value="docs"/>
+                </t>
+
+                <t t-foreach="pickings" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="row">
+                                <div class="col-4">
+                                    <strong>
+                                        Receipt Date:-
+                                        <t t-esc="o.date"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Po Number:-
+                                        <t t-esc="o.origin"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>No of Containers :-
+                                        <t t-esc="o.number_of_containers"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <strong>Receipt # :-
+                                        <t t-esc="o.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Shipping Document ref ( BL/AWB ) :-
+                                        <span t-field="o.shipping_doc_ref"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Invoice No :-
+                                        <span t-field="o.invoice_no"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <strong>Supplier Name :-
+                                        <t t-esc="o.partner_id.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Bill of Entry No:-
+                                        <span t-field="o.bill_of_entry_no"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Packing Slip / Delivery Note:-
+                                        <span t-field="o.packing_slip"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <strong>Warehouse :-
+                                        <t t-esc="o.location_dest_id.warehouse_id.name"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Excise Declaration No:-
+                                        <span t-field="o.execise_declare_no"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Vehicle No:-
+                                        <span t-field="o.vehicle_number"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Remarks :-
+                                        <span t-field="o.remark_picking"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <br/>
+                            <br/>
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr style="background-color: #ccc;">
+                                        <th>No</th>
+                                        <th>Item Code</th>
+                                        <th>Description</th>
+                                        <th>Package Qty</th>
+                                        <th>Package</th>
+                                        <th>Unit Qty</th>
+                                        <th>ASN NO</th>
+                                        <th>Lot / Batch Number</th>
+                                        <th>Expiry Date</th>
+                                        <th>Locator</th>
+                                        <th>Remarks / QC comments</th>
+                                    </tr>
+                                </thead>
+                                <t t-set="move_lines"
+                                   t-value="o.move_ids_without_package"/>
+
+                                <tbody t-if="move_lines">
+                                    <t t-set="sequance" t-value="1"/>
+                                    <t t-foreach="move_lines" t-as="line">
+                                        <t t-set="box_package"
+                                           t-value="line.product_id.packaging_ids.filtered(lambda s: s.package_type_id.type == 'box')"/>
+                                        <t t-set="ctn_package"
+                                           t-value="line.product_id.packaging_ids.filtered(lambda s: s.package_type_id.type == 'ctn')"/>
+                                        <tr>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="sequance"/>
+                                                </span>
+                                                <t t-set="sequance" t-value="sequance+1"/>
+                                            </td>
+
+                                            <td>
+                                                <span t-esc="line.product_id.default_code"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.product_id.name"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.product_packaging_qty or '' "/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.product_packaging_id.name"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.product_uom_qty"/>
+                                            </td>
+                                            <td>
+                                                <t t-if="line.asn_line_id and line.asn_line_id.asn_request_id" t-esc="line.asn_line_id.asn_request_id.bl_no_asn_no or ''"/>
+                                            </td>
+                                            <td>
+                                                <t t-if="line.lot_ids and len(line.lot_ids) == 1">
+                                                    <t t-esc="line.lot_ids.name"/>
+                                                </t>
+                                                <t t-if="line.lot_ids and len(line.lot_ids) > 1">
+                                                    <span t-esc="' ,'.join(line.lot_ids.mapped('name'))"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-if="line.lot_ids and len(line.lot_ids) == 1">
+                                                        <t t-esc="line.lot_ids.expiration_date.strftime('%d-%m-%Y') if line.lot_ids.expiration_date else ''"/>
+                                                </t>
+                                                <t t-if="line.lot_ids and len(line.lot_ids) > 1">
+                                                    <span t-esc="' ,'.join([d.strftime('%d-%m-%Y') for d in line.lot_ids.mapped('expiration_date') if d])"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.location_final_id.display_name"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="line.move_remark"/>
+                                            </td>
+
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        <template id="report_receipt_po">
+            <t t-call="stock_outbouding_operation.report_po_receipt_custom_template"/>
+        </template>
+
+        <record id="action_report_po_receipt_report" model="ir.actions.report">
+            <field name="name">Receipt</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">stock_outbouding_operation.report_receipt_po</field>
+            <field name="report_file">stock_outbouding_operation.report_receipt_po</field>
+            <field name="print_report_name">'Receipt'</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="stock_outbouding_operation.gulfco_landscape_report_paperformat"/>
+          </record>
+          <record id="action_report_delivery_stock_move" model="ir.actions.report">
+            <field name="name">Delivery Slip</field>
+            <field name="model">stock.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">stock_outbouding_operation.report_deliveryslip_operation_custom</field>
+            <field name="report_file">stock_outbouding_operation.report_deliveryslip_operation_custom</field>
+            <field name="print_report_name">'Delivery Slip - %s - %s' % (object.picking_id.partner_id.name or '',
+                object.picking_id.name)
+            </field>
+            <field name="binding_model_id" ref="stock.model_stock_move"/>
+            <field name="binding_type">report</field>
+          </record>
+          <record id="action_report_picking_slip_stock_move" model="ir.actions.report">
+            <field name="name">Pick Slip</field>
+            <field name="model">stock.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">stock_outbouding_operation.report_picking_custom_template_move</field>
+            <field name="report_file">stock_outbouding_operation.report_picking_custom_template_move</field>
+            <field name="print_report_name">'Pick Slip'</field>
+            <field name="binding_model_id" ref="model_stock_move"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="stock_outbouding_operation.gulfco_landscape_report_paperformat"/>
+        </record>
+        <record id="action_return_label_stock_move_report" model="ir.actions.report">
+            <field name="name">Return slip</field>
+            <field name="model">stock.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">stock_outbouding_operation.report_stock_move_return_slip</field>
+            <field name="report_file">return_slip</field>
+            <field name="binding_model_id" ref="model_stock_move"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+        <record id="paperformat_transaction_barcode_report" model="report.paperformat">
+            <field name="name">Transaction list barcode paperformate</field>
+            <field name="default" eval="False" />
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">35</field>
+        </record>
+
+        <record id="action_report_picking_transfer_list_in_barcode_stock_move" model="ir.actions.report">
+            <field name="name">Transaction list in Barcode</field>
+            <field name="model">stock.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">stock_outbouding_operation.report_stock_move_transfer_list_in_barcode_template</field>
+            <field name="report_file">stock_outbouding_operation.report_stock_move_transfer_list_in_barcode_template</field>
+            <field name="print_report_name">'Transaction list in Barcode'</field>
+            <field name="binding_model_id" ref="model_stock_move"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" eval="paperformat_transaction_barcode_report"/>
+        </record>
+    </data>
+</odoo>

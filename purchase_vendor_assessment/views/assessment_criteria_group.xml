@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="assessment_criteria_group_view_list" model="ir.ui.view">
+        <field name="name">assessment_criteria_group_view_list</field>
+        <field name="model">assessment.criteria.group</field>
+        <field name="arch" type="xml">
+            <list>
+<!--                editable="top">-->
+                <field name="name"/>
+                <field name="criteria_ids" widget="many2many_tags"/>
+                <field name="weightage_point"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="assessment_criteria_group_view_form" model="ir.ui.view">
+        <field name="name">assessment_criteria_group_view_form</field>
+        <field name="model">assessment.criteria.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+
+                     <div class="oe_title">
+                        <label for="name" string="Group Name"/>
+                        <h2><field name="name" /></h2>
+                    </div>
+
+                    <separator/>
+                    <group>
+                        <group>
+                            <field name="weightage_point"/>
+                        </group>
+                        <group>
+                            <field name="vendor_ids" widget="many2many_tags" readonly="1"/>
+                        </group>
+                    </group>
+                    <separator/>
+                    <group string="Criteria List"/>
+
+                    <field name="criteria_ids" widget="many2many_tags" invisible="1"/>
+<!--                    <field name="criteria_ids" options="{'no_create_edit': True, 'no_create': True, 'no_open': True}">-->
+<!--                        <list editable="top" edit="1" delete="1" create="0">-->
+<!--                            <field name="name" readonly="1"/>-->
+<!--                            <field name="description" readonly="1"/>-->
+<!--                            <field name="python_code" readonly="1"/>-->
+<!--                            <field name="weightage_point" readonly="0"/>-->
+<!--                        </list>-->
+<!--                    </field>-->
+
+                    <field name="criteria_group_line" options="{'no_create_edit': True, 'no_create': True, 'no_open': True}">
+                        <list editable="bottom">
+                            <field name="criteria_id" options="{'no_create_edit': True, 'no_create': True}"
+                            domain="[('id', 'not in', parent.criteria_ids)]"/>
+                            <field name="weightage_point" sum="Total Weightage"/>
+                        </list>
+                    </field>
+
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="assessment_criteria_group_view_filter" model="ir.ui.view">
+        <field name="name">assessment_criteria_group_view_filter</field>
+        <field name="model">assessment.criteria.group</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+    <record id="assessment_criteria_group_action" model="ir.actions.act_window">
+        <field name="name">Criteria Group</field>
+        <field name="res_model">assessment.criteria.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

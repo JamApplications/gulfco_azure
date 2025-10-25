@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        action="external_dataset_table_action"
+        id="menu_external_dataset_table"
+        parent="base.next_id_9"
+        groups="base.group_no_one"/>
+</odoo>

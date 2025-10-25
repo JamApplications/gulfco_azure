@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="promo_product_group_action" model="ir.actions.act_window">
+            <field name="name">Promo Product</field>
+            <field name="res_model">promo.product.group</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="promo_customer_group_action" model="ir.actions.act_window">
+            <field name="name">Promo Customer</field>
+            <field name="res_model">promo.customer.group</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="promo_product_group_form" model="ir.ui.view">
+            <field name="name">promo.product.group.form</field>
+            <field name="model">promo.product.group</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="product_ids" required="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="promo_customer_group_form" model="ir.ui.view">
+            <field name="name">promo.customer.group.form</field>
+            <field name="model">promo.customer.group</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="partner_ids" required="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="site_number"/>
+                                    <field name="city"/>
+                                    <field name="country_id"/>
+                                    <field name="customer_type"/>
+                                    <field name="is_credit_hold"/>
+                                </list>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- 1) Hide the built‑in Rules & Rewards page when in Slab mode -->
+        <record id="view_loyalty_program_hide_default_rules" model="ir.ui.view">
+            <field name="name">loyalty.program.hide.rules_rewards.for.slab</field>
+            <field name="model">loyalty.program</field>
+            <field name="inherit_id" ref="loyalty.loyalty_program_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='rules_rewards']" position="attributes">
+                    <attribute name="invisible">program_type in ['slab_promotion','ladder_promotion']</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="loyalty_program_inherit_form" model="ir.ui.view">
+            <field name="name">loyalty.program.inherit.form</field>
+            <field name="model">loyalty.program</field>
+            <field name="inherit_id" ref="loyalty.loyalty_program_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/notebook/page[@name='rules_rewards']//group[1]" position="before">
+                    <group>
+                        <!-- <field name="promo_product_group_id" widget="many2one_avatar_user"
+                               required="program_type in ['slab_promotion', 'ladder_promotion']"/> -->
+                        <field name="promo_customer_group_id" class="w-auto" invisible="program_type not in ['buy_x_get_y', 'promotion']" required="program_type in ['buy_x_get_y', 'promotion']"/>
+                    </group>
+
+                </xpath>
+                <xpath expr="//sheet/notebook/page[@name='rules_rewards']" position="after">
+                    <page string="Ladder Promotions" invisible="program_type != 'ladder_promotion'">
+                        <div class="o_panel o_panel_color_info">
+                            <header class="o_panel_header">
+                                <h2 class="o_panel_title">
+                                    <i class="fa fa-layer-group"/>
+                                    Ladder Promotion Setup
+                                </h2>
+                            </header>
+                            <group class="o_panel_body">
+                                <group>
+                                    <field name="promo_product_group_id"
+                                           required="program_type == 'ladder_promotion'"
+                                           widget="many2one_avatar_user"/>
+                                    <field name="promo_customer_group_id" required="program_type == 'ladder_promotion'"/>
+                                    <field name="discount_line_product_id" invisible="1"/>
+                                </group>
+                            </group>
+                            <label string="Define Your Ladders:" class="o_form_label_big" for="ladder_rule_ids"/>
+                            <field name="ladder_rule_ids" nolabel="1" required="program_type == 'ladder_promotion'">
+                                <list editable="bottom" class="o_list_editable">
+                                    <field name="distinct_item_count"/>
+                                    <field name="discount_percentage"/>
+                                    <field name="discount_percentage" widget="percentpie"/>
+                                </list>
+                            </field>
+                        </div>
+                    </page>
+                    <page string="Slab Promotions"
+                          invisible="program_type != 'slab_promotion'">
+                        <!-- Colored panel with icon -->
+                        <div class="o_panel o_panel_color_success">
+                            <header class="o_panel_header">
+                                <h2 class="o_panel_title">
+                                    <i class="fa fa-th-large"/>
+                                    Slab Promotion Setup
+                                </h2>
+                            </header>
+                            <group class="o_panel_body">
+                                <group>
+                                    <field name="promo_product_group_id"
+                                           widget="many2one_avatar_user" required="program_type == 'slab_promotion'"/>
+                                    <field name="promo_customer_group_id" required="program_type == 'slab_promotion'"/>
+                                    <field name="discount_line_product_id" invisible="1"/>
+                                </group>
+                            </group>
+                            <label string="Define Your Slabs:" class="o_form_label_big" for="slab_rule_ids"/>
+                            <field name="slab_rule_ids" nolabel="1" required="program_type == 'slab_promotion'">
+                                <list editable="bottom" class="o_list_editable">
+                                    <field name="min_amount"
+                                           widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="max_amount"
+                                           widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                    <field name="discount_percentage"/>
+                                    <field name="discount_percentage"
+                                           widget="percentpie"/>
+                                </list>
+                            </field>
+
+                        </div>
+                    </page>
+                    <!-- Flat Discount -->
+                    <page string="Flat Discount"
+                          invisible="program_type != 'flat_discount'">
+                        <div class="o_panel o_panel_color_warning">
+                            <header class="o_panel_header">
+                                <h2 class="o_panel_title">
+                                    <i class="fa fa-percent"/>
+                                    Flat Discount Setup
+                                </h2>
+                            </header>
+                            <group class="o_panel_body">
+                                <group>
+                                    <field name="flat_apply_customers_options" options="{'horizontal':true}"
+                                           widget="radio" required="program_type == 'flat_discount'"/>
+                                    <field name="promo_customer_group_id"
+                                           required="program_type == 'flat_discount' and flat_apply_customers_options == 'customer'"
+                                           invisible="flat_apply_customers_options != 'customer_group'"/>
+                                    <field name="flat_customer_ids"
+                                           required="program_type == 'flat_discount' and flat_apply_customers_options == 'customer'"
+                                           invisible="flat_apply_customers_options != 'customer'"
+                                           widget="many2many_tags"/>
+                                    <label string="Apply To:" class="o_form_label_big"
+                                           for="flat_discount_apply_options"/>
+                                    <field name="flat_discount_apply_options" widget="radio"
+                                           required="program_type == 'flat_discount'"
+                                           options="{'horizontal': true}"/>
+                                    <field name="flat_division" widget="selection"
+                                           required="program_type == 'flat_discount' and flat_discount_apply_options == 'division'"
+                                           invisible="flat_discount_apply_options != 'division'"/>
+                                    <field name="promo_product_group_id"
+                                           required="program_type == 'flat_discount' and flat_apply_customers_options == 'product_group'"
+                                           invisible="flat_discount_apply_options != 'product_group'"/>
+                                    <field name="flat_product_ids" widget="many2many_tags"
+                                           required="program_type == 'flat_discount' and flat_apply_customers_options == 'products'"
+                                           invisible="flat_discount_apply_options != 'products'"/>
+                                </group>
+                                <group>
+                                    <field name="discount_line_product_id" invisible="1"/>
+                                    <field name="flat_discount_percentage"
+                                           required="program_type == 'flat_discount'"
+                                    />
+                                    <field name="flat_discount_percentage"
+                                           widget="percentpie"
+                                           string="Discount %"
+                                    />
+                                </group>
+                                <div class="alert alert-info mt16">
+                                    <i class="fa fa-info-circle"/>
+                                    Select exactly one target: Division, Product Group, or Products.
+                                </div>
+                            </group>
+                        </div>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <menuitem name="Customers Group" id="customer_group_menu_item" parent="sale.sale_menu_root"
+                  action="promo_customer_group_action" sequence="60"/>
+        <menuitem name="Products Group" id="product_group_menu_item" parent="sale.product_menu_catalog"
+                  action="promo_product_group_action"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+{
+    'name': "Plennix RMA Extended",
+    'author': "Plennix",
+    'version': '18.0.0.0.1',
+    'website': "https://www.plennix.com",
+    'depends': ['base', 'plnx_rma_order', 'gulfco_product_customized_data',"purchase_line_views", "plnx_sales_team",
+                "stock_outbouding_operation", 'advance_payment_sale_purchase'],
+    'data': [
+        'security/ir.model.access.csv',
+        'wizard/rma_wizard.xml',
+        'wizard/fix_svl_cost_wizard.xml',
+        'data/print_excel_server_action.xml',
+        'data/rma_return_caused_by_config_data.xml',
+        'report/rma_receipt_report.xml',
+        'report/tax_credit_note_4_inch_report.xml',
+        'views/stock_warehouse_view.xml',
+        'views/rma.xml',
+        'views/res_config_settings_view.xml',
+        'views/rma_return_reason_type.xml',
+        'views/rma_return_reason_views.xml',
+        'views/rma_order.xml',
+        'views/stock_picking_views.xml',
+        'views/rma_return_caused_by_config.xml',
+        'views/rma_list_view_action.xml',
+    ],
+}

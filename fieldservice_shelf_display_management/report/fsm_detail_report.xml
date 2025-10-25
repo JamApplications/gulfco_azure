@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="fsm_detail_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .table td, .table th {
+                            word-wrap: break-word;
+                            white-space: normal;
+                            overflow-wrap: break-word;
+                            border: 1px solid black !important;
+                            }
+                        </style>
+                        <h4 class="text-center">Detail Report</h4>
+                        <table class="table table-condensed w-100" style="table-layout: fixed;">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Staff No</th>
+                                    <th>Name</th>
+                                    <th>Customer Name</th>
+                                    <th>Account</th>
+                                    <th>Activity</th>
+                                    <th>Visit No.</th>
+                                    <th>Activity Start Time</th>
+                                    <th>Activity End Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="data" t-value="o.get_report_data()"/>
+                                <t t-foreach="data" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="line.get('date')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('staff_no')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('name')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('customer_name')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('account')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('activity')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('visit')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('activity_start')"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.get('activity_stop')"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    <record id="gulfco_fsm_details_report_paperformat" model="report.paperformat">
+        <field name="name">FSM Details Report Peperformat</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">32</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">30</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="action_fsm_detail_report" model="ir.actions.report">
+        <field name="name">FSM Details Report</field>
+        <field name="model">fsm.details.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fieldservice_shelf_display_management.fsm_detail_report_template</field>
+        <field name="report_file">fieldservice_shelf_display_management.fsm_detail_report_template</field>
+        <field name="print_report_name">'Detail Report'</field>
+        <field name="paperformat_id" ref="fieldservice_shelf_display_management.gulfco_fsm_details_report_paperformat"/>
+    </record>
+</odoo>

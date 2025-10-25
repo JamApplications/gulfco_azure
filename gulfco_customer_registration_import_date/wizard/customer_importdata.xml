@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <record id="view_customer_registration_wizard_form" model="ir.ui.view">
+            <field name="name">customer.registration.wizard.form</field>
+            <field name="model">customer.registration.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Customer Registration Wizard">
+                    <sheet>
+                        <group>
+                            <field name="filename" invisible="1"/>
+                            <field name="file" widget="binary" filename="filename" string="Import Customer XLSX File" required="1"/>
+                        </group>
+                        <footer>
+                            <button name="create_data" type="object" string="Create Data"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_customer_registration_wizard" model="ir.actions.act_window">
+            <field name="name">Customer Registration</field>
+            <field name="res_model">customer.registration.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+    </record>
+    </data>
+</odoo>

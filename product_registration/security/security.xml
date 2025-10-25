@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.module.category" id="module_product_registration">
+            <field name="name">Product Registration</field>
+            <field name="sequence">40</field>
+        </record>
+        <record model="res.groups" id="group_submit_for_municipality_registration">
+            <field name="name">Submit Municipality Registration</field>
+            <field name="category_id" ref="module_product_registration"/>
+        </record>
+        <record model="res.groups" id="group_pending_internal_approval">
+            <field name="name">Pending Internal Approval</field>
+            <field name="category_id" ref="module_product_registration"/>
+        </record>
+        <record model="res.groups" id="group_submit_item_activation">
+            <field name="name">Submit Item Activation</field>
+            <field name="category_id" ref="module_product_registration"/>
+        </record>
+        <record model="res.groups" id="group_submit_item_activation_approval">
+            <field name="name">Item Activation Approval</field>
+            <field name="category_id" ref="module_product_registration"/>
+        </record>
+        <record model="res.groups" id="group_submit_item_activation_without_municipality">
+            <field name="name">Submit item activation without Municipality</field>
+            <field name="category_id" ref="module_product_registration"/>
+        </record>
+        <record model="res.groups" id="group_item_activation_without_municipality_approval">
+            <field name="name">Item Activation without Municipality Approval</field>
+            <field name="category_id" ref="module_product_registration"/>
+        </record>
+    </data>
+</odoo>

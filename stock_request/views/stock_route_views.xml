@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gulfco_stock_location_route_form_view_inherit_custom" model="ir.ui.view">
+        <field name="name">gulfco.stock.location.route.form.view.inherit.custom</field>
+        <field name="model">stock.route</field>
+        <field name="inherit_id" ref="stock.stock_location_route_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='supplied_wh_id']" position="after">
+                <field name="is_delivery_route"/>
+                <field name="is_receive_route"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

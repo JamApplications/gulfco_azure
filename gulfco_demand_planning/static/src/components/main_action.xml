@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="gulfco_demand_planning.demand_planning_action">
+        <WithSearch t-props="withSearchProps" t-slot-scope="search">
+            <DemandPlanningMainComponent
+                action="props.action"
+                searchDomain="search.domain"/>
+        </WithSearch>
+    </t>
+</templates>

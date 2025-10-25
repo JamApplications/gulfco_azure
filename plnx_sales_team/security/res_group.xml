@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.module.category" id="module_fsm_sales_team_category">
+        <field name="name">Sales Team</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="group_sales_team_van_sale" model="res.groups">
+        <field name="name">VAN sale</field>
+        <field name="category_id" ref="plnx_sales_team.module_fsm_sales_team_category"/>
+    </record>
+    <record id="group_sales_team_pre_sales" model="res.groups">
+        <field name="name">Pre-Sales</field>
+        <field name="category_id" ref="plnx_sales_team.module_fsm_sales_team_category"/>
+    </record>
+    <record id="group_sales_team_merchandiser" model="res.groups">
+        <field name="name">Merchandiser</field>
+        <field name="category_id" ref="plnx_sales_team.module_fsm_sales_team_category"/>
+    </record>
+    <record id="group_sales_team_delivery" model="res.groups">
+        <field name="name">Delivery</field>
+        <field name="category_id" ref="plnx_sales_team.module_fsm_sales_team_category"/>
+    </record>
+</odoo>

@@ -1,0 +1,52 @@
+<odoo>
+
+
+
+
+    <record id="view_sales_order_rma_report_delivery_form" model="ir.ui.view">
+        <field name="name">sales.order.rma.report.delivery.form</field>
+        <field name="model">sales.order.rma.report.delivery</field>
+        <field name="arch" type="xml">
+            <form string="Sales Order Rma Report Delivery ">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="invoice_date_from"/>
+                            <field name="invoice_date_to"/>
+                            <field name="show_invoice_dates"/>
+                        </group>
+                        <group invisible="not show_invoice_dates">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <footer>
+                            <button string="Generate Report" type="object" name="generate_report" class="btn-primary"/>
+                            <button string="Close" class="btn-secondary" special="cancel"/>
+                        </footer>
+                        <group invisible="file_data == False">
+                            <field name="file_name" readonly="1"/>
+                            <field name="file_data" filename="file_name" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_sales_order_rma_report_delivery" model="ir.actions.act_window">
+        <field name="name">Sales Excel Report</field>
+        <field name="res_model">sales.order.rma.report.delivery</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_sales_order_rma_report_delivery_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_sales_rma_delivery"
+          name="Sales Order And Rma Report With Delivery"
+          parent="sale.menu_sale_report"
+          action="action_sales_order_rma_report_delivery"
+          sequence="110"/>
+
+
+</odoo>

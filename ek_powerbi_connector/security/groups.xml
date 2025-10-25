@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="module_category_ek_powerbi_connector" model="ir.module.category">
+        <field name="name">PowerBI</field>
+        <field name="description">Helps you manage your access to users for PowerBI</field>
+    </record>
+
+    <record model="res.groups" id="group_powerbi_user_read_only">
+        <field name="name">User: Read Only</field>
+        <field name="category_id" ref="module_category_ek_powerbi_connector"/>
+    </record>
+
+    <record model="res.groups" id="group_powerbi_administrator">
+        <field name="name">Administrator</field>
+        <field name="implied_ids" eval="[(4, ref('group_powerbi_user_read_only'))]"/>
+        <field name="category_id" ref="module_category_ek_powerbi_connector"/>
+    </record>
+
+</odoo>

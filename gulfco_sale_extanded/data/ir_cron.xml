@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+        <record model="ir.cron" id="recurring_orders_cron">
+            <field name="name">Approval sales order flow based on PO Expiry Date </field>
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="state">code</field>
+            <field name="code">model.set_approval_po_expiry_date()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=0, minute=5) + timedelta(days=1)).strftime('%Y-%m-%d 00:05:05')" />
+        </record>
+    </data>
+</odoo>

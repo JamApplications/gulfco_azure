@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_expense_view_form_inherit_vat_code" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.inherit.vat.code</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tax_ids']" position="after">
+                <field name="tax_vat_code_ids" widget="many2many_tags" 
+                       context="{'show_vat_code': True, 'active_test': True}" 
+                       readonly="not is_editable" force_save="1"
+                       options="{'no_create': True}" optional="show"/>
+            </xpath>            
+            <!-- <xpath expr="//field[@name='tax_ids']" position="attributes">
+                <attribute name="context">{'show_vat_code': 1}</attribute>
+            </xpath> -->
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_asset_transfer,access.account.asset.transfer,model_account_asset_transfer,base.group_user,1,1,1,0
+access_asset_dispose,access.asset.dispose,model_asset_dispose,base.group_user,1,1,1,0
+access_asset_freeze,access.asset.freeze,model_asset_freeze,base.group_user,1,1,1,0
+

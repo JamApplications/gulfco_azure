@@ -1,0 +1,20 @@
+<odoo>
+    <record id="reject_reason_form_id" model="ir.ui.view">
+        <field name="name">reject.reason.form</field>
+        <field name="model">reject.reason</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="reason" required="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Apply" class="btn btn-primary" type="object" name="apply_action"
+                            data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

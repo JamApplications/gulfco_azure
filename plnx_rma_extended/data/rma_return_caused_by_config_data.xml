@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data noupdate="0">
+        <record id="rma_return_caused_by_1" model="rma.return.caused.config">
+             <field name="name">Administrative Error</field>
+             <field name="name_value">admin_error</field>
+        </record>
+
+        <record id="rma_return_caused_by_2" model="rma.return.caused.config">
+            <field name="name">Customer</field>
+            <field name="name_value">customer_error</field>
+        </record>
+
+        <record id="rma_return_caused_by_3" model="rma.return.caused.config">
+             <field name="name">Logistic</field>
+            <field name="name_value">logistic_error</field>
+        </record>
+
+        <record id="rma_return_caused_by_4" model="rma.return.caused.config">
+             <field name="name">Order Entry</field>
+            <field name="name_value">order_entry_error</field>
+        </record>
+
+        <record id="rma_return_caused_by_5" model="rma.return.caused.config">
+             <field name="name">Sales</field>
+            <field name="name_value">sales_error</field>
+        </record>
+
+        <record id="rma_return_caused_by_6" model="rma.return.caused.config">
+             <field name="name">Warehouse</field>
+            <field name="name_value">warehouse_error</field>
+        </record>
+    </data>
+</odoo>

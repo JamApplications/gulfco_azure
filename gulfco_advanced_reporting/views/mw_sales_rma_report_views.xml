@@ -1,0 +1,194 @@
+<odoo>
+  <record id="view_mw_sales_rma_report_list" model="ir.ui.view">
+    <field name="name">mw.sales.rma.report.list</field>
+    <field name="model">mw.sales.rma.report</field>
+    <field name="arch" type="xml">
+      <list default_order="invoice_date desc" create="false" edit="false" delete="false">
+        <field name="rec_type"/>
+        <field name="invoice_date"/>
+        <field name="invoice_no"/>
+        <field name="invoice_line_number"/>
+        <field name="order_no"/>
+        <field name="sales_man"/>
+        <field name="staff_number"/>
+        <field name="branch"/>
+        <field name="channel"/>
+        <field name="sub_channel"/>
+        <field name="customer_code"/>
+        <field name="customer_name"/>
+        <field name="item_code"/>
+        <field name="product_category_id"/>
+        <field name="trx_uom_id"/>
+        <field name="primary_uom_id"/>
+        <field name="analytic_department_id"/>
+        <field name="analytic_channel_id"/>
+        <field name="description"/>
+        <field name="trx_uom"/>
+        <field name="package_qty_invoiced" sum="Package Invoiced"/>
+        <field name="package_qty_return" sum="Package Return"/>
+        <field name="package_conv_to_each"/>
+        <field name="primary_uom"/>
+        <field name="primary_qty" sum="Primary Qty"/>
+        <field name="primary_return_qty" sum="Primary Return"/>
+        <field name="unit_selling_price"/>
+        <field name="unit_cost"/>
+        <field name="total_cost" sum="Total Cost"/>
+        <field name="line_total_selling" sum="Revenue"/>
+        <field name="analytic_location"/>
+        <field name="analytic_department"/>
+        <field name="analytic_channel"/>
+        <field name="product_category"/>
+        <field name="chart_of_account"/>
+        <field name="remarks"/>
+        <field name="shipping_site_number"/>
+        <field name="ship_address1"/>
+        <field name="ship_address2"/>
+        <field name="ship_city"/>
+        <field name="ship_state"/>
+        <field name="return_caused_by"/>
+        <field name="return_reason"/>
+        <field name="return_type"/>
+        <field name="order_source"/>
+        <field name="customer_po"/>
+        <field name="payment_term"/>
+        <field name="tax_registration"/>
+        <field name="delivery_name"/>
+        <field name="location_text"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_mw_sales_rma_report_pivot" model="ir.ui.view">
+    <field name="name">mw.sales.rma.report.pivot</field>
+    <field name="model">mw.sales.rma.report</field>
+    <field name="arch" type="xml">
+      <pivot>
+        <field name="line_total_selling" type="measure"/>
+        <field name="total_cost" type="measure"/>
+        <field name="primary_qty" type="measure"/>
+        <field name="primary_return_qty" type="measure"/>
+        <field name="invoice_date" interval="month" type="row"/>
+        <field name="sales_man" type="col"/>
+        <field name="product_category" type="col"/>
+      </pivot>
+    </field>
+  </record>
+
+  <record id="view_mw_sales_rma_report_graph" model="ir.ui.view">
+    <field name="name">mw.sales.rma.report.graph</field>
+    <field name="model">mw.sales.rma.report</field>
+    <field name="arch" type="xml">
+      <graph string="Sales vs Returns" type="bar">
+        <field name="invoice_date" type="row" interval="month"/>
+        <field name="line_total_selling" type="measure"/>
+        <field name="primary_return_qty" type="measure"/>
+        <field name="sales_man"/>
+      </graph>
+    </field>
+  </record>
+
+  <record id="view_mw_sales_rma_report_kanban" model="ir.ui.view">
+    <field name="name">mw.sales.rma.report.kanban</field>
+    <field name="model">mw.sales.rma.report</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_small_column" default_group_by="sales_man">
+        <templates>
+          <t t-name="kanban-box">
+            <div class="oe_kanban_global_click o_kanban_record">
+              <div class="o_kanban_primary_left">
+                <strong><field name="sales_man"/></strong>
+                <div><field name="customer_name"/></div>
+                <div><field name="item_code"/> — <field name="description"/></div>
+              </div>
+              <div class="o_kanban_primary_right">
+                <div>Revenue: <field name="line_total_selling" widget="monetary"/></div>
+                <div>Return Qty: <field name="primary_return_qty"/></div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <record id="view_mw_sales_rma_report_search" model="ir.ui.view">
+    <field name="name">mw.sales.rma.report.search</field>
+    <field name="model">mw.sales.rma.report</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="invoice_date"/>
+        <field name="rec_type"/>
+        <field name="sales_man"/>
+        <field name="customer_name"/>
+        <field name="customer_code"/>
+        <field name="item_code"/>
+        <field name="description"/>
+        <field name="product_category"/>
+        <field name="channel"/>
+        <field name="sub_channel"/>
+        <field name="branch"/>
+        <field name="order_no"/>
+        <filter name="this_day" string="This Day" domain="[('invoice_date','&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+        <filter name="this_month" string="This Month" domain="[('invoice_date','&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+        <filter name="type_invoice" string="Invoices" domain="[('rec_type','=','invoice')]"/>
+        <filter name="type_rma" string="Returns" domain="[('rec_type','=','rma')]"/>
+        <group expand="0" string="Group By">
+          <filter name="grp_sales_man" string="Sales Man" domain="[]" context="{'group_by':'sales_man'}"/>
+          <filter name="grp_customer" string="Customer" domain="[]" context="{'group_by':'customer_name'}"/>
+          <filter name="grp_product" string="Product" domain="[]" context="{'group_by':'item_code'}"/>
+          <filter name="grp_category" string="Category" domain="[]" context="{'group_by':'product_category'}"/>
+          <filter name="grp_channel" string="Channel" domain="[]" context="{'group_by':'channel'}"/>
+          <filter name="grp_date_month" string="Month" domain="[]" context="{'group_by':'invoice_date:month'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_mw_sales_rma_report" model="ir.actions.act_window">
+    <field name="name">Sales and RMA Report</field>
+    <field name="res_model">mw.sales.rma.report</field>
+    <field name="view_mode">list,pivot,graph,kanban</field>
+    <field name="context">{"search_default_this_day": 1}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No data yet. Post invoices and/or RMA returns.</p>
+    </field>
+  </record>
+
+  <menuitem id="menu_mw_sales_rma_root" name="Sales Intelligence" sequence="100"/>
+  <menuitem id="menu_mw_sales_rma_report" name="Sales and RMA Report" parent="menu_mw_sales_rma_root" action="action_mw_sales_rma_report" sequence="10"/>
+<!--  <menuitem id="menu_mw_sales_rma_report_dash" name="Sales and RMA Report Dashboard" parent="menu_mw_sales_rma_root" action="open_board_my_dash_action" sequence="11"/>-->
+
+<!--  <record id="board_my_dash_view" model="ir.ui.view">-->
+<!--    <field name="name">My Dashboard</field>-->
+<!--    <field name="model">board.board</field>-->
+<!--    <field name="arch" type="xml">-->
+<!--      <form string="My Dashboard">-->
+<!--        &lt;!&ndash; Choose a layout: "2-1", "1-2", "1-1-1", etc. &ndash;&gt;-->
+<!--        <board style="2-1">-->
+<!--          <column>-->
+<!--            &lt;!&ndash; Add your report as a tile &ndash;&gt;-->
+<!--            <action string="Sales &amp; RMA Report" name="action_mw_sales_rma_report"/>-->
+<!--            &lt;!&ndash; You can add more tiles here &ndash;&gt;-->
+<!--            &lt;!&ndash; <action string="Another KPI" name="some.other_action_xmlid"/> &ndash;&gt;-->
+<!--          </column>-->
+<!--          <column>-->
+<!--            &lt;!&ndash; Right column tiles &ndash;&gt;-->
+<!--            &lt;!&ndash; <action string="Something Else" name="another.action_xmlid"/> &ndash;&gt;-->
+<!--          </column>-->
+<!--        </board>-->
+<!--      </form>-->
+<!--    </field>-->
+<!--  </record>-->
+
+<!--  &lt;!&ndash; Action that opens your dashboard &ndash;&gt;-->
+<!--  <record id="open_board_my_dash_action" model="ir.actions.act_window">-->
+<!--    <field name="name">My Dashboard</field>-->
+<!--    <field name="res_model">board.board</field>-->
+<!--    <field name="view_mode">form</field>-->
+<!--    <field name="context">{'disable_toolbar': True}</field>-->
+<!--    <field name="usage">menu</field>-->
+<!--    <field name="view_id" ref="board_my_dash_view"/>-->
+<!--  </record>-->
+
+
+</odoo>

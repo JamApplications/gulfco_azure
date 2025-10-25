@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    
+
+    <template id="custom_external_layout_standard_receipt">
+            <div t-attf-class="row col-12 header o_company_#{company.id}_layout" style="padding-top:-20mm;">
+            </div>
+            <div t-attf-class="article o_report_layout_standard o_table_standard o_company_#{company.id}_layout o_snail_mail {{'o_report_layout_background' if company.layout_background != 'Blank' else ''}}"
+             t-attf-style="{{ 'background-image: url(%s);' % layout_background_url if layout_background_url else '' }}"
+             t-att-data-oe-model="o and o._name"
+             t-att-data-oe-id="o and o.id"
+             t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <h2 t-out="layout_document_title"/>
+            <t t-out="0"/>
+        </div>
+
+        <!-- <div t-attf-class="footer o_company_#{company.id}_layout {{report_type != 'pdf' and 'mt-auto'}}">
+            <div class="o_footer_content d-flex border-top pt-2">
+                <div class="flex-grow-1 text-start me-2" t-field="company.report_footer"/>
+                <div class="text-end text-muted">
+                    <div t-if="report_type == 'pdf' and display_name_in_footer" t-out="o.name">(document name)</div>
+                    <div t-if="report_type == 'pdf'" class="text-nowrap">Page
+                        <span class="page"/>
+                        /
+                        <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </template>
+
+
+    <template id="custom_external_layout_receipt">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+
+        <t t-call="gulfco_account_payment_extended.custom_external_layout_standard_receipt">
+            <t t-out="0"/>
+        </t>
+
+    </template>
+
+    <!-- QWeb Report Template -->
+    <template id="receipt_voucher_doc">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="gulfco_account_payment_extended.custom_external_layout_receipt">
+                    <div class="page" style="font-size: 12px; font-family: 'Inter', sans-serif; padding: 10px;">
+                        <!-- Header Title -->
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <h3 style="font-weight: bold; font-size: 15px;">
+                            Receipt Voucher / <span style="font-family: Arial;">سند قبض</span>
+                            </h3>
+                        </div>
+
+                        <!-- Top Section -->
+                        <div class="top-section" style="margin-bottom: 10px; page-break-inside: avoid; border: 1px solid black;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <!-- Left Block -->
+                                    <td style="width: 60%; vertical-align: top;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="padding: 5px 8px; white-space: nowrap;">Location</td>
+                                                <td style="padding: 5px 8px;"><t t-esc="o.custodian_id.name if o.custodian_id else ''"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">الموقع</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px; white-space: nowrap;">Pos No.</td>
+                                                <td style="padding: 5px 8px;"><t t-esc="o.custodian_id.custodian_code if o.custodian_id else ''"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap;">رقم نقطة البيع</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px; white-space: nowrap;">Customer Name</td>
+                                                <td style="padding: 5px 8px;"><t t-esc="o.partner_id.name if o.partner_id else ''"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">اسم العميل</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px; white-space: nowrap;">Customer Code</td>
+                                                <td style="padding: 5px 8px;"><t t-esc="o.partner_id.customer_code if o.partner_id else ''"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">رقم العميل</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px; white-space: nowrap;">Address</td>
+                                                <td style="padding: 5px 8px;"><t t-esc="o.partner_id.contact_address if o.partner_id else ''"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">العنوان</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px; white-space: nowrap;">Email Address</td>
+                                                <td style="padding: 5px 8px;"><t t-esc="o.partner_id.email if o.partner_id else ''"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">البريد الالكتروني </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px; white-space: nowrap;">EXT Email Address</td>
+                                                <td style="padding: 5px 8px;"><t t-esc="o.external_email if o.external_email else ''"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">البريد الالكتروني </td>
+                                            </tr>
+                                            <tr style="height: 50px !important;">
+                                                <td style="padding: 5px 8px; white-space: nowrap; vertical-align: top;">Remarks</td>
+                                                <td style="padding: 5px 8px; vertical-align: top;"><t t-esc="o.memo"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px; vertical-align: top;">ملاحظات</td>
+                                                </tr>
+                                        </table>
+                                    </td>                                                             
+
+                                    <!-- Right Block -->
+                                    <td style="width: 40%; vertical-align: top; border-left: 1px solid black;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="padding: 5px 8px;">Page#</td>
+                                                <td style="padding: 5px 8px;">1</td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">الصفحة</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px;">Serial#</td>
+                                                <td style="padding: 5px 8px;"><t t-esc="o.name"/></td>
+                                                <td class="arabic-rtl">الرقم التسلسلي</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px;">Date</td>
+                                                <td style="padding: 5px 8px;">
+                                                    <t t-esc="datetime.date.today().strftime('%d-%b-%Y').upper()"/>
+                                                </td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">التاريخ</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 5px 8px;">Time</td>
+                                                <td style="padding: 5px 8px;">
+                                                    <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M')"/>
+                                                </td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; padding: 5px 8px;">الوقت</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" style="padding: 5px 8px;">Collector Name: <span t-esc="o.collector_name"/></td>
+                                            </tr>
+                                            <!-- <tr>
+                                                <td colspan="3" style="padding: 5px 8px;">Collector Voucher No: </td>
+                                            </tr> -->
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Payment Details -->
+                        <div>
+                            <h4 style="text-align: center; font-size: 12px; border: 1px solid black; background: #f0f0f0; padding: 3px;">PAYMENT DETAILS / <span dir="rtl">بيانات الدفع</span>
+                            </h4>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead style="background: #e0e0e0;">
+                                    <tr>
+                                        <th class="th-td-common">Sl.No.</th>
+                                        <th class="th-td-common">Media Name</th>
+                                        <th class="th-td-common">Bank Name</th>
+                                        <th class="th-td-common">Document</th>
+                                        <th class="th-td-common">Maturity Date</th>
+                                        <th class="th-td-common">Amount Paid</th>
+                                        <th class="th-td-common">Exchg. Rate</th>
+                                        <th class="th-td-common">Total Amount</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-td-common">الرقم</th>
+                                        <th class="th-td-common arabic-rtl">طريقة الدفع</th>
+                                        <th class="th-td-common arabic-rtl">اسم البنك</th>
+                                        <th class="th-td-common arabic-rtl">رقم المستند</th>
+                                        <th class="th-td-common arabic-rtl">تاريخ الاستحقاق</th>
+                                        <th class="th-td-common arabic-rtl">المبلغ المدفوع</th>
+                                        <th class="th-td-common arabic-rtl">سعر الصرف</th>
+                                        <th class="th-td-common arabic-rtl">المبلغ الإجمالي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="th-td-common">1</td>
+                                        <td class="th-td-common"><t t-esc="o.payment_method_line_id.name if o.payment_method_line_id else ''"/></td>
+                                        <td class="th-td-common">
+                                            <t t-if="o.payment_mode == 'pdc' and o.pdc_bank_id">
+                                                <t t-esc="o.pdc_bank_id.name"/>
+                                            </t>
+                                            <t t-elif="o.payment_mode == 'cdc' and o.cdc_bank_id">
+                                                <t t-esc="o.cdc_bank_id.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span>NA</span>
+                                            </t>
+                                        </td>
+                                        <td class="th-td-common">
+                                            <t t-if="o.payment_mode == 'pdc'">
+                                                <t t-esc="o.pdc_ref"/>
+                                            </t>
+                                            <t t-elif="o.payment_mode == 'cdc'">
+                                                <t t-esc="o.cdc_ref"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span>NA</span>
+                                            </t>
+                                        </td>
+                                        
+                                        <td class="th-td-common">
+                                            <t t-if="o.due_date">
+                                                <t t-esc="o.due_date.strftime('%d-%b-%y').upper()"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span>NA</span>
+                                            </t>
+                                        </td>
+                                        <td class="th-td-common">
+                                            <t t-esc="o.amount"/> <span t-esc="o.currency_id.name"/>
+                                        </td> 
+                                        <td class="th-td-common">
+                                            <t t-if="o.is_exchange">
+                                                <t t-esc="o.rate"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span>NA</span>
+                                            </t>
+                                        </td>
+                                        <td class="th-td-common"><t t-esc="o.amount"/> <span t-esc="o.currency_id.name"/></td> 
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" style="border-right: none !important;" class="th-td-common">
+                                            Amount in words: 
+                                            <t t-esc="o.currency_id.amount_to_text(o.amount)"/>
+                                        </td>
+                                        <td colspan="3" class="th-td-common-total-amount arabic-rtl">المبلغ بالحروف</td>
+                                        <td class="th-td-common"><t t-esc="o.amount"/> <span t-esc="o.currency_id.name"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                       <!-- Application Details -->
+                        <t t-set="counter" t-value="1" />
+                        <!-- <t t-set="total_reconciled" t-value="0"/> -->
+
+                        <div style="margin-top: 10px;">
+                            <h4 style="text-align: center; font-size: 12px; border: 1px solid black; background: #f0f0f0; padding: 3px;">
+                                APPLICATION DETAILS / <span dir="rtl">تفاصيل</span>
+                            </h4>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead style="background: #e0e0e0;">
+                                    <tr>
+                                        <th class="th-td-common">Sl.No.</th>
+                                        <th class="th-td-common">Division</th>
+                                        <th class="th-td-common">Branch</th>
+                                        <th class="th-td-common">Details</th>
+                                        <th class="th-td-common">Amount</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-td-common">الرقم</th>
+                                        <th class="th-td-common arabic-rtl">القسم</th>
+                                        <th class="th-td-common arabic-rtl">الفرع</th>
+                                        <th class="th-td-common arabic-rtl">التفاصيل</th>
+                                        <th class="th-td-common arabic-rtl">المبلغ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <!-- Reconciled Invoices with this Payment -->
+                                    <t t-set="application_lines" t-value="o.get_application_details()"/>
+                                    <!-- <t t-set="total_reconciled_amount" t-value="0"/> -->
+                                    <t t-set="total_reconciled_amount" t-value="o._get_application_details_total_applied()"/>
+                                    <t t-set="sl_no" t-value="1"/>
+
+                                    <t t-foreach="application_lines" t-as="line">
+                                        <tr>
+                                            <td class="th-td-common">
+                                                <t t-esc="sl_no"/>
+                                            </td>
+                                            <td class="th-td-common">
+                                                <t t-esc="line['division']"/>
+                                            </td>
+                                            <td class="th-td-common">
+                                                <t t-esc="line['branch']"/>
+                                            </td>
+                                            <td class="th-td-common">
+                                                <t t-esc="line['invoice_name']"/>
+                                            </td>
+                                            <td class="th-td-common">
+                                                <t t-esc="line['reconciled_amount']"/>
+                                                <span t-esc="line['company_currency'].name"></span>
+                                            </td>
+                                        </tr>
+                                        <!-- <t t-if="not line['is_residual_line']"> -->
+                                        <!-- <t t-set="total_reconciled_amount" t-value="total_reconciled_amount + line['reconciled_amount']"/> -->
+                                        <!-- </t> -->
+                                        <t t-set="sl_no" t-value="sl_no + 1"/>
+                                    </t>
+
+                                    <tr>
+                                        <td colspan="3" style="border-right: none !important;" class="th-td-common">
+                                            Amount in words: <t t-esc="o.company_id.currency_id.amount_to_text(total_reconciled_amount)"/>                                                
+                                        </td>
+                                        <td class="th-td-common-total-amount arabic-rtl">المبلغ بالحروف</td>
+                                        <td class="th-td-common"><t t-esc="total_reconciled_amount"/> AED</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Signature Section -->
+                        <div style="margin-top: 15px;">
+                            <t t-set="responsible_employee" t-value="o._get_responsible_employee()"/>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="width: 33%; border: 1px solid black; padding: 8px; vertical-align: top;">
+                                        <strong>Created By</strong>
+                                        <br/>
+                                        <table class="my-0 table table-sm table-borderless">
+                                            <tr>
+                                                <td style="white-space: nowrap;">Staff No:</td>
+                                                <td style="word-break: break-all;"><t t-esc="responsible_employee.employee_code if responsible_employee else ''"/></td>
+                                                <td class="arabic-rtl" style=" white-space: nowrap;">رقم الموظف</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="white-space: nowrap;">Staff Name:</td>
+                                                <td style="word-break: break-all;"><t t-esc="o.responsible_id.name if o.responsible_id else ''"/></td>
+                                                <td class="arabic-rtl" style=" white-space: nowrap">سم الموظف</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="width: 33%; border: 1px solid black; padding: 8px; text-align: left; vertical-align: top;">
+                                        <strong>Cashier / <span dir="rtl">امين عهده</span>
+                                        </strong>
+                                        <br/>
+                                        <table class="my-0 table table-sm table-borderless">
+                                            <tr>
+                                                <td style="white-space: nowrap;">Name:</td>
+                                                <td style="word-break: break-all;"><t t-esc="o.responsible_id.name if o.responsible_id else ''"/></td>
+                                                <td class="arabic-rtl" style="white-space: nowrap;">الاسم</td>
+                                            </tr>
+                                            <tr style="height: 40px;">
+                                                <td style="white-space: nowrap; vertical-align: bottom;">Signature:</td>
+                                                <td style="white-space: nowrap; vertical-align: bottom;">........................</td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; vertical-align: bottom;">التوقيع</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="width: 33%; border: 1px solid black; padding: 8px; text-align: left; vertical-align: top;">
+                                        <strong>Audited By / <span dir="rtl">مدققة من</span>
+                                        </strong>
+                                        <br/>
+                                        <table class="my-0 table table-sm table-borderless">
+                                            <tr>
+                                                <td style="white-space: nowrap;">Name:</td>
+                                                <td style="word-break: break-all; vertical-align: bottom;">........................</td>
+                                                <td class="arabic-rtl" style="white-space: nowrap;">الاسم</td>
+                                            </tr>
+                                            <tr style="height: 40px;">
+                                                <td style="white-space: nowrap; vertical-align: bottom;">Signature:</td>
+                                                <td style="white-space: nowrap; vertical-align: bottom;">........................</td>
+                                                <td class="arabic-rtl" style="white-space: nowrap; vertical-align: bottom;">التوقيع</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Report Styles -->
+                    <style>
+                    .th-td-common {
+                        padding: 8px 10px !important;
+                        border: 1px solid black !important;
+                        font-size: 11px;
+                        vertical-align: middle;
+                    }                       
+                    .th-td-common-total-amount {
+                        padding: 8px 10px !important;
+                        border-bottom: 1px solid black !important;
+                        border-left: none !important;
+                        font-size: 11px;
+                        vertical-align: middle;
+                    }                    
+                    .arabic-rtl {
+                        direction: rtl;
+                        text-align: right;
+                    }
+                    </style>
+                </t>
+            </t>
+        </t>
+    </template>
+    <record id="action_report_receipt_voucher" model="ir.actions.report">
+        <field name="name">Receipt Voucher</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gulfco_account_payment_extended.receipt_voucher_doc</field>
+        <field name="report_file">gulfco_account_payment_extended.receipt_voucher_doc</field>
+        <field name="binding_model_id" ref="account.model_account_payment"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Receipt Voucher - %s' % ((object.name or '').replace('/',''))</field>
+    </record>
+</odoo>

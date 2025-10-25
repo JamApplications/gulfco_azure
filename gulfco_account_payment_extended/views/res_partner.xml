@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+    <record id="view_partner_form_gulfco" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <!-- <field name="property_product_pricelist" position="after">
+                <field name="media_id"/>
+            </field> -->
+            <field name="property_product_pricelist" position="after">
+                <xpath expr="//field[@name='property_inbound_payment_method_line_id']" position="move"/>
+            </field>
+            <xpath expr="//field[@name='property_inbound_payment_method_line_id']" position="attributes">
+                <attribute name="string">Payment Method (Odoo)</attribute>
+            </xpath>
+            <field name="property_payment_term_id" position="after">
+                <field name="media_id" string="Payment Method"/>
+            </field>
+        </field>
+    </record>
+
+      <record id="view_partner_property_form_cash_limit_base_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <!-- <field name="inherit_id" ref="gulfco_cash_transaction_limit.view_partner_property_form_cash_limit_base" /> -->
+        <field name="inherit_id" ref="gulfco_cash_transaction_limit.res_partner_form_add_ccd_vendor" />
+        <field name="arch" type="xml">
+            <field name="is_key_account" position="after">
+                <field name="media_id" readonly="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>

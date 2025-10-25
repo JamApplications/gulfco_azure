@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Contact | Registration -->
+    <menuitem id="menu_contact_registration" name="Registration"
+        parent="contacts.menu_contacts"
+        sequence="10"/>
+
+    <!-- Contact | Registration | Vendor Registration -->
+    <menuitem id="menu_contact_vendor_registration" name="Vendor Registration"
+        parent="menu_contact_registration"
+        sequence="10"
+        action="gulfco_contact_registration_custom.action_contacts_vendor_registration"/>
+
+    <!-- Contact | Registration | Customer Registration -->
+    <menuitem id="menu_purchase_assessment_vendor" name="Customer Registration"
+        parent="menu_contact_registration"
+        sequence="20"
+        action="gulfco_contact_registration_custom.action_contacts_customer_registration"/>
+
+</odoo>

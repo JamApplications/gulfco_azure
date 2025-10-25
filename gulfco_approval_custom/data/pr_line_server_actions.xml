@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <record id="gulfco_demand_planning.action_record_button_to_approve" model="ir.actions.server">-->
+<!--        <field name="name">Request Approval</field>-->
+<!--        <field name="code">records.filtered(lambda s:s.state == 'draft').button_to_approve()-->
+<!--        </field>-->
+<!--    </record>-->
+    <record id="gulfco_demand_planning.action_purchase_request_record_reset" model="ir.actions.server">
+        <field name="code">records.filtered(lambda s:s.state != 'draft').button_draft()
+        </field>
+    </record>
+    <record id="gulfco_demand_planning.action_purchase_request_button_approved" model="ir.actions.server">
+        <field name="name">Approve</field>
+        <field name="code">records.filtered(lambda s:s.state in ['to_approve','scd_approve']).button_approved()
+        </field>
+    </record>
+    <record id="gulfco_demand_planning.action_purchase_request_button_rejected" model="ir.actions.server">
+        <field name="name">Reject</field>
+        <field name="code">records.filtered(lambda s:s.state in ['to_approve','approved','scd_approve']).button_rejected()
+        </field>
+    </record>
+    <record id="gulfco_demand_planning.action_purchase_request_button_done" model="ir.actions.server">
+        <field name="code">records.filtered(lambda s:s.state == 'approved').button_done()
+        </field>
+    </record>
+
+
+    <!--    =================================================-->
+
+    <record id="action_division_head_confirm_line" model="ir.actions.server">
+        <field name="name">Confirm Division Head</field>
+        <field name="model_id" ref="gulfco_approval_custom.model_purchase_request_line"/>
+        <field name="binding_model_id" ref="gulfco_approval_custom.model_purchase_request_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.filtered(lambda s:s.state == 'draft').action_division_head_confirm()
+        </field>
+        <field name="groups_id" eval="[(4, ref('gulfco_contact_registration_custom.group_div_head_approval'))]"/>
+    </record>
+
+    <record id="action_scm_approve_line" model="ir.actions.server">
+        <field name="name">SCM Approve</field>
+        <field name="model_id" ref="gulfco_approval_custom.model_purchase_request_line"/>
+        <field name="binding_model_id" ref="gulfco_approval_custom.model_purchase_request_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.filtered(lambda s:s.state == 'division_head_confirm').action_scm_approve()
+        </field>
+        <field name="groups_id" eval="[(4, ref('gulfco_contact_registration_custom.group_scm_approval'))]"/>
+    </record>
+
+    <record id="action_finance_approve_line" model="ir.actions.server">
+        <field name="name">Finance Approve</field>
+        <field name="model_id" ref="gulfco_approval_custom.model_purchase_request_line"/>
+        <field name="binding_model_id" ref="gulfco_approval_custom.model_purchase_request_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.filtered(lambda s:s.state == 'scm_approve').action_finance_approve()
+        </field>
+        <field name="groups_id" eval="[(4, ref('account.group_account_manager'))]"/>
+    </record>
+
+    <record id="action_scd_approve_line" model="ir.actions.server">
+        <field name="name">SCD Approve</field>
+        <field name="model_id" ref="gulfco_approval_custom.model_purchase_request_line"/>
+        <field name="binding_model_id" ref="gulfco_approval_custom.model_purchase_request_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.filtered(lambda s:s.state == 'financial_dep_approve').action_scd_approve()
+        </field>
+        <field name="groups_id" eval="[(4, ref('stock_inventory_adjustment.group_scd_approval'))]"/>
+    </record>
+</odoo>

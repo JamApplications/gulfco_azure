@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_pdc_auto_collect_bank_pdc_receivable_payments" model="ir.cron">
+            <field name="name">PDC Receivable Auto Collect Bank</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="state">code</field>
+            <field name="code">model.auto_collect_pdc_pdc_receivable()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

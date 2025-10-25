@@ -1,0 +1,74 @@
+<odoo>
+
+    <record id="view_merchandise_stock_store_form" model="ir.ui.view">
+        <field name="name">merchandise.stock.store.form</field>
+        <field name="model">merchandise.stock.store</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="location_id"/>
+                             <field name="customer_id"/>
+                            <field name="count_type"/>
+                        </group>
+                        <group>
+                            <field name="activity_date"/>
+                            <field name="worker_id"/>
+                            <field name="visit_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Stock Lines">
+                            <field name="stock_lines_ids">
+                                <list editable="bottom">
+                                    <field name="product_id" context="{'from_sales_budget':1}"/>
+                                    <field name="item_name"/>
+                                    <field name="qty"/>
+                                    <field name="uom"/>
+                                    <field name="expiration_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_merchandise_stock_store_tree" model="ir.ui.view">
+        <field name="name">merchandise.stock.store.tree</field>
+        <field name="model">merchandise.stock.store</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="location_id"/>
+                <!--                <field name="customer_id"/>-->
+                <field name="count_type"/>
+                <!--                <field name="activity_date"/>-->
+                <field name="worker_id"/>
+                <field name="visit_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_merchandise_stock_store" model="ir.actions.act_window">
+        <field name="name">Merchandise Stock Store</field>
+        <field name="res_model">merchandise.stock.store</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_create">
+                Click to create a new Merchandise Stock Store record.
+            </p>
+        </field>
+    </record>
+
+<!--    <menuitem id="stock_in_store_main" name="Stock in Store" parent="fieldservice.root" sequence="22"-->
+<!--              groups="plnx_sales_team.group_sales_team_merchandiser"/>-->
+
+    <menuitem id="menu_merchandise_stock_store"
+              name="Stock in Store"
+              parent="gulfco_customer_stock_count.menu_customer_stock_root"
+              action="action_merchandise_stock_store"
+              sequence="10"/>
+
+</odoo>

@@ -1,0 +1,133 @@
+<odoo>
+    <record id="view_payments_transfer_form" model="ir.ui.view">
+        <field name="name">payments.transfer.form</field>
+        <field name="model">payments.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Payments Transfer">
+                <header>
+                    <field name="is_transferred" invisible="1"/>
+                    <field name="is_related_payment_transfer" invisible="1"/>
+                    <field name="related_payment_transfer_id" invisible="1"/>
+                    <button name="action_load_payment" string="Load" type="object" class="btn btn-primary"
+                            invisible="is_transferred or related_payment_transfer_id or is_related_payment_transfer"/>
+                    <button name="action_transfer_payment" string="Confirm" type="object" class="btn btn-primary"
+                            invisible="not payment_line_ids or is_transferred or not is_related_payment_transfer or state == 'discarded'"/>
+                    <button name="action_create_related_payment_transfer" string="Transfer" type="object" class="btn btn-primary"
+                            invisible="not payment_line_ids or is_related_payment_transfer or related_payment_transfer_id"/>
+                    <button name="action_discard_payment_transfer" string="Discard" type="object" class="btn btn-primary"
+                            invisible="state != 'in_progress'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed,discarded"/>
+                </header>
+                <sheet>
+                    <div name="button_box" position="inside">
+                        <button name="open_transfer_jornal_entries" type="object" class="oe_stat_button" icon="fa-pencil"
+                                invisible="not is_transferred or is_related_payment_transfer">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Transfer Journal Entries</span>
+                            </div>
+                        </button>
+                        <button name="open_related_payment_transfer" type="object" class="oe_stat_button" icon="fa-pencil"
+                                invisible="not related_payment_transfer_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Related Payment Transfer</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="internal_transfer" invisible="0" readonly="1"/>
+
+                            <field name="payment_type" widget="radio" options="{'horizontal': True}" readonly="is_related_payment_transfer or related_payment_transfer_id" force_save="1"/>
+                            <field name="date_from" string="Duration" widget="daterange"
+                                   options="{'end_date_field': 'date_to'}" required="0" invisible="1"/>
+                            <field name="date_to" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="journal_id" invisible="1"/>
+                            <field name="destination_journal_id" invisible="1"/>
+                            <field name="memo" readonly="is_transferred or related_payment_transfer_id"/>
+                            <field name="total_custody_balance" readonly="1"/>
+                            <field name="is_transferred" invisible="1"/>
+                            <field name="transfer_date" invisible="not is_transferred"/>
+                        </group>
+                        <group string="From Custodian Details">
+                            <field name="from_custodian_id" readonly="is_related_payment_transfer or related_payment_transfer_id" force_save="1" required="1"/>
+                            <field name="from_custodian_code"/>
+                            <field name="from_employee_id"/>
+                            <field name="from_employee_code"/>
+
+                        </group>
+                        <group string="To Custodian Details">
+                            <field name="from_restriction_custodian_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="to_custodian_id" domain="[('id','in',from_restriction_custodian_ids)]" readonly="is_related_payment_transfer or related_payment_transfer_id" force_save="1" required="1"/>
+                            <field name="to_custodian_code"/>
+                            <field name="to_employee_id"/>
+                            <field name="to_employee_code"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Payments to be Transferred">
+                            <field name="payment_line_ids">
+                                <list editable="bottom" create="0" delete="0">
+                                    <!--                                    <field name="employee_id" readonly="1"/>-->
+                                    <!--                                    <field name="employee_code" readonly="1"/>-->
+                                    <field name="journal_id" readonly="1" force_save="1"/>
+                                    <field name="payment_method" column_invisible="0" readonly="1" force_save="1"/>
+                                    <field name="amount" readonly="1" force_save="1"/>
+                                    <field name="currency_id" readonly="1" force_save="1"/>
+                                    <field name="amount_transferred" readonly="1" force_save="1"/>
+                                    <!--                                    <field name="transfer_date" readonly="1"/>-->
+                                    <button
+                                        name="action_show_payment_info"
+                                        type="object"
+                                        icon="fa-list"
+                                        title="Show Details"
+                                        width="0.1"
+                                        options='{"warn": true}'
+                                    />
+                                </list>
+                                <form/>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_payments_transfer_tree" model="ir.ui.view">
+        <field name="name">payments.transfer.tree</field>
+        <field name="model">payments.transfer</field>
+        <field name="arch" type="xml">
+            <list string="Payments Transfer">
+                <field name="name"/>
+                <field name="payment_type"/>
+                <field name="journal_id"/>
+                <field name="destination_journal_id"/>
+                <field name="total_custody_balance"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_payments_transfer" model="ir.actions.act_window">
+        <field name="name">Payments Transfer</field>
+        <field name="res_model">payments.transfer</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'from_payment_transfer':1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a payment transfer record here.
+            </p>
+        </field>
+    </record>
+    <menuitem id="menu_payments_transfer" name="Payment Transfer" parent="account.menu_finance_entries"
+              action="action_payments_transfer"/>
+</odoo>

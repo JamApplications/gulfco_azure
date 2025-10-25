@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_rma_return_caused_by_config_list" model="ir.ui.view">
+        <field name="name">RMA Return Caused By Config</field>
+        <field name="model">rma.return.caused.config</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="name"/>
+                <field name="name_value"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_rma_return_caused_by_config" model="ir.actions.act_window">
+        <field name="name">RMA Return Caused By Config</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rma.return.caused.config</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new RMA Return Reason
+            </p>
+            <p>
+            Manage RMA Return reasons.
+            </p>
+        </field>
+    </record>
+    <menuitem
+        id="rma_configuration_rma_return_caused_by_config"
+        name="RMA Return Caused by Config"
+        parent="rma.rma_configuration_menu"
+        action="action_rma_return_caused_by_config"
+    />
+</odoo>

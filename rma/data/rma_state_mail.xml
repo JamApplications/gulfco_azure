@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data noupdate="0">
+    <record id="mail_template_rma_confirmed_notification" model="mail.template">
+        <field name="name">RMA Confirmed Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) has been confirmed
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    has been <strong>confirmed</strong> by
+                    <t t-out="object.company_id.name" />.
+                    We are now processing your request.
+                    <br /><br />
+                    Feel free to contact us if you need any further information.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_received_notification" model="mail.template">
+        <field name="name">RMA Received Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) has been received
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    has been <strong>received</strong> by
+                    <t t-out="object.company_id.name" />.
+                    It is currently being inspected.
+                    <br /><br />
+                    We will update you shortly.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_waiting_return_notification" model="mail.template">
+        <field name="name">RMA Waiting Return Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) is waiting for return
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    is currently <strong>waiting for return</strong>.
+                    Please return the item at your earliest convenience.
+                    <br /><br />
+                    Thank you for your cooperation.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_waiting_replacement_notification" model="mail.template">
+        <field name="name">RMA Waiting Replacement Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) is waiting for replacement
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    is now <strong>waiting for replacement</strong> to be arranged.
+                    You will be notified once it ships.
+                    <br /><br />
+                    Thank you for your patience.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_refunded_notification" model="mail.template">
+        <field name="name">RMA Refunded Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) has been refunded
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    A refund for your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    has been successfully processed.
+                    <br /><br />
+                    We appreciate your business.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_returned_notification" model="mail.template">
+        <field name="name">RMA Returned Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) has been returned
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Your product for RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    has been <strong>returned</strong> to you.
+                    <br /><br />
+                    Please check and confirm the receipt.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_replaced_notification" model="mail.template">
+        <field name="name">RMA Replaced Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) has been replaced
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    The item in your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    has been <strong>replaced</strong> and shipped.
+                    <br /><br />
+                    We hope you are satisfied with the replacement.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_finished_notification" model="mail.template">
+        <field name="name">RMA Finished Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) has been completed
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    has been <strong>successfully completed</strong>.
+                    <br /><br />
+                    Thank you for your cooperation.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_locked_notification" model="mail.template">
+        <field name="name">RMA Locked Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) is now locked
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    has been <strong>locked</strong> for further updates.
+                    <br /><br />
+                    Please contact us if you need more information.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_cancelled_notification" model="mail.template">
+        <field name="name">RMA Cancelled Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} Your RMA (Ref {{object.name or 'n/a'}}) has been cancelled
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    has been <strong>cancelled</strong>.
+                    <br /><br />
+                    If you have any questions, please reach out to us.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_rma_product_under_inspection_notification" model="mail.template">
+        <field name="name">RMA Product Under Inspection Notification</field>
+        <field name="model_id" ref="model_rma" />
+        <field name="email_from">{{object.user_id.email_formatted}}</field>
+        <field name="partner_to">{{object.partner_id.id}}</field>
+        <field name="subject">
+            {{object.company_id.name}} RMA (Ref {{object.name or 'n/a'}}) – Product Under Inspection
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('rma.report_rma_action'))]" />
+        <field name="lang">{{object.partner_id.lang}}</field>
+        <field name="auto_delete" eval="True" />
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    We have received the product(s) related to your RMA
+                    <strong>
+                        <t t-out="object.name" />
+                    </strong>
+                    and it is currently <strong>under inspection</strong> by our technical team.
+                    <br /><br />
+                    We will notify you once the inspection is completed and the next step is determined.
+                    <br /><br />
+                    Thank you for your patience.
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_credit_note_draft" model="mail.template">
+        <field name="name">Draft Credit Note Notification for RMA</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="subject">
+            {{ object.company_id.name }} Credit Note (Ref {{ object.name or 'n/a' }}) – Draft for RMA
+        </field>
+        <field name="email_from">{{ object.user_id.email_formatted }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Please be informed that a Credit Note with the number
+                    <strong><t t-out="object.name" /></strong>
+                    has been prepared in draft status for your RMA request (RMA Number:
+                    <strong><t t-out="object.invoice_line_ids[0].rma_id.name"/></strong>).
+                    <br /><br />
+                    <strong>Amount:</strong> <t t-out="format_amount(object.amount_total, object.currency_id)" /><br />
+                    <strong>Date:</strong> <t t-out="format_date(object.invoice_date)" />
+                    <br /><br />
+                    If you have any questions, feel free to contact us.
+                    <br /><br />
+                    Best regards,<br />
+                    <t t-out="user.company_id.name" />
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_credit_note_posted" model="mail.template">
+        <field name="name">Credit Note Notification for RMA</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="subject">
+            {{ object.company_id.name }} Credit Note (Ref {{ object.name or 'n/a' }}) – Issued for RMA
+        </field>
+        <field name="email_from">{{ object.user_id.email_formatted }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    We would like to inform you that a Credit Note
+                    <strong><t t-out="object.name" /></strong>
+                    has been Confirmed for your RMA request (RMA Number:
+                    <strong><t t-out="object.invoice_line_ids[0].rma_id.name"/></strong>).
+                    <br /><br />
+                    <strong>Amount:</strong> <t t-out="format_amount(object.amount_total, object.currency_id)" /><br />
+                    <strong>Date:</strong> <t t-out="format_date(object.invoice_date)" />
+                    <br /><br />
+                    If you have any questions, feel free to contact us.
+                    <br /><br />
+                    Best regards,<br />
+                    <t t-out="user.company_id.name" />
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="mail_template_credit_note_cancelled" model="mail.template">
+        <field name="name">Cancelled Credit Note Notification for RMA</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="subject">
+            {{ object.company_id.name }} Credit Note (Ref {{ object.name or 'n/a' }}) – Cancelled for RMA
+        </field>
+        <field name="email_from">{{ object.user_id.email_formatted }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_id.name" />
+                    <t t-if="object.partner_id.parent_id">
+                        <t t-out="object.partner_id.parent_id.name" />
+                    </t>
+                    <br /><br />
+                    Please be advised that the Credit Note
+                    <strong><t t-out="object.name" /></strong>
+                    for your RMA request (RMA Number:
+                    <strong><t t-out="object.invoice_line_ids[0].rma_id.name"/></strong>)
+                    has been cancelled.
+                    <br /><br />
+                    If you have any questions, feel free to contact us.
+                    <br /><br />
+                    Best regards,<br />
+                    <t t-out="user.company_id.name" />
+                </p>
+            </div>
+        </field>
+    </record>
+</data>

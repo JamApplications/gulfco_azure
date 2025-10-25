@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gulfco_analytic_account_common_channel_form_view" model="ir.ui.view">
+        <field name="name">gulfco.analytic.account.common.channel.form.view</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='plan_id']" position="after">
+                <field name="is_channel_common"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

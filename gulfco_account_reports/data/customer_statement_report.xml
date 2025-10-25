@@ -1,0 +1,61 @@
+<odoo auto_sequence="1">
+    <record id="account_reports.customer_statement_report" model="account.report">
+        <field name="name">Customer Statement</field>
+        <field name="filter_journals" eval="True"/>
+        <field name="root_report_id" ref="account_reports.partner_ledger_report" />
+        <field name="custom_handler_model_id" ref="account_reports.model_account_customer_statement_report_handler"/>
+        <field name="column_ids">
+            <record id="account_reports.customer_statement_report_invoicing_date" model="account.report.column">
+                <field name="name">TRX Date</field>
+                <field name="expression_label">invoice_date</field>
+                <field name="figure_type">date</field>
+            </record>
+            <record id="customer_statement_report_journal_data" model="account.report.column">
+                <field name="name">TRX Type</field>
+                <field name="expression_label">journal_name</field>
+                <field name="figure_type">string</field>
+            </record>
+            <record id="customer_statement_report_invoice_number" model="account.report.column">
+                <field name="name">Invoice Number</field>
+                <field name="expression_label">move_name</field>
+                <field name="figure_type">string</field>
+            </record>
+             <record id="customer_statement_report_PO_number" model="account.report.column">
+                <field name="name">PO Number</field>
+                <field name="expression_label">po_number</field>
+                <field name="figure_type">string</field>
+            </record>
+
+            <record id="account_reports.customer_statement_report_date_maturity" model="account.report.column">
+                <field name="name">Due Date</field>
+                <field name="expression_label">date_maturity</field>
+                <field name="figure_type">date</field>
+            </record>
+            <record id="customer_statement_report_company_name" model="account.report.column">
+                <field name="name">ENT (Pay Group)</field>
+                <field name="expression_label">company_name</field>
+                <field name="figure_type">string</field>
+            </record>
+
+            <record id="account_reports.customer_statement_amount" model="account.report.column">
+                <field name="name">Amount</field>
+                <field name="expression_label">amount</field>
+            </record>
+            <record id="account_reports.customer_statement_report_amount_currency" model="account.report.column">
+                <field name="name">Amount Currency</field>
+                <field name="expression_label">amount_currency</field>
+            </record>
+            <record id="account_reports.customer_statement_report_balance" model="account.report.column">
+                <field name="name">Balance</field>
+                <field name="expression_label">balance</field>
+            </record>
+
+            <record id="customer_statement_report_div_code" model="account.report.column">
+                <field name="name">DIV Code</field>
+                <field name="expression_label">company_code</field>
+                <field name="figure_type">string</field>
+            </record>
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="gulfco_account_payment_extended.BankRecRecordFormLineIds" t-inherit="account_accountant.BankRecRecordFormLineIds" t-inherit-mode="extension">
+        <xpath expr="//t[@name='col_taxes']" position="after">
+            <t t-if="column[0] === 'ref'" name="col_ref">
+                <td class="o_data_cell"
+                    t-att-class="{'o_invalid_cell': invalidFields.includes('ref')}"
+                    field="ref"
+                    t-att-title="line.data.ref"
+                    t-out="line.data.ref"/>
+            </t>
+        </xpath>
+    </t>
+    <t t-name="gulfco_account_payment_extended.BankRecRecordNotebookManualOperations" t-inherit="account_accountant.BankRecRecordNotebookManualOperations" t-inherit-mode="extension">
+        <xpath expr="//div[@name='suggestion']" position="before">
+            <div name="ref_statement_line"
+                 class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                    <label class="o_form_label">Ref.</label>
+                </div>
+                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 w-100 mb-1">
+                    <div class="o_field_widget o_field_many2one">
+                        <CharField
+                                name="'ref'"
+                                record="line"
+                                readonly="readonly"
+                            />
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

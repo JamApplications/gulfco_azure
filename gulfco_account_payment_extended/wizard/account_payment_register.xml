@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="gulfco_account_payment_register_form_view_inherit" model="ir.ui.view">
+            <field name="name">gulfco.account.payment.register.form.view.inherit</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account.view_account_payment_register_form"/>
+            <field name="arch" type="xml">
+                <field name="responsible_id" position="after">
+                    <field name="custodian_id" invisible="payment_type != 'inbound'"/>
+                    <field name="external_email" invisible="0" required="payment_type == 'inbound'"/>
+                </field>
+            </field>
+        </record>
+        <record id="gulfco_account_payment_register_account_pdc_form_view_inherit" model="ir.ui.view">
+            <field name="name">gulfco.account.payment.register.account.pdc.form.view.inherit</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account_pdc.account_payment_register_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='cheque_owner_id']" position="attributes">
+                    <attribute name="invisible">payment_mode != 'pdc' or payment_type == 'inbound'</attribute>
+                </xpath>
+                <xpath expr="//field[@name='cheque_owner_id']" position="after">
+                    <field name="cheque_owner" invisible="payment_mode != 'pdc' or payment_type != 'inbound'"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="gulfco_account_payment_register_account_cdc_form_view_inherit" model="ir.ui.view">
+            <field name="name">gulfco.account.payment.register.account.cdc.form.view.inherit</field>
+            <field name="model">account.payment.register</field>
+            <field name="inherit_id" ref="account_cdc.account_payment_register_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='cheque_owner_id']" position="attributes">
+                    <attribute name="invisible">is_cdc_payment == False or payment_type == 'inbound'</attribute>
+                </xpath>
+                <xpath expr="//field[@name='cheque_owner_id']" position="after">
+                    <field name="cheque_owner"  invisible="is_cdc_payment == False or payment_type != 'inbound'" required="is_cdc_payment == True and payment_type == 'inbound'" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

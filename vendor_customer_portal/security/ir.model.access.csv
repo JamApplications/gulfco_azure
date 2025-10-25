@@ -1,0 +1,5 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_res_partner_portal_edit_create,access.res.partner.portal.edit.create,base.model_res_partner,base.group_portal,1,1,1,0
+access_sales_men_portal,access.sales.men.portal,gulfco_customer_customized_data.model_sales_men,base.group_portal,1,1,1,0
+access_action_report_portal,access.action.report.portal,base.model_ir_actions_report,base.group_portal,1,0,0,0
+access_account_payment_method_portal,access.account.payment.method.portal,account.model_account_payment_method,base.group_portal,1,0,0,0

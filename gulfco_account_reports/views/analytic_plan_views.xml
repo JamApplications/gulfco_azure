@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gulfco_account_analytic_plan_form_view" model="ir.ui.view">
+        <field name="name">gulfco.account.analytic.plan.form.view</field>
+        <field name="model">account.analytic.plan</field>
+        <field name="inherit_id" ref="analytic.account_analytic_plan_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='color']" position="after">
+                <field name="is_department_plan"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

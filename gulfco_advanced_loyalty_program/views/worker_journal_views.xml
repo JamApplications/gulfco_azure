@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- list (List) View -->
+        <record id="view_worker_journal_list" model="ir.ui.view">
+            <field name="name">worker.journal.list</field>
+            <field name="model">worker.journal</field>
+            <field name="arch" type="xml">
+                <list string="Worker Journals" class="oe_list_buttons" decoration-muted="active==False">
+                    <field name="journal_id" class="o_list_char"/>
+                    <field name="worker_ids" widget="many2many_tags"/>
+                    <field name="journal_type"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_worker_journal_form" model="ir.ui.view">
+            <field name="name">worker.journal.form</field>
+            <field name="model">worker.journal</field>
+            <field name="arch" type="xml">
+                <form string="Worker Journal" class="o_form_sheet">
+                    <sheet>
+                        <div class="o_group o_row">
+                            <group class="o_col-6">
+                                <field name="journal_id" required="1"/>
+                            </group>
+                            <group class="o_col-6">
+                                <field name="journal_type"/>
+                            </group>
+                        </div>
+                        <notebook>
+                            <page string="Workers">
+                                <field name="worker_ids" domain="[('contact_type','=','worker')]">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="email"/>
+                                        <field name="mobile"/>
+                                        <field name="phone"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action & Menu -->
+        <record id="action_worker_journal" model="ir.actions.act_window">
+            <field name="name">Worker Journals</field>
+            <field name="res_model">worker.journal</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to record your first Worker Journal entry!
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_worker_journal_root" name="Worker Journals" sequence="10" parent="sale.menu_sale_config"/>
+        <menuitem
+                id="menu_worker_journal"
+                name="Journals"
+                parent="menu_worker_journal_root"
+                action="action_worker_journal"
+                sequence="10"/>
+    </data>
+</odoo>

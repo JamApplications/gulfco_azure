@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_print_action_rma_receipt_report" model="ir.actions.server">
+        <field name="name">Print Receipts Excel</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_print_receipt_payment_excel()</field>
+    </record>    
+    
+    <!-- Server Actions for bulk action on cheques (pdc/cdc) -->
+    <record id="_server_action_open_pdc_receivable_collect_wizard" model="ir.actions.server">
+        <field name="name">Collect PDC</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_open_pdc_receivable_collect_wizard()</field>
+    </record>
+    <record id="_server_action_open_pdc_receivable_re_collect_wizard" model="ir.actions.server">
+        <field name="name">Re-Deposit PDC</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_open_pdc_receivable_re_collect_wizard()</field>
+    </record>
+    <record id="_server_action_return_pdc" model="ir.actions.server">
+        <field name="name">Return PDC</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_return_pdc()</field>
+    </record>
+    <record id="_server_action_open_cdc_receivable_collect_wizard" model="ir.actions.server">
+        <field name="name">Collect CDC</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_open_cdc_receivable_collect_wizard()</field>
+    </record>
+    <record id="_server_action_open_pdc_receivable_bounce_wizard" model="ir.actions.server">
+        <field name="name">Bounce PDC Receivable</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_open_pdc_receivable_bounce_wizard()</field>
+    </record>
+    <record id="_server_action_cdc_receivable_deposit_wizard" model="ir.actions.server">
+        <field name="name">Deposit CDC</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_cdc_receivable_deposit_wizard()</field>
+    </record>  
+    <record id="_server_action_open_cdc_receivable_cashed_wizard" model="ir.actions.server">
+        <field name="name">CDC Cashed</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_open_cdc_receivable_cashed_wizard()</field>
+    </record>    
+    <record id="_server_action_open_cdc_receivable_bounce_wizard" model="ir.actions.server">
+        <field name="name">Bounce CDC Receivable</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_open_cdc_receivable_bounce_wizard()</field>
+    </record>
+    <record id="_server_action_open_pdc_payable_clear_wizard" model="ir.actions.server">
+        <field name="name">Clear PDC</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_open_pdc_payable_clear_wizard()</field>
+    </record>
+    <record id="_server_action_open_cdc_payable_clear_wizard" model="ir.actions.server">
+        <field name="name">Clear CDC</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_open_cdc_payable_clear_wizard()</field>
+    </record>
+    <record id="_server_action_pdc_payable_bounce_cancel" model="ir.actions.server">
+        <field name="name">PDC Payable Bounce/Cancel</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_pdc_payable_bounce_cancel()</field>
+    </record>
+    <record id="_server_action_cdc_payable_bounce_cancel" model="ir.actions.server">
+        <field name="name">CDC Payable Bounce/Cancel</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_cdc_payable_bounce_cancel()</field>
+    </record>
+    <record id="action_bulk_cancel_payments" model="ir.actions.server">
+        <field name="name">Cancel Payments</field>
+        <field name="model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_model_id" ref="gulfco_account_payment_extended.model_account_payment"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records._server_action_cancel_payment()</field>
+    </record>
+</odoo>

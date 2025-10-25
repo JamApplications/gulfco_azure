@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="view_purchase_request_form_inherit_custom" model="ir.ui.view">
+            <field name="name">purchase.request.form.inherit.custom</field>
+            <field name="model">purchase.request</field>
+            <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='line_ids']//list//field[@name='purchased_qty']" position="after">
+                    <field name="pr_line_category" string="Category" required="0" invisible="1"/>
+                </xpath>
+                <xpath expr="//button[@name='button_approved']" position="attributes">
+                     <attribute name="invisible">state not in ('to_approve') or request_type == 'order_analysis'</attribute>
+                    <attribute name="groups">gulfco_contact_registration_custom.group_line_manager</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_rejected']" position="attributes">
+                    <attribute name="invisible">state not in ('to_approve', 'approved') or request_type == 'order_analysis'</attribute>
+                    <attribute name="groups">gulfco_contact_registration_custom.group_line_manager</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_draft']" position="attributes">
+                      <attribute name="invisible">state not in ('to_approve','approved','rejected','done') or request_type == 'order_analysis'</attribute>
+                    <attribute name="groups">gulfco_contact_registration_custom.group_line_manager</attribute>
+                </xpath>
+                <xpath expr="//button[@name='button_done']" position="attributes">
+                      <attribute name="invisible">state not in ('approved') or request_type == 'order_analysis'</attribute>
+                </xpath>
+                  <xpath expr="//button[@name='%(purchase_request.action_purchase_request_line_make_purchase_order)d']" position="attributes">
+                      <attribute name="invisible">state not in ('approved') or request_type == 'order_analysis'</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_purchase_request_form_demand_planning_approval_inherit" model="ir.ui.view">
+            <field name="name">purchase.request.form.demand.planning.approval.inherit</field>
+            <field name="model">purchase.request</field>
+            <field name="inherit_id" ref="gulfco_demand_planning.view_purchase_request_form_demand_planning"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//button[@id='order_analysis_to_approve']" position="attributes">
+                    <attribute name="invisible">state not in ('draft') or not context.get('from_order_analysis') or request_type == 'order_analysis'</attribute>
+                </xpath>
+                 <xpath expr="//button[@id='button_to_approve']" position="attributes">
+                    <attribute name="invisible">state not in ('draft') or context.get('from_order_analysis') or request_type == 'order_analysis'</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="gulfco_purchase_request_line_tree_inherit" model="ir.ui.view">
+            <field name="name">gulfco.purchase.request.line.tree</field>
+            <field name="model">purchase.request.line</field>
+            <field name="inherit_id" ref="purchase_request.purchase_request_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='request_state']" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='supplier_id']" position="before">
+                    <field name="pr_line_category" invisible="1"/>
+                    <field name="state"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

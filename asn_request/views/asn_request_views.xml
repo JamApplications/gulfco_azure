@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ASN Request Form View -->
+    <record id="view_asn_request_form" model="ir.ui.view">
+        <field name="name">asn.request.form</field>
+        <field name="model">asn.request</field>
+        <field name="arch" type="xml">
+            <form string="ASN Request">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <field name="grn_created" invisible="1"/>
+                    <button name="action_create_grn" type="object"
+                            string="Create GRN"
+                            class="oe_highlight"
+                            invisible="not eta_uae_port or grn_created"/>
+                    <button name="action_create_landed_cost" type="object"
+                            string="Create Landed Cost"
+                            class="oe_highlight"
+                            invisible="not asn_landed_cost_ids or landed_cost_count > 0 or state != 'in_warehouse'"/>
+                </header>
+                <sheet>
+                    <div name="button_box" position="inside">
+                        <button name="open_action_view_pickings" type="object" class="oe_stat_button" icon="fa-pencil"
+                                invisible="picking_count == 0">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="picking_count"/>
+                                </span>
+                                <span class="o_stat_text">Receipts</span>
+                            </div>
+                        </button>
+                         <button name="open_action_landed_cost" type="object" class="oe_stat_button" icon="fa-pencil"
+                                invisible="landed_cost_count == 0">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="landed_cost_count"/>
+                                </span>
+                                <span class="o_stat_text">Stock Landed Cost</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="bl_no_asn_no"/>
+                        <h1>
+                            <field name="bl_no_asn_no" class="oe_inline" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bl_no"/>
+                            <field name="supplier_id"/>
+                            <field name="total_bl_net_weight"/>
+                            <field name="total_bl_gross_wt"/>
+                            <field name="document_receipt_date"/>
+                            <field name="dispatched_date"/>
+                            <field name="eta_uae_port"/>
+                            <field name="expected_arrival_wh"/>
+                        </group>
+                        <group>
+                            <field name="responsible_id"/>
+                            <field name="company_id"/>
+                            <field name="shipment_mode"/>
+                            <field name="port_of_loading"/>
+                            <field name="port_of_discharge"/>
+                            <field name="vessel_name"/>
+                            <field name="voyage_no"/>
+                            <field name="shipping_line"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details">
+                            <field name="line_ids" readonly="state not in ['on_way','at_port']">
+                                <list editable="bottom">
+                                    <field name="purchase_order_id"/>
+                                    <field name="purchase_order_line_id" context="{'is_from_asn_request' : 1}"/>
+                                    <!-- <field name="prchase_order_line_sequence" /> -->
+                                    <field name="product_product_id" string="Item"/>
+                                    <field name="product_default_code" string="Item Code"/>
+                                    <field name="product_description" string="Item Description"/>
+                                    <field name="hs_code" optional="hide"/>
+                                    <field name="country_of_origin" optional="show"/>
+                                    <field name="po_uom"/>
+                                    <field name="po_qty" readonly="1" force_save="1" sum="Total"/>
+                                    <field name="po_qty_in_ctn" sum="Total"/>
+                                    <field name="po_unit_price" sum="Total"/>
+                                    <field name="asn_released_qty" readonly="1"  force_save="1" sum="Total"/>
+                                    <field name="shipment_value" optional="show" sum="Total"/>
+                                    <field name="qty_in_invoice" optional="show" sum="Total"/>
+                                    <field name="qty_in_invoice_ctn" optional="show" sum="Total"/>
+                                    <field name="po_due_qty_in_case" column_invisible="1"/>
+                                    <field name="po_due_qty_in_eac" string="PO due qty in Cartoon" sum="Total"/>
+                                    <field name="available_qty_to_release" sum="Total"/>
+                                    <field name="available_qty_to_release_ctn" sum="Total"/>
+                                    <!-- <field name="po_line_no" />
+                                    <field name="country_of_origin" optional="show" />
+                                    -->
+                                    <field name="invoice_no" optional="show"/>
+                                    <field name="container_type" optional="show"/>
+                                    <field name="container_no" optional="show"/>
+                                    <field name="count_of_pallets" optional="show"/>
+                                    <field name="remarks" optional="hide"/>
+                                    <field name="location_id" optional="hide"/>
+                                    <field name="warehouse_id" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="ASN Tracking">
+                            <group>
+                                <group>
+                                    <field name="free_period"/>
+                                    <field name="actual_arrived_port_date"/>
+                                    <field name="demurrage_start_date"/>
+                                    <field name="receipt_no"/>
+                                    <field name="received_in_wh_date"/>
+                                    <field name="municipality_clearance_status"/>
+                                    <field name="demurrage_amount"/>
+                                    <field name="remarks" placeholder="Type down your notes here..."/>
+                                </group>
+                                <group>
+                                    <field name="excise_declaration_no"/>
+                                    <field name="boe_no"/>
+                                    <field name="boe_date"/>
+                                    <field name="municipality_release_no"/>
+                                    <field name="firs_cpip_document_date"/>
+                                    <field name="demurrage_paid"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="asn_landed_cost" string="Landed Cost" invisible="picking_count == 0">
+                            <field name="asn_landed_cost_ids" readonly="state not in ['in_warehouse']">
+                                <list editable="bottom">
+                                    <field name="asn_picking_ids" column_invisible="1"/>
+                                    <field name="partner_id" domain="[('contact_type','=','supplier')]" required="1"/>
+                                    <field name="picking_id" domain="[('id','in',asn_picking_ids)]" context="{'from_asn_landed_cost':1}" required="1"/>
+                                    <field name="product_id"
+                                            domain="[('landed_cost_ok', '=', True)]"
+                                            context="{'default_landed_cost_ok': True, 'default_type': 'service'}"/>
+                                    <field name="name"/>
+                                    <field name="account_id" options="{'no_create': True}"/>
+                                    <field name="split_method"/>
+                                    <field name="price_unit"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                 <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ASN Request List View -->
+    <record id="view_asn_request_list" model="ir.ui.view">
+        <field name="name">asn.request.list</field>
+        <field name="model">asn.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="bl_no_asn_no"/>
+                <field name="bl_no"/>
+                <field name="supplier_id"/>
+                <field name="responsible_id"/>
+                <field name="company_id"/>
+                <field name="shipment_mode"/>
+                <field name="eta_uae_port"/>
+                <field name="demurrage_amount"/>
+            </list>
+        </field>
+    </record>
+    <record id="asn_request_view_search" model="ir.ui.view">
+        <field name="name">asn.request.search.view</field>
+        <field name="model">asn.request</field>
+        <field name="arch" type="xml">
+            <search string="Search ASN Request">
+                <field name="bl_no_asn_no"/>
+                <field name="line_ids" string="FPO Number" filter_domain="[('line_ids.purchase_order_id', 'ilike', self)]"/>
+            </search>
+        </field>
+    </record>
+    <!-- ASN Request Action -->
+    <record id="action_asn_request" model="ir.actions.act_window">
+        <field name="name">ASN Requests</field>
+        <field name="res_model">asn.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="asn_request_view_search"/>
+    </record>
+
+    <!-- ASN Request Menu Item -->
+    <menuitem id="menu_asn_request" name="ASN" parent="stock.menu_stock_transfers"
+              action="action_asn_request"/>
+</odoo>

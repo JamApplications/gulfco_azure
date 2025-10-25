@@ -1,0 +1,232 @@
+$common-font: CairoRegular;
+
+@font-face {
+    font-family: 'CairoRegular';
+    src: url('/stock_outbouding_operation/static/src/fonts/Cairo-Regular.ttf') format('truetype');
+    font-style: normal;
+}
+
+
+.page {
+    font-size: 12px;
+    line-height: 1;
+    font-family: $common-font
+}
+
+.table {
+    border-collapse: collapse !important;
+    border: 0 !important;
+    font-family: $common-font;
+}
+
+.table td,
+.table th {
+    padding-top: 4px !important;
+    padding-bottom: 3px !important;
+    line-height: 1 !important;
+    font-family: $common-font;
+
+}
+
+
+
+
+.invoice-details tr td:nth-child(3),
+.invoice-details tr th:nth-child(2) {
+    text-align: right;
+}
+
+.bill-to-customer-details tr td:nth-child(3) {
+    text-align: right;
+}
+
+.remarks-table tr th:nth-child(2) {
+    text-align: right;
+    direction: rtl;
+}
+
+.company-details {
+    font-size: 12px !important;
+    line-height: 1;
+    padding-top: 4px !important;
+    padding-bottom: 3px !important;
+    line-height: 1 !important;
+    font-family: $common-font;
+
+}
+
+.company-details tr td:nth-child(3),
+.company-details tr td:nth-child(6) {
+    text-align: right;
+}
+.company-details tr td:nth-child(1),
+.company-details tr td:nth-child(4) {
+    font-weight: bold;
+}
+
+.company-details td {
+    border: none;
+}
+
+.invoice-no-date-box td:nth-child(3) {
+    border-right: 1px solid #000;
+
+}
+
+.invoice-no-date-box {
+    border-right: 1px solid #000;
+    font-family: $common-font;
+
+}
+
+
+
+.invoice-summary td:last-child {
+    text-align: right;
+    direction: rtl;
+}
+
+.tax-invoice-summary {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+.tax-invoice-summary th,
+.tax-invoice-summary td {
+    border: 1px solid #000;
+    padding: 6px 8px;
+    vertical-align: top;
+}
+
+.tax-invoice-summary th {
+    background-color: #d9e2f3;
+    font-weight: bold;
+    text-align: center;
+}
+
+.tax-invoice-summary td:nth-child(2) {
+    text-align: right;
+}
+
+.tax-invoice-summary td:nth-child(3) {
+    direction: rtl;
+    text-align: right;
+    font-family: Arial, sans-serif;
+}
+
+
+/* =============================== */
+.box-details {
+    width: 100%;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+.box-details th {
+    background-color: #f5f5f5;
+    text-align: left;
+    font-weight: bold;
+    padding: 4px 6px;
+    border-bottom: 1px solid #000;
+    font-size: 11px;
+}
+
+.box-details td,
+.box-details tr,
+.box-details th {
+    padding: 4px 6px;
+    border: none;
+}
+
+.box-details tr td:nth-child(3),
+.box-details tr th:nth-child(2) {
+    text-align: right;
+}
+
+.box-details tr td:nth-child(1) {
+    width: 120px
+}
+
+/* ================================================ */
+.invoice-lines {
+    width: 100%;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    font-family: $common-font;
+}
+
+.invoice-lines tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+ }
+
+.invoice-lines th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+//     padding: 4px 6px;
+    border-bottom: 1px solid #000;
+    font-size: 11px;
+    text-align: center !important;
+}
+
+.invoice-lines td,
+.invoice-lines th {
+    border: none;
+}
+
+/* ========================================= */
+.remark-box {
+    width: 100%;
+    border: 1px solid #000;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+.remark-box th {
+    background-color: #f5f5f5;
+    text-align: left;
+    font-weight: bold;
+    padding: 4px 6px;
+    border-bottom: 1px solid #000;
+    font-size: 11px;
+    border: none;
+}
+
+
+.remark-box th:nth-child(2) {
+    border-left: 1px solid #000;
+    direction: rtl;
+    text-align: right;
+}
+
+/* ========================================= */
+.invoice-summary {
+    border: 1px solid #000;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+.invoice-summary th {
+    background-color: #f5f5f5;
+    text-align: left;
+    font-weight: bold;
+    padding: 4px 6px;
+    border-bottom: 1px solid #000;
+    font-size: 11px;
+}
+
+
+.invoice-summary th:nth-child(3) {
+    direction: rtl;
+    text-align: right;
+}
+
+.signature{
+    text-align: center;
+    line-height: 1.5;
+    font-weight: bold;
+
+}

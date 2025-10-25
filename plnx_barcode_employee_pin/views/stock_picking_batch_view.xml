@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="barcode_emp_stock_view_batch_form" model="ir.ui.view">
+        <field name="name">stock.picking.batch.form.inherit.barcode_emp_stock</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='description']" position="after">
+                <field name="employee_ids" widget="many2many_tags" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Employee History">
+                    <field name="employee_history_line" nolabel="1">
+                        <list editable="bottom" create="0" edit="0" delete="0">
+                            <field name="batch_id" column_invisible="1"/>
+                            <field name="employee_id" width="30%"/>
+                            <field name="access_date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="barcode_emp_stock_stock_picking_batch_view_tree" model="ir.ui.view">
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <field name="employee_ids" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="barcode_emp_stock_stock_picking_batch_filter" model="ir.ui.view">
+        <field name="model">stock.picking.batch</field>
+        <field name="inherit_id" ref="stock_picking_batch.stock_picking_batch_filter"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="employee_ids"/>
+            </field>
+
+            <xpath expr="//group/filter[@name='state']" position="after">
+                <filter string="Employee" name="employee_ids" domain="[]" context="{'group_by': 'employee_ids'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

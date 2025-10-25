@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_quant_history_form" model="ir.ui.view">
+        <field name="name">stock.quant.history.form</field>
+        <field name="model">stock.quant.history</field>
+        <field name="arch" type="xml">
+            <form string="Inventory at Date (Locations)">
+                <group>
+                    <field name="inventory_datetime"/>
+                </group>
+                <footer>
+                    <button name="open_at_date_view"
+                            string="View"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_stock_quant_at_date" model="ir.actions.act_window">
+        <field name="name">Inventory at Date ds kk</field>
+        <field name="res_model">stock.quant.at.date</field>
+        <field name="view_mode">list</field>
+        <field name="context">{
+            'search_default_internal_loc': 1,
+              'search_default_groupby_location': 1,
+              'search_default_groupby_product': 1,
+              'search_default_groupby_lot': 1 }
+        </field>
+        <field name="domain">[('location_id.usage','=','internal')]</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="view_stock_quant_at_date_list" model="ir.ui.view">
+        <field name="name">stock.quant.at.date.list</field>
+        <field name="model">stock.quant.at.date</field>
+        <field name="arch" type="xml">
+            <list string="Inventory at Date">
+                <field name="date"/>
+                <field name="location_id"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="expiration_date"/>
+                <field name="package_id"/>
+                <field name="owner_id"/>
+                <field name="avg_cost" sum="Total Qty"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="on_hand_qty" sum="Total Qty"/>
+                <field name="reserved_qty" sum="Total Reserved"/>
+                <field name="available_qty" sum="Total Available"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="value" sum="Total Value"
+                       widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <button name="action_view_stock_moves_custom" string="History" type="object"
+                        class="btn-link" icon="fa-history"  column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+     <record id="quant_at_date_search_view" model="ir.ui.view">
+        <field name="name">stock.quant.at.date.search</field>
+        <field name="model">stock.quant.at.date</field>
+        <field eval="10" name="priority"/>
+        <field name="arch" type="xml">
+            <search string="Quants">
+                <field name="product_id"/>
+                <field name="location_id"/>
+<!--                <field name="inventory_datetime"/>-->
+                <field name="package_id" groups="stock.group_tracking_lot"/>
+                <field name="lot_id" groups="stock.group_production_lot"/>
+                <field name="owner_id" groups="stock.group_tracking_owner"/>
+                <group expand='0' string='Filters'>
+                    <filter name='internal_loc' string="Internal Locations" domain="[('location_id.usage','=', 'internal')]"/>
+                    <filter name='transit_loc' string="Transit Locations" domain="[('location_id.usage' ,'=', 'transit')]"/>
+                    <separator/>
+                    <filter name="on_hand" string="On Hand" domain="[('on_hand', '=', True)]"/>
+<!--                    <filter name="to_count" string="To Count" domain="[('inventory_datetime', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>-->
+                    <separator/>
+
+                    <filter name="in_stock" string="In Stock" domain="[('on_hand_qty', '&gt;', 0.0)]"/>
+                    <filter name="negative" string="Negative Stock" domain="[('on_hand_qty', '&lt;', 0.0)]"/>
+                    <filter name="reserved" string="Reservations" domain="[('reserved_qty', '&gt;', 0.0)]"/>
+                    <separator/>
+                      <filter string="Product" name="groupby_product" context="{'group_by':'product_id'}"/>
+                      <filter string="Location" name="groupby_location" context="{'group_by':'location_id'}"/>
+                      <filter string="Lot/Serial" name="groupby_lot" context="{'group_by':'lot_id'}"/>
+                </group>
+                <group expand='0' string='Group by...'>
+                    <filter string='Product' name="productgroup" context="{'group_by': 'product_id'}"/>
+                    <filter string='Location' name="locationgroup" domain="[]" context="{'group_by': 'location_id'}"/>
+                    <filter string='Owner' name="owner" context="{'group_by': 'owner_id'}" groups="stock.group_tracking_owner"/>
+                    <filter string='Lot/Serial Number' name="Lot_Serial_number" context="{'group_by': 'lot_id'}" groups="stock.group_production_lot"/>
+                    <filter string='Package' name="package" domain="[]" context="{'group_by': 'package_id'}" groups="stock.group_tracking_lot"/>
+               </group>
+            </search>
+        </field>
+    </record>
+</odoo>

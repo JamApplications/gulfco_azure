@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gulfco_purchase_order_form_approval" model="ir.ui.view">
+        <field name="name">gulfco.approval.purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_cancel']" position="attributes">
+                <attribute name="string">Return Order</attribute>
+                <attribute name="invisible">state in ('purchase', 'reject')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="attributes">
+                 <attribute name="invisible">po_category in ['foreign', 'local']</attribute>
+            </xpath>
+            <xpath expr="//button[@id='bid_confirm']" position="attributes">
+                <attribute name="invisible">state != 'sent' or po_category in ['foreign', 'local']</attribute>
+                <attribute name="groups">gulfco_contact_registration_custom.group_scm_approval</attribute>
+            </xpath>
+            <xpath expr="//button[@id='draft_confirm']" position="attributes">
+                <attribute name="invisible">state != 'submitted' or po_category in ['foreign', 'local']</attribute>
+                <attribute name="groups">gulfco_contact_registration_custom.group_scm_approval</attribute>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="state" widget="statusbar" invisible="po_category not in ['foreign', 'local']"  statusbar_visible="draft,submitted,scm_confirm,financial_dep_approve,purchase" readonly="1"/>
+                <button name="action_submit_po" type="object" invisible="state not in ['draft','sent']"
+                         string="Submit" context="{'validate_analytic': True}"/>
+                <button name="action_scm_confirm" type="object" invisible="state not in ['submitted'] or po_category not in ['foreign', 'local']"
+                         string="SCM Approve" groups="gulfco_contact_registration_custom.group_scm_approval"  context="{'validate_analytic': True}"/>
+
+                <button name="action_reject" type="object" invisible="state in ('draft', 'reject', 'cancel','done', 'purchase') or po_category not in ['foreign', 'local']"
+                         string="Reject" />
+                 <button name="action_finance_approve" type="object" invisible="state != 'scm_confirm' or po_category not in ['foreign', 'local']"
+                         string="Finance Approve" groups="account.group_account_manager"/>
+                <button name="action_director_approve" type="object" invisible="state != 'financial_dep_approve' or po_category not in ['foreign', 'local']"
+                        context="{'validate_analytic': True}" string="Director Approve" groups="stock_inventory_adjustment.group_director_approval"
+                />
+            </xpath>
+            <field name="partner_ref" position="attributes">
+                <attribute name="readonly">state not in ('draft', 'sent')</attribute>
+            </field>
+            <field name="currency_id" position="attributes">
+                <attribute name="readonly">state not in ('draft', 'sent')</attribute>
+            </field>
+            <field name="date_order" position="attributes">
+                <attribute name="readonly">state not in ('draft', 'sent')</attribute>
+            </field>
+            <xpath expr="//div[@name='date_planned_div']//field[@name='date_planned']" position="attributes">
+                <attribute name="readonly">state not in ('draft', 'sent')</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    <record id="product_template_form_view_inherit_otk_accrual" model="ir.ui.view">
+        <field name="name">product.normal.form.inherit.purchase.stock</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="purchase_stock.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="property_account_creditor_price_difference" position="after">
+                <field name="is_fixed_asset_product"/>
+            </field>
+        </field>
+    </record>
+    </data>
+</odoo>

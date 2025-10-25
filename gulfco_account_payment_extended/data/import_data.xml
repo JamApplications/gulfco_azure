@@ -1,0 +1,17 @@
+<odoo>
+    <record id="action_open_import_wizard_from_move_line" model="ir.actions.server">
+        <field name="name">Import Data</field>
+        <field name="model_id" ref="account.model_account_move_line"/>
+        <field name="binding_model_id" ref="account.model_account_move_line"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = {
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move.line.import.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'name': 'Import Move Line Data'
+            }
+        </field>
+    </record>
+</odoo>

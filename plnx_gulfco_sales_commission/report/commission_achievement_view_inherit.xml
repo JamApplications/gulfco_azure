@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_achievement_report_view_search_inherit" model="ir.ui.view">
+        <field name="name">sale.commission.achievement.report.view.search.inherit</field>
+        <field name="model">sale.commission.achievement.report</field>
+        <field name="inherit_id" ref="sale_commission.sale_achievement_report_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='salesperson']" position="replace">
+                <filter string="Salesperson" name="salesperson" context="{'group_by':'partner_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_achievement_report_view_list_inherit" model="ir.ui.view">
+        <field name="name">sale.commission.achievement.report.view.list.inherit</field>
+        <field name="model">sale.commission.achievement.report</field>
+        <field name="inherit_id" ref="sale_commission.sale_achievement_report_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='achieved']" position="before">
+<!--                <field name="kpi_type" column_invisible="1"/>-->
+                <field name="achieved"/>
+                <field name="achieved_plan" optional="hide"/>
+
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_id" column_invisible="1"/>
+                <field name="partner_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

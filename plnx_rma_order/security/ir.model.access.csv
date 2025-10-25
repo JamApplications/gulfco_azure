@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_plnx_rma_order_rma_order,plnx_rma_order.rma_order,model_rma_order,base.group_user,1,1,1,1
+access_plnx_rma_order_rma_order_line,plnx_rma_order.rma_order_line,model_rma_order_line,base.group_user,1,1,1,1

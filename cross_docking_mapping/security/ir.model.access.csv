@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cross_docking_mapping,access_cross_docking_mapping,model_cross_docking_mapping,base.group_user,1,1,1,1
+access_cross_docking_mapping_group,access_cross_docking_mapping_group,model_cross_docking_mapping_group,base.group_user,1,1,1,1

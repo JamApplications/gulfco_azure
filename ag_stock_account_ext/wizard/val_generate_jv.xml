@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="val_update_jv_form" model="ir.ui.view">
+        <field name="name">val.update.jv.form</field>
+        <field name="model">val.update.jv</field>
+        <field name="arch" type="xml">
+            <form string="Valuation JV">
+                <group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_val_generate_jv" string="Update Jv's" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ag_update_val_jv" model="ir.actions.act_window">
+        <field name="name">Valuation: Generate Jv's </field>
+        <field name="res_model">val.update.jv</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="val_update_jv_form"/>
+    </record>
+
+
+    <!-- This Menu Item must have a parent and an action -->
+
+    <menuitem id="ag_update_val_jv_menu" name="Update Jv's" parent="stock.menu_stock_warehouse_mgmt" action="ag_update_val_jv" sequence="30"/>
+
+
+</odoo>

@@ -1,0 +1,43 @@
+<odoo>
+    <!-- Wizard View -->
+    <record id="view_stock_valuation_wizard_form" model="ir.ui.view">
+        <field name="name">stock.valuation.wizard.form</field>
+        <field name="model">stock.valuation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Stock Valuation Report">
+                <group>
+                    <group>
+                        <field name="date_from" string="Duration" widget="daterange"
+                               options="{'end_date_field': 'date_to'}"/>
+                        <field name="date_to" invisible="1"/>
+                        <field name="all_warehouse"/>
+                        <field name="warehouse_ids" invisible="all_warehouse" required="not all_warehouse" widget="many2many_tags"/>
+                        <field name="all_locations"/>
+                        <field name="location_ids" invisible="all_locations" required="not all_locations" widget="many2many_tags"/>
+                        <field name="all_brands"/>
+                        <field name="brand_ids" invisible="all_brands" required="not all_brands" widget="many2many_tags"/>
+                        <field name="all_categories"/>
+                        <field name="category_ids" invisible="all_categories" required="not all_categories" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_report" type="object" string="Print" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_valuation_wizard" model="ir.actions.act_window">
+        <field name="name">Stock Valuation Report</field>
+        <field name="res_model">stock.valuation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_stock_valuation_report_root"
+              name="Stock Valuation Report"
+              parent="stock.menu_warehouse_report"
+              action="action_stock_valuation_wizard"
+              sequence="100"/>
+</odoo>

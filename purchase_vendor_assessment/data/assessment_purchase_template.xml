@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="demo_assessment_purchase_template" model="assessment.purchase.template">
+        <field name="name">Default</field>
+    </record>
+    <!-- Result -->
+    <record id="demo_assessment_template_result_1" model="assessment.purchase.template.result">
+        <field name="result_id" ref="demo_assessment_purchase_result_excellent"/>
+        <field name="point_max" eval="100"/>
+        <field name="template_id" ref="demo_assessment_purchase_template"/>
+    </record>
+    <record id="demo_assessment_template_result_2" model="assessment.purchase.template.result">
+        <field name="result_id" ref="demo_assessment_purchase_result_very_good"/>
+        <field name="point_max" eval="90"/>
+        <field name="template_id" ref="demo_assessment_purchase_template"/>
+    </record>
+    <record id="demo_assessment_template_result_3" model="assessment.purchase.template.result">
+        <field name="result_id" ref="demo_assessment_purchase_result_good"/>
+        <field name="point_max" eval="80"/>
+        <field name="template_id" ref="demo_assessment_purchase_template"/>
+    </record>
+    <record id="demo_assessment_template_result_4" model="assessment.purchase.template.result">
+        <field name="result_id" ref="demo_assessment_purchase_result_average"/>
+        <field name="point_max" eval="60"/>
+        <field name="template_id" ref="demo_assessment_purchase_template"/>
+    </record>
+    <record id="demo_assessment_template_result_5" model="assessment.purchase.template.result">
+        <field name="result_id" ref="demo_assessment_purchase_result_below_average"/>
+        <field name="point_max" eval="40"/>
+        <field name="template_id" ref="demo_assessment_purchase_template"/>
+    </record>
+    <!-- Lines -->
+    <record id="demo_assessment_template_line_1" model="assessment.purchase.template.line">
+        <field name="sequence" eval="1"/>
+        <field name="criteria_id" ref="demo_assessment_criteria_price"/>
+        <field name="point_min" eval="0"/>
+        <field name="point_max" eval="20"/>
+        <field name="template_id" ref="demo_assessment_purchase_template"/>
+    </record>
+    <record id="demo_assessment_template_line_2" model="assessment.purchase.template.line">
+        <field name="sequence" eval="2"/>
+        <field name="criteria_id" eval="ref('demo_assessment_criteria_quality')"/>
+        <field name="point_min" eval="0"/>
+        <field name="point_max" eval="20"/>
+        <field name="template_id" eval="ref('demo_assessment_purchase_template')"/>
+    </record>
+    <record id="demo_assessment_template_line_3" model="assessment.purchase.template.line">
+        <field name="sequence" eval="3"/>
+        <field name="criteria_id" eval="ref('demo_assessment_criteria_delivery_time')"/>
+        <field name="point_min" eval="0"/>
+        <field name="point_max" eval="20"/>
+        <field name="template_id" eval="ref('demo_assessment_purchase_template')"/>
+    </record>
+    <record id="demo_assessment_template_line_4" model="assessment.purchase.template.line">
+        <field name="sequence" eval="4"/>
+        <field name="criteria_id" eval="ref('demo_assessment_criteria_payment')"/>
+        <field name="point_min" eval="0"/>
+        <field name="point_max" eval="20"/>
+        <field name="template_id" eval="ref('demo_assessment_purchase_template')"/>
+    </record>
+    <record id="demo_assessment_template_line_5" model="assessment.purchase.template.line">
+        <field name="sequence" eval="5"/>
+        <field name="criteria_id" eval="ref('demo_assessment_criteria_partnership')"/>
+        <field name="point_min" eval="0"/>
+        <field name="point_max" eval="20"/>
+        <field name="template_id" eval="ref('demo_assessment_purchase_template')"/>
+    </record>
+</odoo>

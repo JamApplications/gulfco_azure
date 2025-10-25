@@ -1,0 +1,52 @@
+<odoo>
+    <record id="view_order_form_inherit_sale_fieldservice" model="ir.ui.view">
+        <field name="name">sale.order.form.sale.fieldservice</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+
+             <xpath expr="//field[@name='order_line']//list//field[@name='product_template_id']" position="replace">
+                 <field name="list_of_mapped_items" column_invisible="True"/>
+                 <field name="product_template_id"
+                        string="Product" readonly="id and not product_updatable"
+                        required="not display_type and not is_downpayment"
+                        context="{'partner_id': parent.partner_id, 'quantity': product_uom_qty,
+                        'pricelist': parent.pricelist_id,
+                        'uom':product_uom, 'company_id': parent.company_id, 'default_list_price': price_unit,
+                        'default_uom_id': product_uom,}"
+                        options="{'no_open': True,}"
+                        optional="show"
+                        domain="[('sale_ok', '=', True)]"
+                        widget="sol_product_many2one" placeholder="Type to find a product..."
+                        column_invisible="parent.fsm_order_id"
+                 />
+                 <field name="product_template_id"
+                        string="Product" readonly="id and not product_updatable"
+                        required="not display_type and not is_downpayment"
+                        context="{'partner_id': parent.partner_id, 'quantity': product_uom_qty,
+                        'pricelist': parent.pricelist_id,
+                        'uom':product_uom, 'company_id': parent.company_id, 'default_list_price': price_unit,
+                        'default_uom_id': product_uom,}"
+                        options="{'no_open': True,}"
+                        optional="show"
+                        domain="[('sale_ok', '=', True), ('id', 'in', list_of_mapped_items)]"
+                        widget="sol_product_many2one" placeholder="Type to find a product..."
+                        column_invisible="not parent.fsm_order_id"
+                 />
+            </xpath>
+
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="list_of_mapped_items" invisible="True"/>
+
+            </xpath>
+            <xpath expr="//field[@name='team_id']" position="after">
+                <field name="fsm_order_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="customer_worker_ids" invisible="1"/>
+                    <field name="assign_to" required="1" domain="[('id','in',customer_worker_ids)]"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

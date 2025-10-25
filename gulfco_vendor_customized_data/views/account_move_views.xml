@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_search_inherit_vendor_code" model="ir.ui.view">
+        <field name="name">account.move.search.vendor.code</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_bill_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search//field[@name='partner_id']" position="after">
+                <field name="vendor_code" string="Vendor Code"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_in_invoice_bill_tree_inherit_gulfco_vendor_customized_data" model="ir.ui.view">
+        <field name="name">account.move.tree.inherit.gulfco_vendor_customized_data</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_in_invoice_bill_tree"/>
+        <field name="arch" type="xml">
+            <field name="invoice_date" position="before">
+                <field name="vendor_code" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

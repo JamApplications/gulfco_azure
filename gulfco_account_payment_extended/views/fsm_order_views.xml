@@ -1,0 +1,13 @@
+<odoo>
+    <record id="gulfco_fsm_order_form_payment_transfer_view" model="ir.ui.view">
+        <field name="name">gulfco.fsm.order.form.payment.transfer.view</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button id="action_payment_transfer" name="%(gulfco_account_payment_extended.action_payments_transfer)d" string="Payment Transfer"
+                        class="oe_highlight" type="action"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

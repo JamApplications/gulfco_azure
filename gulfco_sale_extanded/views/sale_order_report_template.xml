@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <template id="report_saleorder_document_custom" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//t/td[@name='td_priceunit']" position="replace">
+            <td name="td_priceunit" class="text-end text-nowrap">
+                <span t-esc="round(line.price_unit, 2)">3</span>
+            </td>
+
+        </xpath>
+     </template>
+</odoo>

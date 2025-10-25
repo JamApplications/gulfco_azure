@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="gulfco_contact_registration_custom.vendor_registration_template" name="Vendor Registration">
+        <t t-call="website.layout">
+
+            <div class="container ">
+                <h2 class="text-center mt32 mb16">Vendor Registration Form</h2>
+                <form action="/submit_vendor_registration" method="post" enctype="multipart/form-data"
+                      class="o_mark_required mb32" data-mark="*" data-model_name="mail.mail"
+                      data-success-mode="redirect"
+                      data-success-page="/contactus-thank-you" data-pre-fill="true">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="print_vrf_class">
+                        <h3>Company Detail</h3>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Company Name:</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="text" name="company_name" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Parent Group Name:</label>
+                                <input type="text" name="parent_group_name" class="form-control"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label>Complete Address:</label>
+                            <span class="s_website_form_mark">*</span>
+                            <textarea name="complete_address" class="form-control" required=""></textarea>
+                        </div>
+                        <div class="row mt-2">
+
+
+                            <div class="col-md-4">
+                                <label>Country :</label>
+                                <span class="s_website_form_mark">*</span>
+                                <select name="country_id" id="country_id" class="form-control state_selection"
+                                        required="">
+                                    <option value=""></option>
+                                    <t t-foreach="request.env['res.country'].search([])" t-as="country">
+                                        <option t-att-value="country.id">
+                                            <t t-esc="country.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label>State/City:</label>
+                                <span class="s_website_form_mark">*</span>
+                                <select id="state_id" name="state_id" class="form-control">
+                                    <option value="">Select a state</option>
+                                </select>
+                                <div class="mt-1 mb-2">
+                                    <input type="text" name="city_name" class="form-control"
+                                           placeholder="Please Add City Name" required=""/>
+                                </div>
+                            </div>
+                            <!--                        <div class="col-md-4">-->
+                            <!--                            <label>Country :</label>-->
+                            <!--                            <input type="text" name="country_name" class="form-control" required=""/>-->
+                            <!--                        </div>-->
+                            <!--                        <div class="col-md-4">-->
+                            <!--                            <label>City/State:</label>-->
+                            <!--                            <input type="text" name="city_state" class="form-control" required=""/>-->
+                            <!--                        </div>-->
+                            <div class="col-md-4">
+                                <label>ZIP / Pincode / Area Code:</label>
+                                <input type="text" name="zip_code" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Area/Zone/Community Name</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="text" name="area_zone_name" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-4">
+                                <label>P.O.Box :</label>
+                                <input type="number" name="po_box" class="form-control"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Web Site (URL) :</label>
+                                <input type="text" name="website_url" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Telephone # :</label>
+                                <input type="number" name="telephone" class="form-control"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Mobile # :</label>
+                                <input type="number" name="mobile" class="form-control"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Email :</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="email" name="email" class="form-control" required=""
+                                       placeholder="e.g. john.smith@example.com"/>
+                            </div>
+                        </div>
+
+                        <h3 class="mt-4">Legal Documents</h3>
+                        <div class="row">
+                            <div class="col-md-6 vendor_trade_license">
+                                <label>Trade License #:</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="text" name="trade_license_no" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Issuance Authority:</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="text" name="issuance_authority" class="form-control" required=""/>
+                            </div>
+                        </div>
+                        <div class="row expiry_date_selection">
+                            <div class="col-md-6">
+                                <label>Issued Date:</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="date" name="issued_date" id="issued_date" class="form-control"
+                                       required="" onkeydown="return false;" onpaste="return false;"/>
+                            </div>
+                            <div class="col-md-6 ">
+                                <label>Expiry Date:</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="date" name="expiry_date" id="expiry_date" class="form-control "
+                                       required="" onkeydown="return false;" onpaste="return false;"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label>Tax Registration Number:</label>
+                            <input type="number" name="trn" class="form-control"/>
+                        </div>
+                        <div class="col-md-12">
+                            <label>Remarks:</label>
+                            <input type="text" name="remark" class="form-control"/>
+                        </div>
+
+                        <h3 class="mt-4">Contact Details</h3>
+                        <div class="row">
+                            <table class="table table-borderless o_main_table small">
+                                <thead>
+                                    <tr>
+                                        <th>Contacts</th>
+                                        <th>Name</th>
+                                        <th>Tel</th>
+                                        <th>Mobile</th>
+                                        <th>Email Id</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Owner</td>
+                                        <td>
+                                            <input type="text" name="owner_name" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="owner_tel" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="owner_mobile" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="email" name="owner_email" class="form-control"
+                                                   placeholder="e.g. john.smith@example.com"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Authorized Signatory
+                                            <span class="s_website_form_mark">*</span>
+                                        </td>
+
+                                        <td>
+                                            <input type="text" name="signatory_name" class="form-control" required=""/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="signatory_tel" class="form-control" required=""/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="signatory_mobile" class="form-control"
+                                                   required=""/>
+                                        </td>
+                                        <td>
+                                            <input type="email" name="signatory_email" class="form-control" required=""
+                                                   placeholder="e.g. john.smith@example.com"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Finance Manager</td>
+                                        <td>
+                                            <input type="text" name="finance_manager_name" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="finance_manager_tel" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="finance_manager_mobile" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="email" name="finance_manager_email" class="form-control"
+                                                   placeholder="e.g. john.smith@example.com"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sales Manager</td>
+                                        <td>
+                                            <input type="text" name="sales_manager_name" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="sales_manager_tel" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="sales_manager_mobile" class="form-control"/>
+                                        </td>
+                                        <td>
+                                            <input type="email" name="sales_manager_email" class="form-control"
+                                                   placeholder="e.g. john.smith@example.com"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="bank_details_tab">
+                            <h3 class="mt-4">Bank Details</h3>
+
+                            <div class="col-md-12">
+                                <label>Account Name</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="text" name="account_name" class="form-control" required=""/>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Account Number</label>
+                                <span class="s_website_form_mark">*</span>
+                                <input type="text" name="account_number" class="form-control" required=""/>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Bank Name:</label>
+                                    <select name="bank_id" id="bank_id" class="form-control">
+                                        <option value=""></option>
+                                        <t t-foreach="request.env['res.bank'].search([])" t-as="bank">
+                                            <option t-att-value="bank.id">
+                                                <t t-esc="bank.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+
+                                    <div class="bank_details_unfound_tab mt-2 mb8">
+                                        <div class="form-group">
+                                            <label>
+                                                <input type="checkbox" name="bank_not_found" class="bank_checkbox"/>
+                                                Bank not found in list
+                                            </label>
+                                        </div>
+
+
+                                        <div class="form-group" id="unregistered_bank_input" style="display:none;">
+                                            <label for="unregistered_bank">Enter Unregistered Bank Name: </label>
+                                            <input type="text" name="unregistered_bank" class="form-control mt4"/>
+                                        </div>
+                                    </div>
+
+
+                                    <!--                            <input type="text" name="bank_id" class="form-control" required=""/>-->
+                                </div>
+
+
+                                <div class="col-md-6">
+                                    <label>Bank Branch Name:</label>
+                                    <input type="text" name="bank_branch_name" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Bank Address:</label>
+                                    <span class="s_website_form_mark">*</span>
+                                    <input type="text" name="bank_address" class="form-control" required=""/>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Branch Code:</label>
+                                    <input type="number" name="branch_code" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>IBAN:</label>
+                                    <span class="s_website_form_mark">*</span>
+                                    <input type="text" name="iban" class="form-control" required=""/>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Currency:</label>
+                                    <select name="currency_id" id="currency_id" class="form-control">
+                                        <option value=""></option>
+                                        <t t-foreach="request.env['res.currency'].search([])" t-as="curr">
+                                            <option t-att-value="curr.id">
+                                                <t t-esc="curr.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <!--                            <input type="text" name="currency" class="form-control" required=""/>-->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>SWIFT Code:</label>
+                                    <span class="s_website_form_mark">*</span>
+                                    <input type="text" name="swift_code" class="form-control" required=""/>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Sort Code/IFSC Code:</label>
+                                    <input type="number" name="sort_code" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" col-2 mt-4">
+                            <button id="noc_button" name="noc_button" class="noc_button btn btn-primary">Print NOC
+                            </button>
+                        </div>
+
+
+                        <div class="vendor_attachment">
+                            <h3 class="mt-4">Attachments</h3>
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <label>Trade License:</label>
+                                    <span class="s_website_form_mark">*</span>
+                                    <input type="file" name="trade_license_attachment" class="form-control"
+                                           required=""/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>VAT/TRN Certificates:</label>
+                                    <input type="file" name="vat_certificates" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label>Bank Letter Stating Your Account No:</label>
+                                    <span class="s_website_form_mark">*</span>
+                                    <input type="file" name="bank_latter_acc_no" class="form-control" required=""/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>NOC for Transfer of Payments:</label>
+                                    <span class="s_website_form_mark">*</span>
+                                    <input type="file" name="noc_trans_payment" class="form-control" required=""/>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label>VENDOR REGISTRATION FORM ( VRF) - Hardcopy:</label>
+                                    <span class="s_website_form_mark">*</span>
+                                    <input type="file" name="vendor_register_vrf" class="form-control" required=""/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Other Documents:</label>
+                                    <input type="file" name="other_docs" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-12">
+                        <div class="text-end col-9 mt-4"/>
+                        <div class="text-end col-2 mt-4">
+                            <button id="vrf_button" name="vrf_button" class="vrf_button btn btn-primary">Print VRF
+                            </button>
+                        </div>
+
+                        <div class="text-end mt-4 col-1">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </t>
+    </template>
+
+
+    <template id="request_registration_submit_response" name="Document Portal View">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_text_block pt40 pb40 o_colored_level " data-snippet="s_text_block">
+                    <div class="container s_allow_columns">
+                        <div class="row">
+                            <div class="col-lg-6 offset-lg-1 text-center">
+                                <div class="d-inline-block mx-auto p-4">
+                                    <i class="fa fa-paper-plane fa-2x mb-3 rounded-circle text-bg-success"
+                                       role="presentation"/>
+                                    <h1 class="fw-bolder">Thank You!</h1>
+                                    <p class="lead mb-0">Your request has been submitted.</p>
+                                    <!--                                            <p class="lead">We will get back to you shortly.</p>-->
+                                    <a href="/">Go to Homepage</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>
+

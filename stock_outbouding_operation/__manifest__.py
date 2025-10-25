@@ -1,0 +1,46 @@
+{
+    "name": "Stock OutBounding Operation",
+    "version": "18.0.0.0.0",
+    "category": "Stock",
+    "website": "https://www.plennix.com/",
+    "author": "Plennix",
+    "depends": ["stock","gulfco_product_customized_data","hr_expense", "stock_picking_batch", "asn_request","account", "sale", "plnx_barcode_employee_pin","gulfco_sale_extanded","stock_3dbase"],
+    "data": [
+        'security/ir.model.access.csv',
+        'data/stock_server_actions.xml',
+        'data/forklift_person_email_notification.xml',
+        'views/stock_location_tag_view.xml',
+        'views/stock_picking_views.xml',
+        'views/stock_report_views.xml',
+        'views/operation_details_views.xml',
+        'views/delivery_note_report.xml',
+        'views/report_invoice_custom.xml',
+        'views/account_journal_views.xml',
+        'views/account_move_line.xml',
+        'views/hr_expense_custom_view.xml',
+        'views/without_payment_report.xml',
+        'views/stock_landed_cost_views.xml',
+        'report/not_tradable_recipt_report.xml',
+        'views/report_invoice_debit_note.xml',
+        'views/stock_quant_package_views.xml',
+        'wizard/stock_quant_history_view_wizard.xml',
+        'views/stock_location_report_view.xml',
+        'wizard/stock_backorder_wizard_view.xml',
+        'wizard/stock_valuation_wizard_view.xml',
+        'report/tax_invoice_report.xml',
+        'report/excise_tax_report.xml',
+        'report/report_picking_batch.xml',
+        'report/transfer_list_in_barcode_report.xml',
+
+    ],
+    'assets': {
+        'web.report_assets_common': [
+            'stock_outbouding_operation/static/src/css/tax_invoice.scss',
+        ],
+        'web.report_assets_pdf': [
+            'stock_outbouding_operation/static/src/css/tax_invoice.scss',
+        ],
+    },
+
+    "installable": True,
+}

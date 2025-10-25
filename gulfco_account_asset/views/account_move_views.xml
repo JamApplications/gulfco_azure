@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherited the hr_payslip form view to add 'loan_line_id' field within the 'input_line_ids' tree. -->
+    <record id="view_move_inherit_form" model="ir.ui.view">
+        <field name="name">view.move.inherit.asset.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='journal_div']" position="after">
+                <field name="revaluate" invisible="move_type != 'in_invoice'"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_move_form_asset_inherit_gross" model="ir.ui.view">
+        <field name="name">view.move.form.asset.inherit.gross</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account_asset.view_move_form_asset_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_open_asset_ids']" position="after">
+                <field name="revaluate" invisible="1"/>
+                <field name="revaluate_asset_id" invisible="1"/>
+                <button name="action_open_gross_increase_asset_ids"  type="object" class="oe_stat_button" icon="fa-id-card-o" invisible="state != 'posted' or not revaluate_asset_id or revaluate != True">
+                        Gross Increase
+                </button>
+            </xpath>
+
+            <xpath expr="//sheet//notebook//page[@name='invoice_tab']//field[@name='analytic_distribution']" position="after">
+                <field name="revaluate_asset_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

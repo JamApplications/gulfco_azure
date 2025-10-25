@@ -1,0 +1,6 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_inventory_adjustment,stock.inventory.adjustment,model_stock_inventory_adjustment,stock.group_stock_user,1,1,1,1
+access_inventory_adjustment_line,inventory.adjustment.line,model_inventory_adjustment_line,stock.group_stock_user,1,1,1,1
+access_reject_reason,reject.reason,model_reject_reason,stock.group_stock_user,1,1,1,1
+access_stock_inventory_adjustment_account,stock.inventory.adjustment.account,model_stock_inventory_adjustment,account.group_account_manager,1,1,1,1
+access_inventory_adjustment_line_account,inventory.adjustment.line.account,model_inventory_adjustment_line,account.group_account_manager,1,1,1,1

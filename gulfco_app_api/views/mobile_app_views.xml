@@ -1,0 +1,310 @@
+<odoo>
+
+
+  <!-- App Version Line: Action filtered by app (used by stat button) -->
+  <record id="action_app_version_line_by_app" model="ir.actions.act_window">
+    <field name="name">App Versions</field>
+    <field name="res_model">app.version.line</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('mobile_app_id','=',active_id)]</field>
+    <field name="context">{'default_mobile_app_id': active_id}</field>
+  </record>
+
+  <!-- App Version Line: General Action (Admin only) -->
+  <record id="action_app_version_line" model="ir.actions.act_window">
+    <field name="name">All App Versions</field>
+    <field name="res_model">app.version.line</field>
+    <field name="view_mode">list,form,kanban</field>
+  </record>
+
+
+  <!-- Action + Menus (Admin only) -->
+  <record id="action_gulfco_mobile_app" model="ir.actions.act_window">
+    <field name="name">Mobile Apps</field>
+    <field name="res_model">gulfco.mobile.app</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        Create your first Mobile App record
+      </p>
+      <p>Manage current app, current version, and all release lines.</p>
+    </field>
+  </record>
+
+  <menuitem id="menu_mobile_app_root"
+            name="Mobile App"
+            parent="base.menu_administration"
+            sequence="90"
+            groups="gulfco_app_api.group_mobile_app_management"/>
+
+  <menuitem id="menu_mobile_app_versions"
+            name="Apps and Versions"
+            parent="menu_mobile_app_root"
+            action="action_gulfco_mobile_app"
+            sequence="1"
+            groups="gulfco_app_api.group_mobile_app_management"/>
+
+  <!-- Mobile App: Kanban -->
+<record id="view_gulfco_mobile_app_kanban" model="ir.ui.view">
+  <field name="name">gulfco.mobile.app.kanban</field>
+  <field name="model">gulfco.mobile.app</field>
+  <field name="arch" type="xml">
+    <kanban default_group_by="current_app" class="o_kanban_small_column">
+      <!-- Declare fields used in the template -->
+      <field name="name"/>
+      <field name="current_app"/>
+      <field name="current_version"/>
+      <field name="running_versions_count"/>
+
+      <templates>
+        <t t-name="kanban-box">
+          <div class="oe_kanban_global_click o_kanban_record">
+            <div class="o_kanban_image_fill" style="background:#f3f6ff; border-radius:12px; padding:12px;">
+              <strong t-esc="record.name.value"/>
+              <span t-if="record.current_app.raw_value" class="badge badge-primary" style="margin-left:8px;">Current</span>
+              <div class="text-muted" style="margin-top:6px;">
+                <span>Current Version: </span>
+                <span t-esc="record.current_version.value or '-'"/>
+              </div>
+              <div class="o_stat_info" style="margin-top:8px;">
+                <span class="o_stat_value" t-esc="record.running_versions_count.value"/>
+                <span class="o_stat_text">Running Versions</span>
+              </div>
+            </div>
+            <div class="o_kanban_footer">
+              <button type="object" name="action_set_as_current_app"
+                      class="btn btn-sm btn-primary o_kanban_button">
+                Set as Current App
+              </button>
+              <button type="object" name="action_sync_current_version"
+                      class="btn btn-sm btn-secondary o_kanban_button" style="margin-left:6px;">
+                Sync Current Version
+              </button>
+            </div>
+          </div>
+        </t>
+      </templates>
+    </kanban>
+  </field>
+</record>
+
+
+  <!-- Mobile App: list -->
+  <record id="view_gulfco_mobile_app_list" model="ir.ui.view">
+    <field name="name">gulfco.mobile.app.list</field>
+    <field name="model">gulfco.mobile.app</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="current_app"/>
+        <field name="current_version"/>
+        <field name="running_versions_count"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Mobile App: Search -->
+  <record id="view_gulfco_mobile_app_search" model="ir.ui.view">
+    <field name="name">gulfco.mobile.app.search</field>
+    <field name="model">gulfco.mobile.app</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <filter string="Current Only" name="f_current" domain="[('current_app','=',True)]"/>
+      </search>
+    </field>
+  </record>
+
+  <!-- Mobile App: Form -->
+  <record id="view_gulfco_mobile_app_form" model="ir.ui.view">
+    <field name="name">gulfco.mobile.app.form</field>
+    <field name="model">gulfco.mobile.app</field>
+    <field name="arch" type="xml">
+      <form string="Mobile App" class="o_form_narrow">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button type="object" name="action_set_as_current_app"
+                    class="oe_stat_button" icon="fa-check-circle" string="Set Current"/>
+            <button type="object" name="action_sync_current_version"
+                    class="oe_stat_button" icon="fa-refresh" string="Sync Version"/>
+            <button type="object" name="action_sync_workers_config"
+                    class="oe_stat_button" icon="fa-refresh" string="Sync Workers"/>
+            <button class="oe_stat_button" type="action"
+                    name="%(action_app_version_line_by_app)d"
+                    icon="fa-history" string="Versions">
+              <field name="running_versions_count" widget="statinfo" string="Running"/>
+            </button>
+          </div>
+
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="current_app"/>
+              <field name="current_version" readonly="1"/>
+              <field name="current_version_line_id" options="{'no_create': True}"/>
+            </group>
+            <group>
+              <field name="app_hard_stop"/>
+              <field name="hard_stop_reason"/>
+              <field name="description" placeholder="Notes for admins..."/>
+            </group>
+          </group>
+
+          <notebook>
+            <page string="Version Lines">
+              <field name="version_line_ids">
+                <list editable="bottom">
+                  <field name="name"/>
+                  <field name="version_code"/>
+                  <field name="status"/>
+                  <field name="is_current_version"/>
+                </list>
+                <form string="Version">
+                  <group>
+                    <field name="name"/>
+                    <field name="version_code"/>
+                    <field name="status"/>
+                    <field name="is_current_version"/>
+                    <field name="mobile_app_id" readonly="1"/>
+                  </group>
+                </form>
+              </field>
+            </page>
+            <page string="Workers">
+              <field name="workers_config">
+                <list editable="bottom">
+                  <field name="worker_id"/>
+                  <field name="update_customer_geo_location" widget="boolean_toggle"/>
+                  <field name="allow_to_pay_in_multiple_ways" widget="boolean_toggle"/>
+                  <field name="allow_to_cancel_sale_order" widget="boolean_toggle"/>
+                </list>
+                <form string="Worker">
+                  <group>
+                    <field name="worker_id"/>
+                    <field name="update_customer_geo_location"/>
+                    <field name="allow_to_pay_in_multiple_ways"/>
+                    <field name="allow_to_cancel_sale_order"/>
+                  </group>
+                </form>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+
+  <menuitem id="menu_app_version_lines"
+            name="All Versions"
+            parent="menu_mobile_app_root"
+            action="action_app_version_line"
+            sequence="2"
+            groups="gulfco_app_api.group_mobile_app_management"/>
+
+  <!-- App Version Line: Kanban -->
+ <record id="view_app_version_line_kanban" model="ir.ui.view">
+  <field name="name">app.version.line.kanban</field>
+  <field name="model">app.version.line</field>
+  <field name="arch" type="xml">
+    <kanban default_group_by="status" class="o_kanban_small_column">
+      <!-- Declare fields used in the template -->
+      <field name="name"/>
+      <field name="version_code"/>
+      <field name="status"/>
+      <field name="is_current_version"/>
+      <field name="mobile_app_id"/>
+
+      <templates>
+        <t t-name="kanban-box">
+          <div class="oe_kanban_global_click o_kanban_record" style="border-radius:12px; background:#fbfbfd;">
+            <div style="padding:10px;">
+              <div>
+                <strong t-esc="record.name.value"/>
+                <span t-if="record.is_current_version.raw_value" class="badge badge-success" style="margin-left:6px;">Current</span>
+              </div>
+              <div class="text-muted" style="margin-top:4px;">
+                Version: <t t-esc="record.version_code.value"/>
+              </div>
+              <div class="text-muted">
+                App: <t t-esc="(record.mobile_app_id and record.mobile_app_id.value) or '-'"/>
+              </div>
+            </div>
+            <div class="o_kanban_footer">
+              <button type="object" name="action_set_as_current"
+                      class="btn btn-sm btn-primary o_kanban_button">
+                Set as Current
+              </button>
+            </div>
+          </div>
+        </t>
+      </templates>
+    </kanban>
+  </field>
+</record>
+
+  <!-- App Version Line: list -->
+  <record id="view_app_version_line_list" model="ir.ui.view">
+    <field name="name">app.version.line.list</field>
+    <field name="model">app.version.line</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="version_code"/>
+        <field name="status"/>
+        <field name="is_current_version"/>
+        <field name="mobile_app_id"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- App Version Line: Search -->
+  <record id="view_app_version_line_search" model="ir.ui.view">
+    <field name="name">app.version.line.search</field>
+    <field name="model">app.version.line</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="version_code"/>
+        <filter string="Current" name="f_current" domain="[('is_current_version','=',True)]"/>
+        <filter string="Running" name="f_running" domain="[('status','=','running')]"/>
+        <filter string="Draft" name="f_draft" domain="[('status','=','draft')]"/>
+        <filter string="Closed" name="f_closed" domain="[('status','=','closed')]"/>
+        <group expand="0" string="Group By">
+          <filter string="App" name="app" domain="[]" context="{'group_by':'mobile_app_id'}"/>
+          <filter string="Status" name="status" domain="[]" context="{'group_by':'status'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- App Version Line: Form -->
+  <record id="view_app_version_line_form" model="ir.ui.view">
+    <field name="name">app.version.line.form</field>
+    <field name="model">app.version.line</field>
+    <field name="arch" type="xml">
+      <form string="App Version" class="o_form_narrow">
+        <header>
+          <button name="action_set_as_current" type="object" class="btn-primary" string="Set as Current"/>
+          <field name="status" widget="statusbar" statusbar_visible="draft,running,closed"/>
+        </header>
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="version_code"/>
+              <field name="is_current_version"/>
+            </group>
+            <group>
+              <field name="mobile_app_id"/>
+              <field name="status"/>
+            </group>
+          </group>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+</odoo>

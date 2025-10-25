@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_account_invoice_report_search_fieldservice_account">
+            <field name="name">account.invoice.report.search</field>
+            <field name="model">account.invoice.report</field>
+            <field name="inherit_id" ref="account.view_account_invoice_report_search"/>
+            <field name="arch" type="xml">
+                <filter name="user" position="after">
+                    <filter domain="[('vendor_code', '!=', False)]" string="Vendor Code" name="vendor_code"/>
+                </filter>
+            </field>
+        </record>
+        <record id="view_account_invoice_report_pivot_fieldservice_account" model="ir.ui.view">
+            <field name="name">account.invoice.report.pivot.fieldservice_account</field>
+            <field name="model">account.invoice.report</field>
+            <field name="inherit_id" ref="account.view_account_invoice_report_pivot"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <pivot position="inside">
+                    <field name="bill_amount_currency" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+    </data>
+</odoo>

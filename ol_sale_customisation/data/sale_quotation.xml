@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+    <record id="crm_lead_sequence" model="ir.sequence">
+      <field name="name">Sale Quotation Sequence</field>
+      <field name="code">sale.quotation</field>
+      <field name="prefix">Qou</field>
+      <field name="padding">2</field>
+    </record>
+  </data>
+</odoo>

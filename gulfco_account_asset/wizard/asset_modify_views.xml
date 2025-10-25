@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="asset_modify_inherit_form" model="ir.ui.view">
+        <field name="name">asset.modify.inherit.form</field>
+        <field name="model">asset.modify</field>
+        <field name="inherit_id" ref="account_asset.asset_modify_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="analytic_distribution" groups="analytic.group_analytic_accounting" widget="analytic_distribution" invisible="modify_action != 'transfer'"/>
+            </xpath>
+            <xpath expr="//button[@name='pause']" position="after">
+                <button name="transfer"
+                            string="Transfer"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="t"
+                            invisible="modify_action != 'transfer'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

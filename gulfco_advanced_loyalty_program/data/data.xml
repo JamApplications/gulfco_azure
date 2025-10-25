@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+  <data>
+
+    <!-- 1. Root “Promotions” category -->
+    <record id="category_promotion_root" model="product.category">
+      <field name="name">Promotions</field>
+    </record>
+
+    <!-- 2. Flat Discount category -->
+    <record id="category_flat_discount" model="product.category">
+      <field name="name">Flat Discount</field>
+      <field name="parent_id" ref="gulfco_advanced_loyalty_program.category_promotion_root"/>
+    </record>
+
+    <!-- 3. Slab Discount category -->
+    <record id="category_slab_discount" model="product.category">
+      <field name="name">Slab Discount</field>
+      <field name="parent_id" ref="gulfco_advanced_loyalty_program.category_promotion_root"/>
+    </record>
+
+    <!-- 4. Ladder Discount category -->
+    <record id="category_ladder_discount" model="product.category">
+      <field name="name">Ladder Discount</field>
+      <field name="parent_id" ref="gulfco_advanced_loyalty_program.category_promotion_root"/>
+    </record>
+
+    <!-- 5. Other Promotions category -->
+    <record id="category_other_promotions" model="product.category">
+      <field name="name">Other Promotions</field>
+      <field name="parent_id" ref="gulfco_advanced_loyalty_program.category_promotion_root"/>
+    </record>
+
+    <!-- Flat Discount Service Product -->
+    <record id="product_flat_discount_service" model="product.product">
+      <field name="name">Flat Discount Service</field>
+      <field name="type">service</field>
+      <field name="sale_ok">False</field>
+      <field name="purchase_ok">False</field>
+      <field name="available_in_pos">False</field>
+      <field name="invoice_policy">order</field>
+      <!-- if you have that custom field on product -->
+      <field name="can_be_expensed">False</field>
+      <field name="categ_id" ref="gulfco_advanced_loyalty_program.category_flat_discount"/>
+    </record>
+
+    <!-- Slab Discount Service Product -->
+    <record id="product_slab_discount_service" model="product.product">
+      <field name="name">Slab Discount Service</field>
+      <field name="type">service</field>
+      <field name="sale_ok">False</field>
+      <field name="purchase_ok">False</field>
+      <field name="available_in_pos">False</field>
+      <field name="invoice_policy">order</field>
+      <field name="can_be_expensed">False</field>
+      <field name="categ_id" ref="gulfco_advanced_loyalty_program.category_slab_discount"/>
+    </record>
+
+    <!-- Ladder Discount Service Product -->
+    <record id="product_ladder_discount_service" model="product.product">
+      <field name="name">Ladder Discount Service</field>
+      <field name="type">service</field>
+      <field name="sale_ok">False</field>
+      <field name="purchase_ok">False</field>
+      <field name="invoice_policy">order</field>
+      <field name="available_in_pos">False</field>
+      <field name="can_be_expensed">False</field>
+      <field name="categ_id" ref="gulfco_advanced_loyalty_program.category_ladder_discount"/>
+    </record>
+
+  </data>
+</odoo>

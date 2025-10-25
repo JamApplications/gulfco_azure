@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_shelf_display,shelf.display,fieldservice_shelf_display_management.model_shelf_display,base.group_user,1,1,1,1
+access_display_area,display.area,fieldservice_shelf_display_management.model_display_area,base.group_user,1,1,1,1
+access_display_area_lines,display.area.lines,fieldservice_shelf_display_management.model_display_area_lines,base.group_user,1,1,1,1
+access_fsm_details_report,fsm.details.report,fieldservice_shelf_display_management.model_fsm_details_report,base.group_user,1,1,1,1
+access_fsm_summary_report,access.fsm.summary.report,fieldservice_shelf_display_management.model_fsm_summary_report,base.group_user,1,1,1,1

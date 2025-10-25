@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_customer_detailed_data_inherit_form_sale" model="ir.ui.view">
+        <field name="name">res.partner.customer.detailed.data.custom.inherit.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="gulfco_customer_customized_data.res_partner_customer_detailed_data_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='detailed_customer_data']/group/group/field[@name='trade_number']" position="after">
+                <field name="location"/>
+                <field name="site_number"/>
+            </xpath>
+            <field name="department" position="after">
+                <field name="specification"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_partner_property_form_inherit_gulfco" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='days_sales_outstanding']" position="after">
+                <field name="credit_remaining"/>
+            </xpath>
+            <xpath expr="//field[@name='credit']" position="before">
+                <field name="total_sales_order_count"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

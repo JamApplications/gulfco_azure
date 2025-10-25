@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_stock_move_line_operation_tree_outbounding_lot" model="ir.ui.view">
+        <field name="name">stock.move.line.operation.list.outbounding.lot</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="asn_line_id" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='quantity']" position="attributes">
+                <attribute name="readonly">(state == 'done' and is_locked) or (package_level_id and parent.picking_type_entire_packs) or asn_line_id
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='result_package_id'][2]" position="after">
+              <field name="picking_purchase_order_id" />
+            </xpath>
+            <xpath expr="//field[@name='result_package_id'][2]" position="attributes">
+                <attribute name="context">{'picking_id':picking_id,'stock_move_id':move_id}</attribute>
+                <attribute name="domain">[('purchase_order_id','=',picking_purchase_order_id)]</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_picking_kanban_gulfco_inherit" model="ir.ui.view">
+        <field name="name">gulfco.stock.picking.kanban.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.stock_picking_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//footer" position="after">
+                  <div class="d-flex">
+                        <b>Source Document :- </b><field name="origin"/>
+                  </div>
+                  <div class="d-flex">
+                        <b>TRX Type :- </b><field name="trx_type" force_save="1"/>
+                  </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="fsm_stock_picking_list" model="ir.ui.view">
+        <field name="name">stock.picking.fieldservice.stock.list</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree" />
+        <field name="arch" type="xml">
+            <field name="state" position="replace">
+                <field name="state" column_invisible="1" optional="show" widget="badge" decoration-danger="state=='cancel'" decoration-info="state== 'assigned'" decoration-muted="state == 'draft'" decoration-success="state == 'done'" decoration-warning="state not in ('draft','cancel','done','assigned')"/>
+                    <field name="status_label" readonly="1" widget="badge" decoration-danger="state=='cancel'" decoration-info="state== 'assigned'" decoration-muted="state == 'draft'" decoration-success="state == 'done'" decoration-warning="state not in ('draft','cancel','done','assigned')"/>
+            </field>
+
+            <field name="scheduled_date" position="after">
+                <field name="delivery_planned_date"/>
+            </field>
+        </field>
+    </record>
+
+
+    <!-- inherit view_stock_move_line_operation_tree -->
+    <record id="view_picking_form_view_inherit_outbound" model="ir.ui.view">
+        <field name="name">stock.picking.outbound.operation.form.view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+             <xpath expr="//div[@class='oe_button_box']" position="inside">
+
+                  <button name="action_previous_transfer"
+                            class="oe_stat_button"
+                            icon="fa-exchange"
+                            type="object"
+                            help="List view of previous transfers"
+                            invisible="not show_previous_pickings">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Origin Transfer</span>
+                            </div>
+                  </button>
+
+                 <!-- Sale Order Smart Button -->
+                 <button name="action_open_sale_order"
+                        type="object"
+                        icon="fa-shopping-cart"
+                        class="oe_stat_button"
+                        invisible="sale_id == False">
+                     <field name="sale_id" widget="statinfo" string="Sales Order"/>
+                 </button>
+
+                 <!-- Purchase Order Smart Button -->
+                 <button name="action_open_purchase_order"
+                        type="object"
+                        icon="fa-archive"
+                        class="oe_stat_button"
+                        invisible="purchase_id == False">
+                     <field name="purchase_id" widget="statinfo" string="Purchase Order"/>
+                 </button>
+
+                 <!-- Backorder Smart Button -->
+                 <button name="action_open_backorder"
+                        type="object"
+                        icon="fa-reply"
+                        class="oe_stat_button"
+                        invisible="backorder_id == False">
+                     <field name="backorder_id" widget="statinfo" string="Back Order"/>
+                 </button>
+            </xpath>
+
+            <xpath expr="//button[@name='do_print_picking']" position="before">
+
+                <button name="button_validate" invisible="not is_pack_type or state in ['draft', 'confirmed', 'done', 'cancel']"
+                        string="Pack/Verify" type="object" class="oe_highlight" data-hotkey="v" groups="stock.group_stock_user" />
+
+                 <button name="button_validate" invisible="not is_pack_type or state in ['waiting', 'assigned', 'done', 'cancel']"
+                        string="Pack/Verify" type="object" groups="stock.group_stock_user"  data-hotkey="v"/>
+<!--                 groups="stock.group_stock_user"-->
+            </xpath>
+            <xpath expr="//button[@name='action_confirm']" position="attributes">
+                <attribute name="invisible">state != 'draft' or picking_type_code == 'outgoing'</attribute>
+            </xpath>
+            <xpath expr="//button[@name=%(stock.act_stock_return_picking)d]" position="attributes">
+                <attribute name="invisible">picking_type_code == 'outgoing'</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='button_validate'][1]" position="attributes">
+                <attribute name="invisible">state in ['draft', 'confirmed', 'done', 'cancel'] or picking_type_code == 'outgoing' or is_pack_type</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_validate'][2]" position="attributes">
+                <attribute name="invisible">state in ['waiting', 'assigned', 'done', 'cancel'] or picking_type_code == 'outgoing' or is_pack_type</attribute>
+            </xpath>
+            <xpath expr="//form/header/field[@name='state'][2]" position="replace">
+                <button name="cust_rescheduled" type="object" string="Reschedule" invisible="state != 'delivered_partial'"/>
+                <button name="button_validate" type="object" string="Ship &amp; Confirm" invisible="state not in ('planned', 'assigned') or picking_type_code != 'outgoing'"/>
+                <button name="planing_delivery" type="object" string="Planning" invisible="state != 'draft' or picking_type_code != 'outgoing'"/>
+<!--                <button name="loaded_dispatched" type="object" string="Loaded &amp; Dispatched" invisible="state != 'draft' or picking_type_code != 'outgoing'"/>-->
+                <button name="schedule_delivery" type="object" string="Schedule" invisible="state not in ('loaded_dispatched', 'scheduled') or picking_type_code != 'outgoing'"/>
+                <button name="create_return_rma_entry" type="object" string="Return" invisible="state not in ('scheduled', 'rescheduled') or picking_type_code != 'outgoing'"/>
+                <button name="loaded_dispatched_delivery" type="object" string="Delivery" invisible="state not in ('scheduled', 'rescheduled') or picking_type_code != 'outgoing'"/>
+                <button name="delivery_load_dispatched" type="object" string="Load &amp; Dispatched" invisible="state not in ('done') or picking_type_code != 'outgoing'"/>
+                <field name="state" widget="statusbar"
+                       invisible="picking_type_code != 'outgoing' or state in ['delivered_partial', 'rescheduled','returned', 'rescheduled_item_offload_in_warehouse','wh_d_return','wh_return']"
+                       statusbar_visible="draft,planned,loaded_dispatched,scheduled,delivered,done" />
+
+                <field name="state" widget="statusbar"
+                       invisible="picking_type_code != 'outgoing' or state in ['draft','loaded_dispatched', 'scheduled','confirmed','planned', 'delivered', 'assigned', 'done']"
+                       statusbar_visible="draft,loaded_dispatched,done,delivered_partial,rescheduled,rescheduled_item_offload_in_warehouse,rescheduled_item_offload_in_warehouse,wh_d_return,wh_return" />
+
+                <!--               <field name="state" widget="statusbar"-->
+<!--                       invisible="picking_type_code != 'outgoing'"-->
+<!--                       statusbar_visible="draft,loaded_dispatched,delivered,delivered_partial,rescheduled,returned,rescheduled_item_offload_in_warehouse,rescheduled_item_offload_in_warehouse,wh_d_return,wh_return"/>-->
+                <field name="state" widget="statusbar"
+                       invisible="picking_type_code in ['incoming', 'outgoing']"
+                       statusbar_visible="draft,confirmed,assigned,done"/>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                    <field name="status_label" readonly="1" widget="badge" decoration-danger="state=='cancel'" decoration-info="state== 'assigned'" decoration-muted="state == 'draft'" decoration-success="state == 'done'" decoration-warning="state not in ('draft','cancel','done','assigned')"/>
+                <field name="picker_partner_id"  invisible="1" readonly="state in ['cancel','done']"/>
+                <field name="picking_driver_id" invisible="not is_out_type" readonly="state in ['cancel','done']"/>
+
+                <field name="is_pack_type" invisible="1"/>
+                <field name="is_out_type" invisible="1"/>
+                <field name="trx_type" force_save="1"/>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="before">
+                <field name="emirates_id" invisible="not is_out_type" readonly="state in ['cancel','done']"/>
+                <field name="city"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="planning_status" invisible="1"/>
+            </xpath>
+             <xpath expr="//field[@name='owner_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="before">
+                <field name="delivery_planned_date" invisible="not is_out_type"/>
+            </xpath>
+            <xpath expr="//label[@for='scheduled_date']" position="attributes">
+                <attribute name="invisible">trx_type == 'return_collection'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='scheduled_date']" position="attributes">
+                <attribute name="string">Delivery Request Date</attribute>
+                <attribute name="invisible">trx_type == 'return_collection'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="before">
+                <field name="scheduled_date" string="Collection Request Date" invisible="trx_type != 'return_collection'"/>
+            </xpath>
+            <xpath expr="//page[@name='operations']//list//field[@name='lot_ids']" position="after">
+                <field name="move_remark" readonly="state in ['cancel','done']"/>
+            </xpath>
+            <xpath expr="//page[@name='operations']//list//field[@name='product_uom_qty']" position="after">
+                <field name="reserved_quantity" readonly="1" force_save="1"/>
+                <field name="asn_line_id" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//page[@name='operations']//list//field[@name='quantity']" position="attributes">
+                <attribute name="readonly">not is_quantity_done_editable or asn_line_id</attribute>
+            </xpath>
+            <xpath expr="//page[@name='operations']//list//field[@name='product_id']" position="after">
+                <field name="brand_id"/>
+                <field name="division"/>
+                <field name="is_readonly_picker" column_invisible="1"/>
+                <field name="is_readonly_forklift" column_invisible="1"/>
+                <field name="picker_partner_id" column_invisible="not parent.is_pick_type" readonly="is_readonly_picker"/>
+                <field name="forklift_partner_id" column_invisible="not parent.is_out_type" readonly="is_readonly_forklift"/>
+                <field name="asn_request_id" string="ASN NO."/>
+                <field name="origin"/>
+            </xpath>
+            <xpath expr="//page[@name='operations'] //list//field[@name='product_packaging_id']" position="after">
+                <field name="product_packaging_qty"/>
+            </xpath>
+            <xpath expr="//page[@name='extra']//field[@name='project_id']" position="after">
+                <field name="date_time"/>
+            </xpath>
+            <xpath expr="//page[@name='extra']" position="inside">
+                <group>
+                    <group string="Receipt Information" name="receipt_infos">
+                        <field name="asn_no_id" readonly="1" force_save="1" invisible="1"/>
+                        <field name="shipping_doc_ref"  required="purchase_id.po_category == 'foreign'"/>
+                        <field name="bill_of_entry_no" required="purchase_id.po_category == 'foreign'"/>
+                        <field name="number_of_containers"/>
+                        <field name="vehicle_number"/>
+                        <field name="packing_slip"/>
+                        <field name="invoice_no"/>
+                        <field name="execise_declare_no"/>
+                        <field name="remark_picking"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="show_reset_to_draft" invisible="1"/>
+                <button
+                        name="action_customer_shelf_life"
+                        string="Customer shelf life"
+                        invisible="state not in ('assigned') or picking_type_code in ('incoming') or is_out_type"
+                        type="object"/>
+                <button name="action_set_to_draft"
+                        string="Set to draft"
+                        invisible="not show_reset_to_draft"
+                        type="object"/>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+                <attribute name="invisible">state not in ('assigned', 'planned', 'confirmed', 'draft', 'waiting')</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

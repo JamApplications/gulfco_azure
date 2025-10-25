@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gulfco_asn_account_move_original_diff_moves" model="ir.ui.view">
+        <field name="name">gulfco.asn.account.move.original.diff.moves</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="open_price_diff_journal_entries" class="oe_stat_button" type="object"
+                        invisible="not is_diff_entries">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Price Diff Entries</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

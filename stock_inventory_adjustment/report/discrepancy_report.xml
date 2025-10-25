@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_discrepancy_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-set="inventory_record" t-value="docs[0].inventory_adjustment_id"/>
+                <div id="oe_structure_report_request_1" class="oe_structure "/>
+                <h4 class="text-center">
+                    <strong>Discrepancy Report</strong>
+                </h4>
+                <style>
+                    .table td, .table th {
+                    word-wrap: break-word;
+                    white-space: normal;
+                    overflow-wrap: break-word;
+                    }
+                </style>
+                <table class="table table-borderless" style="width:100%; border: 0;" border="0">
+                    <tr>
+                        <td style="width: 50%; vertical-align: top;">
+                            <table class="table table-sm" style="width:100%;" border="1">
+                                <tr>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:60%;">
+                                        <strong>Inventory Adjustment Name</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:40%;">
+                                        <t t-esc="inventory_record.inventory_ref"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="width: 50%; vertical-align: top;">
+                            <table class="table table-sm" style="width:100%;" border="1">
+                                <tr>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:60%;">
+                                        <strong>Inventory Date</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:40%;">
+                                        <t t-esc="inventory_record.inventory_date"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%; vertical-align: top;">
+                            <table class="table table-sm" style="width:100%;" border="1">
+                                <tr>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:60%;">
+                                        <strong>Inventory Type</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:40%;">
+                                        <t t-esc="inventory_record.type"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="width: 50%; vertical-align: top;">
+                            <table class="table table-sm" style="width:100%;" border="1">
+                                <tr>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:60%;">
+                                        <strong>Condition End Time &amp; Date</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:40%;">
+                                        <t t-esc="inventory_record.inventory_date"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%; vertical-align: top;">
+                            <table class="table table-sm" style="width:100%;" border="1">
+                                <tr>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:60%;">
+                                        <strong>Inventory Location</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:40%;">
+                                        <t t-esc="inventory_record.location_id.name"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="width: 50%; vertical-align: top;">
+                            <table class="table table-sm" style="width:100%;" border="1">
+                                <tr>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:60%;">
+                                        <strong>User</strong>
+                                    </td>
+                                    <td style="border: 1px solid black; padding-left: 5px;width:40%;">
+                                        <t t-esc="inventory_record.performed_by.name"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <table class="table table-condensed w-100" style="table-layout: fixed;">
+                    <thead>
+                        <tr>
+                            <th name="th_item_code" style="width: 10% !important; text-align: left;">Item Code</th>
+                            <th name="th_item_name" style="width: 18% !important; text-align: left;">Item Name</th>
+                            <th name="th_lot_number" style="width: 10% !important; text-align: left;">Lot Number</th>
+                            <th name="th_lot_number_ref" style="width: 12% !important; text-align: left;">Internal Lot
+                                Ref
+                            </th>
+                            <th name="th_expiry_date" style="width: 10% !important; text-align: left;">Expiry Date</th>
+                            <th name="th_on_hand_quantity"
+                                style="width: 10% !important; text-align: left; white-space: normal;">On-Hand<br/>
+                                Quantity
+                            </th>
+                            <th name="th_counted_quantity"
+                                style="width: 10% !important; text-align: left; white-space: normal;">Counted<br/>
+                                Quantity
+                            </th>
+                            <th name="th_difference" style="width: 10% !important; text-align: left;">Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody t-foreach="docs" t-as="doc">
+                        <tr>
+                            <td>
+                                <span t-field="doc.product_default_code"/>
+                            </td>
+                            <td>
+                                <span t-field="doc.product_id"/>
+                            </td>
+                            <td>
+                                <span t-field="doc.lot_id"/>
+                            </td>
+                            <td>
+                                <span t-field="doc.internal_ref_lot"/>
+                            </td>
+                            <td>
+                                <span t-field="doc.expiry_date"/>
+                            </td>
+                            <td>
+                                <span t-field="doc.on_hand_qty"/>
+                            </td>
+                            <td>
+                                <span t-field="doc.counted_qty"/>
+                            </td>
+                            <td>
+                                <span t-field="doc.difference_qty"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+    <template id="report_discrepancy_raw">
+        <t t-call="web.html_container">
+            <t t-call="stock_inventory_adjustment.report_discrepancy_document"/>
+        </t>
+    </template>
+    <template id="report_discrepancy">
+        <t t-call="stock_inventory_adjustment.report_discrepancy_raw"/>
+    </template>
+    <record id="action_report_discrepancy_report" model="ir.actions.report">
+        <field name="name">Discrepancy Report</field>
+        <field name="model">inventory.adjustment.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">stock_inventory_adjustment.report_discrepancy</field>
+        <field name="report_file">stock_inventory_adjustment.report_discrepancy</field>
+        <field name="print_report_name">'Discrepancy Report'</field>
+        <field name="binding_model_id" ref="model_inventory_adjustment_line"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

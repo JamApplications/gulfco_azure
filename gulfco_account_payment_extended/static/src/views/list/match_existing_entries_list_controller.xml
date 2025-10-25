@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="gulfco_account_payment_extended.MatchExistingEntriesListView" t-inherit="account_accountant.BankRecEmbeddedListController" t-inherit-mode="extension">
+<!--        <xpath expr="//Layout//t[@t-set-slot='control-panel-selection-actions']//t[@t-if='props.info.actionMenus']" position="after">-->
+<!--            &lt;!&ndash; <t t-if="props.info.actionMenus || (props.context.list_view_ref === 'account_accountant.view_account_move_line_list_bank_rec_widget' &amp;&amp; props.allowSelectors)">-->
+<!--                <span>Action tirth custom</span>-->
+<!--                <ActionMenus t-props="this.actionMenuProps"/>-->
+<!--            </t> &ndash;&gt;-->
+<!--            <t t-if="!props.info.actionMenus &amp;&amp; (props.context.list_view_ref === 'account_accountant.view_account_move_line_list_bank_rec_widget' &amp;&amp; props.allowSelectors)">-->
+<!--                <span>Action tirth custom1</span>-->
+<!--                <ActionMenus t-props="this.actionMenuProps"/>-->
+<!--            </t>-->
+<!--        </xpath>-->
+        <xpath expr="//Layout//t[@t-set-slot='control-panel-selection-actions']//t[@t-if='props.info.actionMenus']" position="attributes">
+            <attribute name="t-if">props.info.actionMenus || (props.context.list_view_ref === 'account_accountant.view_account_move_line_list_bank_rec_widget' &amp;&amp; props.allowSelectors)</attribute>
+        </xpath>
+    </t>
+
+</templates>

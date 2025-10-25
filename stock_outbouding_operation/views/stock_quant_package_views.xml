@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gulfco_view_quant_package_tree_inherit_custom" model="ir.ui.view">
+        <field name="name">stock.quant.package.list.inherit.custom</field>
+        <field name="model">stock.quant.package</field>
+        <field name="inherit_id" ref="stock.view_quant_package_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='package_type_id']" position="after">
+                <field name="item_qty"/>
+                <field name="driver_id"/>
+                <field name="vehicle_id"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="gulfco_view_quant_package_form_view_inherit" model="ir.ui.view">
+        <field name="name">gulfco.stock.quant.package.form.view.inherit</field>
+        <field name="model">stock.quant.package</field>
+        <field name="inherit_id" ref="stock.view_quant_package_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='owner_id']" position="before">
+                <field name="item_qty"/>
+                <field name="driver_id" domain="[('contact_type', '=', 'worker')]"/>
+                <field name="vehicle_id"/>
+            </xpath>
+            <xpath expr="//field[@name='package_use']" position="after">
+                <field name="tag_id" context="{'context_tag_from_related': True}"
+                />
+                <field name="purchase_order_id" readonly="1"/>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                 <button name="action_load_dispatched_picking" string="Load &amp; Dispatched" type="object"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_location_tag_tree_opacity" model="ir.ui.view">
+        <field name="name">stock.location.tag.tree.hide.opacity</field>
+        <field name="model">stock.location.tag</field>
+        <field name="inherit_id" ref="stock_3dbase.stock_location_tag_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="opacity" position="attributes">
+                <attribute name="column_invisible">context.get('context_tag_from_related', False)</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

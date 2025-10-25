@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+plnx_gulfco_sales_commission.access_commission_kpi,access_commission_kpi,plnx_gulfco_sales_commission.model_commission_kpi,base.group_user,1,1,1,1
+
+plnx_gulfco_sales_commission.access_msl_commission_report,access_msl_commission_report,plnx_gulfco_sales_commission.model_msl_commission_report,base.group_user,1,1,1,1

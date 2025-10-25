@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="view_account_payment_form_inherit_pw_inv_reconcile" model="ir.ui.view">
+        <field name="name">account.payment.inherit.pw.inv.reconcile</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header/button[@name='action_post']" position="attributes">
+                <attribute name="invisible">state != 'draft' or (payment_type == 'outbound' and custom_workflow_state != 'approved')</attribute>
+            </xpath>
+            <xpath expr="//sheet/group" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='journal_id']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='is_internal_transfer']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_type']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='amount']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='memo']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='is_exchange']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='responsible_id']" position="attributes">
+                <!-- <attribute name="readonly">custom_workflow_state != 'draft'</attribute> -->
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='payment_method_line_id']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='rate']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+
+            <xpath expr="//field[@name='due_date']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+<!--            <xpath expr="//field[@name='cheque_owner_id']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--            </xpath>-->
+
+            <xpath expr="//field[@name='cheque_scanning']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+<!--             <xpath expr="//field[@name='draft_move_line_ids']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--                 <attribute name="invisible">False</attribute>-->
+<!--            </xpath>-->
+
+            <xpath expr="//field[@name='partner_bank_id']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+
+            <xpath expr="//field[@name='journal_id']" position="before">
+                <field name="custom_workflow_state"
+                       widget="statusbar"
+                       readonly="1"
+                       invisible="payment_type == 'inbound' or is_internal_transfer"
+                       options="{'clickable': False}"/>
+
+                <button name="action_submit_custom"
+                        type="object"
+                        string="Submit"
+                        class="btn-primary"
+                        invisible="custom_workflow_state != 'draft' or payment_type == 'inbound' or payment_type_selection == 'quick_payment' or is_internal_transfer"/>
+
+                <button name="action_review_custom"
+                        type="object"
+                        string="Send to Review"
+                        class="btn-primary"
+                        invisible="custom_workflow_state != 'submitted' or payment_type == 'inbound'"/>
+
+                <button name="action_approve_custom"
+                        string="Approve"
+                        type="object"
+                        class="btn-primary"
+                        invisible="custom_workflow_state != 'under_review' and payment_type_selection != 'quick_payment' or custom_workflow_state == 'approved'"/>
+
+                <button name="action_reject"
+                        string="Reject"
+                        type="object"
+                        class="btn-danger"
+                        invisible="custom_workflow_state != 'approved' and custom_workflow_state != 'submitted' and custom_workflow_state != 'under_review'  and payment_type_selection != 'quick_payment' or custom_workflow_state == 'approved'"/>
+
+<!--                <button name="action_approve_custom"-->
+<!--                        string="Approve"-->
+<!--                        type="object"-->
+<!--                        class="btn-primary"-->
+<!--                        invisible="custom_workflow_state != 'under_review' and (payment_type_selection != 'quick_payment' or custom_workflow_state != 'under_review') "/>-->
+
+            </xpath>
+
+            <!-- <xpath expr="//header" position="attributes">
+                <attribute name="invisible">not ((payment_type == 'inbound') or (payment_type == 'outbound' and is_internal_transfer)) and custom_workflow_state != 'approved'</attribute>
+            </xpath> -->
+
+            <xpath expr="//field[@name='partner_bank_id']" position="after">
+                <field name="batch" invisible="payment_type == 'inbound' or is_internal_transfer" readonly="custom_workflow_state != 'draft'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='payment_type']" position="after">
+                <field name="payment_type_selection" required="state == 'draft' and not is_internal_transfer" invisible="payment_type == 'inbound' or is_internal_transfer"  readonly="custom_workflow_state != 'draft'"/>
+                <field name="payment_request_id" invisible="payment_type == 'inbound' or is_internal_transfer" readonly="custom_workflow_state != 'draft'"/>
+                <field name="is_advance_pay" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//sheet" position="inside" invisible="payment_type == 'inbound' or is_internal_transfer or payment_type == 'inbound' and is_internal_transfer">
+                <notebook invisible="payment_type == 'inbound' and partner_type == 'customer'">
+                    <page string="Invoice/Bills">
+                        <div style="display: flex; gap: 12px; margin-bottom: 10px;">
+                            <button name="toggle_select_all_lines"
+                                    string="Select All"
+                                    type="object"
+                                    class="oe_highlight"
+                                    invisible="custom_workflow_state not in 'draft' or is_internal_transfer"/>
+                            <button name="delete_selected_lines"
+                                    string="Delete"
+                                    type="object"
+                                    class="btn btn-success"
+                                    invisible="custom_workflow_state not in 'draft' or is_internal_transfer"/>
+                        </div>
+                        <field name="reconcile_invoice_ids" readonly="state == 'posted' or custom_workflow_state != 'draft'" invisible="payment_type == 'inbound' and partner_type == 'customer' or is_internal_transfer" >
+                            <list editable="bottom" selection="multi">
+                                <field name="select_line" widget="boolean_toggle" column_invisible="1"/>
+                                <field name="delete_select_line"/>
+                                <field name="currency_id" column_invisible="True"/>
+                                <field name="invoice_id" string="Number" readonly="1" force_save="1"/>
+                                <field name="amount_untaxed" readonly="1" force_save="1"/>
+                                <field name="amount_tax" readonly="1" force_save="1"/>
+                                <field name="amount_total" readonly="1" force_save="1"/>
+                                <field name="already_paid" readonly="1" force_save="1"/>
+                                <field name="amount_residual" readonly="1" force_save="1"/>
+                                <field name="amount_paid"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_payment_tree_inherit_show_outbound_fields" model="ir.ui.view">
+        <field name="name">account.payment.tree.inherit.outbound.fields</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="payment_type"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="payment_request_id"
+                       invisible="payment_type == 'inbound'"/>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="custom_workflow_state"
+                        invisible="payment_type == 'inbound'"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--    <record id="view_account_payment_form_inherit_pw_inv_reconcile_extra_fields" model="ir.ui.view">-->
+<!--        <field name="name">account.payment.inherit.pw.inv.reconcile</field>-->
+<!--        <field name="model">account.payment</field>-->
+<!--        <field name="inherit_id" ref="gulfco_account_payment_extended.view_account_payment_form_inherit_draft_journal"/>-->
+<!--        <field name="arch" type="xml">-->
+
+<!--            <xpath expr="//field[@name='collector_name']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//field[@name='authorization_code']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//field[@name='transaction_reference']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//field[@name='payment_method_payment']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//field[@name='holder_card_name']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//field[@name='draft_move_line_ids']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--            </xpath>-->
+
+<!--            <xpath expr="//field[@name='draft_move_line_ids']" position="attributes">-->
+<!--                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>-->
+<!--            </xpath>-->
+
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="account_payment_inherit_form_inherit_custom_payment_mode_cdc_extra" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_cdc.account_payment_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_amount']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='advance_amount']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_inherit_form_inherit_custom_payment_mode_pdc_extra" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_pdc.account_payment_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_amount']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='advance_amount']" position="attributes">
+                <attribute name="readonly">custom_workflow_state != 'draft'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

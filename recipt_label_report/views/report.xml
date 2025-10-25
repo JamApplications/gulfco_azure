@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    Report Function in Expense -->
+    <record id="action_expense_request_report" model="ir.actions.report">
+        <field name="name">2X7 Report</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">recipt_label_report.report_expense_report_details</field>
+        <field name="report_file">recipt_label_report.report_expense_report_details</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="paperformat_id" ref="product.paperformat_label_sheet"/>
+        <field name="binding_type">report</field>
+    </record>
+    <!-- Report Template -->
+    <template id="report_expense_report_details">
+        <t t-call="web.basic_layout">
+            <t t-call="web.html_container">
+                <t t-set="padding_page" t-value="'padding: 14mm 3mm'"/>
+                <t t-set="report_to_call" t-value="'2x7'"/>
+                <div class="o_label_sheet" t-att-style="padding_page">
+                    <table class="my-0 table table-sm table-borderless">
+                        <t t-set="records" t-value="docs.move_ids_without_package"/>  <!-- Get all matching records -->
+
+                        <t t-foreach="range(0, len(records), 2)" t-as="i">
+                            <tr>
+                                <t t-set="row" t-value="records[i:i+2]"/>
+                                <t t-foreach="row" t-as="m_id">
+                                    <t t-set="product" t-value="m_id.product_id"/>
+                                    <t t-set="barcode" t-value="m_id.product_id.barcode"/>
+                                    <t t-set="barcode_size" t-value="'width:33mm;height:14mm'"/>
+                                    <t t-set="table_style"
+                                       t-value="'border: 1px solid %s;' % (product.env.user.company_id.primary_color or 'black')"/>
+                                    <t t-set="make_invisible" t-value="False"/>
+                                    <t t-set="barcode_size" t-value="'width:33mm;height:14mm'"/>
+                                    <t t-set="table_style" t-value="'width:97mm;height:37.1mm;' + table_style"/>
+                                    <td t-att-style="make_invisible and 'visibility:hidden;'">
+                                        <div class="o_label_full" t-att-style="table_style">
+                                            <div class="o_label_name">
+                                                <strong t-field="product.display_name"/>
+                                            </div>
+                                            <t t-set="lot_ser_data"
+                                               t-value="m_id.move_line_ids.filtered(lambda m:m.product_id.id == m_id.product_id.id)"/>
+                                            <div class="o_label_data">
+                                                <div class="text-center o_label_left_column">
+<!--                                                    <t t-if="product.default_code">[-->
+<!--                                                        <span class="text-nowrap"-->
+<!--                                                              t-field="product.default_code"/>-->
+<!--                                                        ]-->
+<!--                                                    </t>-->
+                                                    <t t-if="barcode">
+                                                        <div t-out="barcode"
+                                                             t-options="{'widget': 'barcode', 'symbology': 'auto', 'img_style': barcode_size}"/>
+                                                        <span class="text-center" t-out="barcode"/>
+                                                    </t>
+                                                </div>
+                                                <p style="margin-bottom:0px;">
+<!--                                                    <t t-esc="', '.join(lot_ser_data.lot_id.mapped('name')) if lot_ser_data and lot_ser_data.lot_id  else ''"/>-->
+                                                    <p style="font-size:10px !important;margin-bottom:0px;"
+                                                       t-if="lot_ser_data and lot_ser_data.lot_id" t-esc="', '.join(lot_ser_data.lot_id.mapped('name'))"/>
+                                                    <t t-if="m_id.move_line_ids">
+                                                        <t>
+                                                            <p t-if="lot_ser_data.mapped('production_date')"
+                                                               style="margin-bottom:0px;font-size:10px !important;">B.b.
+                                                                <t t-esc="', '.join([d.strftime('%d/%m/%Y') for d in lot_ser_data.mapped('production_date') if d])"/>
+<!--                                                                <t t-esc="lot_ser_data.production_date"/>-->
+                                                            </p>
+                                                            <p t-if="lot_ser_data.mapped('expiration_date')"
+                                                               style="margin-bottom:0px;font-size:10px !important;">Exp.
+
+                                                                <t t-esc="', '.join([d.strftime('%d/%m/%Y') for d in lot_ser_data.mapped('expiration_date') if d])"/>
+<!--                                                                <t t-esc="lot_ser_data.expiration_date.date()"/>-->
+                                                                <br/>
+                                                            </p>
+                                                        </t>
+                                                    </t>
+                                                    <p style="margin-bottom:0px;font-size:10px !important;"
+                                                       t-if="m_id.product_uom">
+                                                        <t t-esc="m_id.product_uom.name"/>
+                                                        <t t-if="m_id.product_uom.factor_inv">=
+                                                            <t t-esc="m_id.product_uom.factor_inv"/>
+                                                        </t>
+                                                    </p>
+                                                    <p style="font-size:10px !important;margin-bottom:0px"
+                                                       t-if="m_id.product_packaging_id">
+                                                        <t t-esc="m_id.product_packaging_id.name"/>
+                                                        <span t-if="m_id.purchase_line_id">=
+                                                            <t t-esc="m_id.purchase_line_id.product_packaging_qty or 0"/>
+                                                        </span>
+                                                    </p>
+                                                </p>
+                                                <div class="text-end" style="line-height:normal">
+                                                    <div class="o_label_extra_data">
+                                                        <t t-out="extra_html"/>
+                                                    </div>
+                                                </div>
+                                                <div class="o_label_clear"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </t>
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

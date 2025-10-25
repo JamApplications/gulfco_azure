@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="action_quant_inventory_at_date" model="ir.actions.act_window">
+        <field name="name">Inventory at Date (Locations)</field>
+        <field name="res_model">stock.quant.history</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_stock_quant_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.quant.tree.inherit</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/header/button[@name='action_stock_quant_relocate']" position="after">
+
+                    <button name="%(action_quant_inventory_at_date)d"
+                        string="Inventory at Date"
+                        type="action"
+                        class="btn-primary ms-1"
+                        display="always"/>
+                    <!--                    <button name="%(stock.action_inventory_at_date)d" invisible="((context.get('inventory_mode') and not context.get('inventory_report_mode')) or context.get('no_at_date'))" string="Location at Date" type="action" class="btn-primary ms-1" display="always"/>-->
+            </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>

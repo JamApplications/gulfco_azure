@@ -1,0 +1,43 @@
+.dashboard-main-block {
+    display: flex;
+    flex-wrap: nowrap;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.sidebar-scrollarea {
+    overflow-y: auto;
+}
+
+.sidebar-scrollarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+// /* Track */
+.sidebar-scrollarea::-webkit-scrollbar-track {
+    background: $o-brand-lightsecondary;
+    border-radius: 15px;
+}
+
+// /* Handle */
+.sidebar-scrollarea::-webkit-scrollbar-thumb {
+    background: $o-brand-primary;
+    border-radius: 15px;
+    border: 1px solid $o-brand-secondary;
+}
+
+// /* Handle on hover */
+.sidebar-scrollarea::-webkit-scrollbar-thumb:hover {
+    background:$o-brand-primary;
+}
+
+#PowerBIreportContainer{
+    height: 100%;
+    max-height: 85vh;
+}
+
+.highlight-search-text {
+    background-color: yellow;
+}

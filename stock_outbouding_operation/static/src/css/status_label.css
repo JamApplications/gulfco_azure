@@ -1,0 +1,17 @@
+.o_status_pill {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    color: white;
+    margin: 5px;
+}
+.badge-success {
+    background-color: #28a745;
+}
+.badge-warning {
+    background-color: #ffc107;
+}
+.badge-secondary {
+    background-color: #6c757d;
+}

@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <record id="view_stock_valuation_layer_tree_deferred" model="ir.ui.view">
+            <field name="name">stock.valuation.layer.tree.deferred</field>
+            <field name="model">stock.valuation.layer</field>
+            <field name="inherit_id" ref="stock_account.stock_valuation_layer_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='create_date']" position="after">
+                    <field name="trx_type"/>
+                </xpath>
+                <xpath expr="//field[@name='reference']" position="after">
+                    <field name="source_document" optional="show"/>
+                    <field name="lot_id" optional="show"/>
+                    <field name="production_date" optional="show"/>
+                    <field name="expiry_date" optional="show"/>
+                    <field name="source_location" options="{'create_name_field': 'complete_name'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

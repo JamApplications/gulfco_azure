@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_dio_report_list" model="ir.ui.view">
+        <field name="name">stock.dio.report</field>
+        <field name="model">stock.dio.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="product_id"/>
+                <field name="default_code"/>
+                <field name="categ_id"/>
+                <field name="brand_id"/>
+                <field name="division"/>
+                <field name="quantity"/>
+                <field name="standard_price"/>
+                <field name="inventory_value"/>
+                <field name="cogs"/>
+                <field name="days"/>
+                <field name="dio_days"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_stock_dio_report" model="ir.actions.act_window">
+        <field name="name">Stock DIO Report</field>
+        <field name="res_model">stock.dio.report</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_stock_dio_report_root"
+              name="Stock DIO Report"
+              parent="stock.menu_warehouse_report"
+              action="action_stock_dio_report"/>
+</odoo>

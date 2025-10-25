@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_analytic_common_distribution,account.analytic.common.distribution,model_account_analytic_common_distribution,base.group_system,1,1,1,1
+access_account_analytic_common_distribution_line,account.analytic.common.distribution.line,model_account_analytic_common_distribution_line,base.group_system,1,1,1,1

@@ -1,0 +1,115 @@
+<odoo>
+    <record id="ir_actions_server_ship_and_confirm_stock_move" model="ir.actions.server">
+        <field name="name">Ship &amp; Confirm</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="state">code</field>
+        <field name="binding_view_types">list</field>
+        <field name="code">records.ship_confirm_button_validate()</field>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_type">action</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="action_add_stock_move_to_batch" model="ir.actions.server">
+        <field name="name">Add to Batch</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = records._open_batch_wizard_from_move()
+        </field>
+    </record>
+
+
+    <record id="action_loaded_and_dispatched_stock_move" model="ir.actions.server">
+        <field name="name">Loaded &amp; Dispatched</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.picking_id.filtered(lambda s:s.state == 'draft' and s.picking_type_code == 'outgoing').loaded_dispatched()</field>
+    </record>
+    <record id="action_delivery_stock_move" model="ir.actions.server">
+        <field name="name">Delivery</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.picking_id.filtered(lambda s:s.state == 'loaded_dispatched' and s.picking_type_code == 'outgoing').button_validate()</field>
+    </record>
+    <record id="action_validate_stock_move" model="ir.actions.server">
+        <field name="name">Validate</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.picking_id.filtered(lambda s:s.state in ['draft', 'confirmed', 'assigned'] and s.picking_type_code != 'outgoing').button_validate()</field>
+    </record>
+<!--    <record id="action_loaded_and_dispatched_stock_move" model="ir.actions.server">-->
+<!--        <field name="name">Loaded &amp; Dispatched</field>-->
+<!--        <field name="model_id" ref="stock.model_stock_move"/>-->
+<!--        <field name="binding_model_id" ref="stock.model_stock_move"/>-->
+<!--        <field name="binding_view_types">list</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">records.picking_id.filtered(lambda s:s.state == 'done' and picking_type_code == 'outgoing').button_validate()</field>-->
+<!--    </record>-->
+    <record id="action_assigned_picker_stock_move" model="ir.actions.server">
+        <field name="name">Assigned picker</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.send_notification_to_picker()</field>
+    </record>
+    <record id="action_un_assigned_picker_stock_move" model="ir.actions.server">
+        <field name="name">Un-Assigned picker</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.unassigned_picker()</field>
+    </record>
+
+     <record id="action_assigned_forklift_stock_move" model="ir.actions.server">
+        <field name="name">Assigned Forklift</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.send_notification_to_forklift()</field>
+    </record>
+    <record id="action_un_assigned_forklift_stock_move" model="ir.actions.server">
+        <field name="name">Un-Assigned Forklift</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.unassigned_forklift()</field>
+    </record>
+
+    <record id="action_check_availability_stock_move" model="ir.actions.server">
+        <field name="name">Check Availability</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.check_availability_move_wise()</field>
+    </record>
+    <record id="action_put_in_pack_stock_move" model="ir.actions.server">
+        <field name="name">Put in pack</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="binding_model_id" ref="stock.model_stock_move"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_put_in_pack_stock_move()</field>
+    </record>
+    <record id="action_load_dispatched_picking_package" model="ir.actions.server">
+        <field name="name">Load &amp; Dispatched</field>
+        <field name="model_id" ref="stock_outbouding_operation.model_stock_quant_package"/>
+        <field name="binding_model_id" ref="stock_outbouding_operation.model_stock_quant_package"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_load_dispatched_picking()</field>
+    </record>
+</odoo>

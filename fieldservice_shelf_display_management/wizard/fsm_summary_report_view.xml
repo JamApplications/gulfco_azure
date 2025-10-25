@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_fsm_summary_report_wizard_form" model="ir.ui.view">
+        <field name="name">fsm.summary.report.wizard.form</field>
+        <field name="model">fsm.summary.report</field>
+        <field name="arch" type="xml">
+            <form string="Summary Report">
+                <group>
+                    <group>
+                        <field name="date"/>
+                        <field name="team_id" domain="[('team_type','=','merchandise')]" required="1" />
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" type="object" string="PDF Report" class="btn-primary"/>
+                    <button name="action_print_excel" type="object" string="Xlsx Report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_fsm_summary_report_wizard" model="ir.actions.act_window">
+        <field name="name">Summary Report</field>
+        <field name="res_model">fsm.summary.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

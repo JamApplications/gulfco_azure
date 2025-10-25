@@ -1,0 +1,52 @@
+<odoo>
+    <record id="fsm_order_form_inherit_sales_team" model="ir.ui.view">
+        <field name="name">fsm.order.form</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_start']" position="before">
+                <button name="create_sale_quotation" type="object" string="Order Request" class="oe_highlight"
+                        invisible="is_closed"
+                        groups="plnx_sales_team.group_sales_team_van_sale,plnx_sales_team.group_sales_team_pre_sales"
+                        sequence="1"
+                />
+                <button name="create_rma_request" type="object" string="RMA Request" class="oe_highlight"
+                        invisible="is_closed"
+                        groups="plnx_sales_team.group_sales_team_van_sale,
+                            plnx_sales_team.group_sales_team_pre_sales,plnx_sales_team.group_sales_team_merchandiser"
+                        sequence="2"
+                    />
+            </xpath>
+             <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <div class="oe_button_box" name="button_box">
+                    <button type="object"
+                            name="action_view_sales"
+                            class="oe_stat_button"
+                            icon="fa-usd">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value"><field name="sale_order_count"/></span>
+                            <span class="o_stat_text">Sale Order</span>
+                        </div>
+                        <field name="sale_ids" invisible="1"/>
+                    </button>
+
+                    <button type="object"
+                            name="action_view_rma"
+                            class="oe_stat_button"
+                            icon="fa-usd">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value"><field name="rma_count"/></span>
+                            <span class="o_stat_text">RMA</span>
+                        </div>
+                        <field name="rma_ids" invisible="1"/>
+                    </button>
+                </div>
+            </xpath>
+
+            <field name="person_id_partner" position="replace">
+                <field name="partner_team_member_ids" invisible="True"/>
+                <field name="person_id_partner"/>
+            </field>
+        </field>
+    </record>
+</odoo>

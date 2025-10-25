@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2018-2019 ForgeFlow, S.L.
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0) -->
+<odoo>
+    <template id="report_rfq_purchase_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="purchase_line_views.purchase_external_layout">
+                    <div class="page">
+                        <div id="oe_structure_report_request_1" class="oe_structure "/>
+                        <h4 class="text-center">
+                            <t t-if="o.state in ['draft', 'sent']">
+                                Request for Quotation
+                            </t>
+                            <t t-else="">
+                                <strong>Purchase Order</strong>
+                            </t>
+                        </h4>
+
+                        <table class="table table-borderless" style="width:100%; border: 0;" border="0">
+                            <tr>
+
+                                <!-- Supplier & PO Details Section -->
+                                <td style="width: 33%; vertical-align: top;">
+                                    <table class="table table-sm" style="width:100%;" border="1">
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>PO #</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Revision</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="o.revision"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Supplier</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.partner_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Vendor Code</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.partner_id.vendor_code"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Supplier Address</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.partner_id.contact_address"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Vendor TRN</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.vendor_trn"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Supplier Contact Person</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.supplier_contact.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Supplier Reference</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.partner_ref"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+                                <!-- Purchase Order Section -->
+                                <td style="width: 34%; vertical-align: top;">
+                                    <table class="table table-sm" style="width:100%; border-collapse: collapse;"
+                                           border="1">
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>PO Category</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="dict(o._fields['po_category'].selection).get(o.po_category)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Date</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.create_date.strftime('%d-%m-%Y')"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <!--                                                <t t-if="not o.requisition_id">-->
+                                                <t t-if="o.po_type != 'non_tradable'">
+                                                    <strong>Order Analysis #</strong>
+                                                </t>
+                                                <!--                                                <t t-if="o.requisition_id">-->
+                                                <t t-if="o.po_type == 'non_tradable'">
+                                                    <strong>RFQ #</strong>
+                                                </t>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <!--                                                <t t-if="not o.requisition_id">-->
+                                                <t t-if="o.po_type != 'non_tradable'">
+                                                    <t t-esc="o.order_analysis"/>
+                                                </t>
+                                                <!--                                                <t t-if="o.requisition_id">-->
+                                                <t t-if="o.po_type == 'non_tradable'">
+                                                    <t t-esc="o.name"/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Incoterm</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.incoterm_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Currency</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.currency_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Payment Term</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.payment_term_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Payment Type</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.payment_type.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Shipment Mode</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px; padding-left: 5px;">
+                                                <t t-esc="dict(o._fields['shipment_mode'].selection).get(o.shipment_mode)"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+                                <!-- Delivery Details Section -->
+                                <td style="width: 33%; vertical-align: top;">
+                                    <table class="table table-sm" style="width:100%; border-collapse: collapse;"
+                                           border="1">
+                                        <!--                                        <tr t-if="o.requisition_id">-->
+                                        <tr t-if="o.po_type == 'non_tradable'">
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Delivery Before</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.date_planned.strftime('%d-%m-%Y')"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Delivery Location</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.picking_type_id.warehouse_id.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Delivery To Contact</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.delivery_to_contact.name"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Shipping Remarks</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.shipping_remarks"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Packaging Remarks</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.packaging_remarks"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Insurance Detail</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.insurance_detail"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <strong>Special Condition</strong>
+                                            </td>
+                                            <td style="border: 1px solid black; padding-left: 5px;">
+                                                <t t-esc="o.special_condition"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <div class="mt32">
+                            <p>
+                                <span>
+                                    <strong>PO Remark :</strong>
+                                    <t t-esc="o.po_remarks"/>
+                                </span>
+                            </p>
+                            <p>
+                                <strong>We Confirm the Order for the Following:</strong>
+                            </p>
+
+                            <!--                                Table Body Start-->
+                            <table class="table table-sm table-bordered " style="width:100%; text-align:center;">
+                                <thead>
+                                    <tr>
+                                        <th style="background: yellow1; width: 5%; text-align:center;">#</th>
+                                        <th>Item Code &amp; Description
+                                            <!--                                            <t t-if="not o.requisition_id">&amp; Barcode</t>-->
+                                            <t t-if="o.po_type != 'non_tradable'">&amp; Barcode</t>
+                                        </th>
+                                        <!--                                        <th t-if="not o.requisition_id">Vendor Item Code</th>-->
+                                        <th t-if="o.po_type != 'non_tradable'">Vendor Item Code</th>
+                                        <th t-if="o.po_type != 'non_tradable'">Package</th>
+                                        <th t-if="o.po_type != 'non_tradable'">Package Qty</th>
+                                        <th t-if="o.po_type != 'non_tradable'">Package Price</th>
+
+
+                                        <th>Unit Qty</th>
+                                        <!--                                        <th t-if="not o.requisition_id">Package Qty</th>-->
+
+                                        <!--                                        <th t-if="not o.requisition_id">Package</th>-->
+                                        <th>Unit Price</th>
+                                        <!--                                        <th t-if="not o.requisition_id">Package Price</th>-->
+
+                                        <th>Net Amount</th>
+                                        <th>Tax %</th>
+                                        <th>Tax Amount</th>
+                                        <th>Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="counter" t-value="1"/>
+                                    <t t-foreach="o.order_line" t-as="line">
+                                        <tr>
+                                            <td style="background: yellow1;">
+                                                <t t-esc="counter"/>
+                                            </td>
+                                            <td class="text-start">
+                                                <t t-esc="line.name" t-options="{'widget': 'text'}"/>
+                                                <!--                                                <t t-if="not o.requisition_id and line.product_id.barcode">-->
+                                                <t t-if="o.po_type != 'non_tradable' and line.product_id.barcode">
+                                                    <!--                                                    &amp;-->
+                                                    <br/>
+                                                    <t t-esc="line.product_id.barcode"/>
+                                                </t>
+
+                                                <!--                                                <t t-esc="line.product_id.default_code"/>-->
+                                                <!--                                                <br/>-->
+                                                <!--                                                <t t-if="not o.requisition_id and line.product_id.barcode">-->
+                                                <!--                                                    <t t-esc="line.product_id.barcode"/>-->
+                                                <!--                                                    <br/>-->
+                                                <!--                                                </t>-->
+                                                <!--                                                <t t-esc="line.product_id.name"/>-->
+                                                <!--                                                <t t-if="line.name != line.product_id.display_name">-->
+                                                <!--                                                    <t t-esc="line.name" t-options="{'widget': 'text'}"/>-->
+                                                <!--                                                </t>-->
+
+
+                                                <!--                                                <t t-esc="line.name" t-options="{'widget': 'text'}"/>-->
+                                            </td>
+                                            <!--                                            <td t-if="not o.requisition_id">-->
+                                            <td t-if="o.po_type != 'non_tradable'">
+                                                <t t-esc="line.vendor_item_code or ''"/>
+                                            </td>
+                                            <td t-if="o.po_type != 'non_tradable'">
+                                                <t t-esc="line.product_packaging_id.name or ' '"/>
+                                            </td>
+                                            <td t-if="o.po_type != 'non_tradable'">
+                                                <span t-out="'{:,}'.format(int(line.product_packaging_qty))"/>
+
+<!--                                                <t t-esc="line.product_packaging_qty or ' '"/>-->
+                                            </td>
+
+                                            <td t-if="o.po_type != 'non_tradable'">
+                                                <span t-out="'{:,.2f} {}'.format(round(line.package_price, 2), o.currency_id.symbol)"/>
+
+<!--                                                <t t-esc="round(line.package_price, 2) or '0'"/>-->
+                                            </td>
+
+                                            <td>
+                                                <t t-esc="'{:,}'.format(int(line.product_uom_qty))"/>
+                                            </td>
+                                            <!--                                            <td t-if="not o.requisition_id">-->
+
+                                            <!--                                            <td t-if="not o.requisition_id">-->
+
+                                            <td>
+                                                <span t-out="'{:,.2f} {}'.format(line.price_unit, o.currency_id.symbol)"/>
+                                            </td>
+                                            <!--                                            <td t-if="not o.requisition_id">-->
+
+                                            <td>
+                                                <span t-out="'{:,.2f} {}'.format(line.price_subtotal, o.currency_id.symbol)"/>
+<!--                                                <t t-esc="round(line.price_subtotal,2)"/>-->
+                                            </td>
+                                            <td>
+                                                <span t-out="', '.join(map(lambda x: (x.name), line.taxes_id))"/>
+                                            </td>
+                                            <td>
+                                                <span t-out="'{:,.2f} {}'.format(line.price_tax, o.currency_id.symbol)"/>
+<!--                                                <t t-esc="round(line.price_tax, 2)"/>-->
+                                            </td>
+                                            <td>
+                                                <span t-out="'{:,.2f} {}'.format(line.price_total, o.currency_id.symbol)"/>
+<!--                                                <t t-esc="round(line.price_total,2)"/>-->
+                                            </td>
+                                        </tr>
+                                        <t t-set="counter" t-value="counter + 1"/>
+                                    </t>
+
+                                    <!--                     Total Row-->
+                                    <tr style="background: yellow1; font-weight: bold;">
+                                        <td colspan="2" style="text-align: left; padding-left:10px;">Total</td>
+                                        <!--                                        <td t-if="not o.requisition_id" colspan="6"></td>-->
+                                        <td t-if="o.po_type != 'non_tradable'" colspan="6"></td>
+                                        <!--                                        <td t-if="o.requisition_id" colspan="2"></td>-->
+                                        <td t-if="o.po_type == 'non_tradable'" colspan="2"></td>
+                                        <td>
+                                            <span t-out="'{:,.2f} {}'.format(sum(o.order_line.mapped('price_subtotal')), o.currency_id.symbol)"/>
+<!--                                            <t t-esc="round(sum(o.order_line.mapped('price_subtotal')), 2)"/>-->
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <span t-out="'{:,.2f} {}'.format(sum(o.order_line.mapped('price_tax')), o.currency_id.symbol)"/>
+<!--                                            <t t-esc="round(sum(o.order_line.mapped('price_tax')), 2)"/>-->
+                                        </td>
+                                        <td>
+                                            <span t-out="'{:,.2f} {}'.format(sum(o.order_line.mapped('price_total')), o.currency_id.symbol)"/>
+<!--                                            <t t-esc="round(sum(o.order_line.mapped('price_total')), 2)"/>-->
+                                        </td>
+                                    </tr>
+                                    <tr style="background: yellow1; font-weight: bold;">
+                                        <td colspan="2" style="text-align: left; padding-left:10px;">Total in Words</td>
+                                        <!--                                        <td t-if="not o.requisition_id" colspan="10">-->
+                                        <td t-if="o.po_type != 'non_tradable'" colspan="10">
+                                            <span t-esc="o.amount_to_text(o.amount_total)"/>
+                                        </td>
+                                        <!--                                        <td t-if="o.requisition_id" colspan="6">-->
+                                        <td t-if="o.po_type == 'non_tradable'" colspan="6">
+                                            <span t-esc="o.amount_to_text(o.amount_total)"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!--                            Table Body End-->
+
+                        </div>
+
+
+                        <!--      last part of the report                  -->
+                        <div class="mt32"/>
+                        <div class="col-12 row" style="page-break-inside: avoid;">
+                            <div class="col-4 mt64">
+                                <span>
+                                    <t t-esc="o.user_id.name"/> <br/>
+                                </span>
+                                <br/>
+                                <strong>Buyer</strong>
+                            </div>
+                            <div class="col-4 mt64"/>
+
+                            <div class="col-4 text-left mt64" style="margin-right:60px;">
+                                <span>
+                                    <t t-esc="o.po_approve_by.name"/>
+                                <br/>
+                                </span>
+                                <br/>
+                                <strong>Approved by </strong>
+                            </div>
+
+
+<!--                            <div class="col-3 text-center" style="border: 1px solid black; height:150px; width:225px;">-->
+<!--                                <span></span>-->
+<!--                                <br/>-->
+<!--                                <span class="text-muted">-->
+<!--                                  Gulfco Digital Stamp-->
+<!--                                  <img width="300px" t-if="o.company_id.digitized_signature" t-att-src="image_data_uri(o.company_id.digitized_signature)" class="company-digitized_signature"/>-->
+<!--                                </span>-->
+<!--                            </div>-->
+
+
+                        </div>
+                        <div class="row col-12 mt64 mb8">
+                                <span></span>
+                                <br/>
+                            <div class="text-left col-2"/>
+<!--                                <span class="text ">-->
+<!--&lt;!&ndash;                                    <strong>Gulfco Digital Stamp:</strong>&ndash;&gt;-->
+
+<!--                                </span>-->
+<!--                            </div>-->
+                            <div class="text-left col-8">
+                                <span>
+                                  <img width="500px" t-if="o.company_id.digitized_signature" t-att-src="image_data_uri(o.company_id.digitized_signature)" class="company-digitized_signature"/>
+                                </span>
+                            </div>
+                             <div class="text-left col-2"/>
+
+                        </div>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <record id="paperformat_rfq_purchase_order" model="report.paperformat">
+        <field name="name">A4 RFQ/Purchase Paperformat</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">35</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">40</field>
+        <field name="dpi">90</field>
+        <field name="css_margins" eval="True"/>
+    </record>
+
+
+    <record id="action_report_rfq_purchase_order" model="ir.actions.report">
+        <field name="name">RFQ/Purchase Order</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="print_report_name">'RFQ/Purchase Order - %s' % (object.name)</field>
+        <field name="report_name">purchase_line_views.report_rfq_purchase_order</field>
+        <field name="report_file">purchase_line_views.report_rfq_purchase_order</field>
+        <field name="paperformat_id" ref="purchase_line_views.paperformat_rfq_purchase_order"/>
+
+    </record>
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_move_form_transfer_inherited" model="ir.ui.view">
+        <field name="name">account.payment.form.transfer</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_type']" position="before">
+                <label for="is_internal_transfer"/>
+                <div>
+                    <field name="is_internal_transfer" readonly="state != 'draft'"/>
+                    <span invisible="paired_internal_transfer_payment_id or not is_internal_transfer or state != 'draft'"
+                          class="fst-italic">
+                        A second payment will be created in the destination journal.
+                    </span>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id']" position="before">
+                <field name="destination_journal_id"
+                       placeholder="e.g. Cash"
+                       context="{'default_partner_id': partner_id}"
+                       invisible="not is_internal_transfer"
+                       readonly="state != 'draft'"
+                       required="is_internal_transfer and state == 'draft'"/>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                 <div class="alert alert-warning text-center" role="alert" invisible="not is_internal_transfer or not require_partner_bank_account or partner_bank_id">
+                    The selected payment method requires a bank account but none is set on
+                    <button class="oe_link alert-link" type="object" name="action_open_destination_journal" style="padding: 0; vertical-align: baseline;">the destination journal</button>.
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id'][1]" position="attributes">
+                <attribute name="invisible">not show_partner_bank_account or partner_type != 'customer' or is_internal_transfer or payment_type == 'inbound'</attribute>
+                <attribute name="required">require_partner_bank_account and not is_internal_transfer</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id'][2]" position="attributes">
+                <attribute name="invisible">not show_partner_bank_account or partner_type != 'supplier' or is_internal_transfer or payment_type == 'inbound'</attribute>
+                <attribute name="required">require_partner_bank_account and not is_internal_transfer</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id'][3]" position="attributes">
+                <attribute name="invisible">not show_partner_bank_account or is_internal_transfer or payment_type == 'outbound'</attribute>
+                <attribute name="required">require_partner_bank_account and not is_internal_transfer</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id'][1]" position="attributes">
+                <attribute name="invisible">partner_type != 'customer' or is_internal_transfer</attribute>
+            </xpath>
+               <xpath expr="//field[@name='partner_id'][2]" position="attributes">
+                <attribute name="invisible">partner_type != 'supplier' or is_internal_transfer </attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

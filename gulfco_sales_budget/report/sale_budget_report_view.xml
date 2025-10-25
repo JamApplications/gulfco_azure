@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="sale_budget_report_pivot_view" model="ir.ui.view">
+            <field name="name">sale.budget.report.pivot</field>
+            <field name="model">sale.budget.report</field>
+            <field name="arch" type="xml">
+                <pivot string="Sale Budget Report">
+                    <field name="sale_budget_month" type="col"/>
+                    <field name="product_id" type="row"/>
+                    <field name="sales_volume" type="measure"/>
+                    <field name="sales_value" type="measure"/>
+                    <field name="cogs" type="measure"/>
+                    <field name="margin" type="measure"/>
+                    <field name="gp" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+    <record id="action_sale_budget_report" model="ir.actions.act_window">
+        <field name="name">Sale Budget Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.budget.report</field>
+        <field name="view_mode">pivot</field>
+    </record>
+</odoo>

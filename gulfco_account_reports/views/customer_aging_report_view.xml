@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_account_customer_aging_list_view" model="ir.ui.view">
+        <field name="name">account.customer.aging.report.list</field>
+        <field name="model">account.customer.aging.report</field>
+        <field name="arch" type="xml">
+            <list>
+<!--                <field name="partner_id"/>-->
+                <field name="customer_name"/>
+                <field name="customer_number"/>
+                <field name="customer_class"/>
+                <field name="customer_category"/>
+                <field name="status"/>
+                <field name="branch"/>
+<!--                <field name="payment_term"/>-->
+<!--                <field name="payment_method"/>-->
+<!--                <field name="credit_limit_data"/>-->
+<!--                <field name="outstanding"/>-->
+<!--                <field name="uncovered"/>-->
+<!--                <field name="current"/>-->
+<!--                <field name="b_31_60"/>-->
+<!--                <field name="collector_name"/>-->
+<!--                <field name="collection_status"/>-->
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_account_customer_aging_report" model="ir.actions.act_window">
+        <field name="name">Customer Aging Report</field>
+        <field name="res_model">account.customer.aging.report</field>
+        <field name="view_mode">list</field>
+        <field name="context">{}</field>
+    </record>
+
+
+    <menuitem id="menu_customer_aging_report_ar"
+              name="Customer Aging Report"
+              parent="account.account_reports_partners_reports_menu"
+              action="action_account_customer_aging_report"  sequence="53"/>
+</odoo>
+<!--parent="account.menu_finance_entries"-->

@@ -1,0 +1,25 @@
+<odoo>
+    <record id="action_product_registration_wizard" model="ir.actions.act_window">
+        <field name="name">Product Registration</field>
+        <field name="res_model">product.registration.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_product_registration_wizard_form" model="ir.ui.view">
+        <field name="name">product.registration.wizard.form</field>
+        <field name="model">product.registration.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Product Registration">
+                <group>
+                    <field name="filename" invisible="1"/>
+                    <field name="file" filename="filename"/>
+                </group>
+                <footer>
+                    <button string="Create Data" type="object" name="create_data" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

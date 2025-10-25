@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mobile_app_manager,gulfco.mobile.app manager,model_gulfco_mobile_app,group_mobile_app_management,1,1,1,1
+access_app_version_line_manager,app.version.line manager,model_app_version_line,group_mobile_app_management,1,1,1,1
+access_app_worker_config,app worker config manager,model_worker_config,group_mobile_app_management,1,1,1,1

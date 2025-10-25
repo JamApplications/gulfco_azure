@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="product_detailed_data_inherit_simple_form" model="ir.ui.view">
+        <field name="name">product.detailed.data.inherit.form.simple</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+<!--            <xpath expr="/form" position="attributes">-->
+<!--                <attribute name="create">False</attribute>-->
+<!--            </xpath>-->
+            <xpath expr="//page[@name='inventory']" position="inside">
+                <group string="UoM" invisible="type in ['consu', 'service', 'combo'] and is_storable == False">
+                    <group>
+                        <field name="unit_length"/>
+                        <field name="unit_width"/>
+                        <field name="unit_height"/>
+                        <field name="unit_volume_cbn" invisible="1"/>
+                        <label for="volume" string="Unit Volume CBM"
+                               invisible="product_variant_count &gt; 1 and not is_product_variant"/>
+                        <div class="o_row" name="volume"
+                             invisible="product_variant_count &gt; 1 and not is_product_variant">
+                            <field name="volume" string="Volume" class="oe_inline"/>
+                            <field name="volume_uom_name" invisible="1"/>
+                        </div>
+                        <label for="weight" invisible="product_variant_count &gt; 1 and not is_product_variant"/>
+                        <div class="o_row" name="weight"
+                             invisible="product_variant_count &gt; 1 and not is_product_variant">
+                            <field name="weight" class="oe_inline"/>
+                            <field name="weight_uom_name"/>
+                        </div>
+                        <field name="type_uom_packaging" invisible="1"/>
+                        <field name="uom_packaging_material" invisible="1"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="product_specification" string="Product Specification"
+                      invisible="type in ['consu', 'service', 'combo'] and is_storable == False">
+
+<!--                    <group>-->
+
+                        <button name="open_packaging_wizard" string="Add Package" type="object"/>
+                         <group name="packaging" string="Packaging"
+                                colspan="4"
+                                invisible="(type != 'consu' or product_variant_count &gt; 1) and not is_product_variant"
+                                groups="product.group_stock_packaging">
+                                <field colspan="2" name="packaging_ids" nolabel="1" context="{'list_view_ref':'product.product_packaging_tree_view2', 'default_company_id': company_id}"/>
+                         </group>
+<!--                    </group>-->
+                    <group>
+                        <group string="Manufacturer">
+                            <!--                            <label for="manufacturer_id" string="Manufacturer/Factory"/>-->
+                            <field name="manufacturer_id"/>
+                            <span class="o_form_label o_td_label o_address_type" name="address_name">
+                                <span>Address</span>
+                            </span>
+                            <div class="o_address_format">
+                                <field name="manufacturer_street" placeholder="Street..."
+                                       class="o_address_street"/>
+                                <field name="manufacturer_street_2" placeholder="Street 2..."
+                                       class="o_address_street"/>
+                                <field name="manufacturer_city" placeholder="City" class="o_address_city"/>
+                                <field name="manufacturer_state_id" class="o_address_state"
+                                       placeholder="State"/>
+                                <field name="manufacturer_zip" placeholder="ZIP" class="o_address_zip"/>
+                                <div name="partner_address_country" class="d-flex justify-content-between">
+                                    <field name="manufacturer_country_id" placeholder="Country"
+                                           class="o_address_country"/>
+                                </div>
+                            </div>
+                        </group>
+                        <group name="other_info_specification" string="Specification">
+                            <field name="no_box_ctn" invisible="1"/>
+                            <field name="no_ctn_pallets" invisible="1"/>
+                            <field name="no_ctn_layer"/>
+                            <field name="no_pcs_layer"/>
+                            <field name="no_ctn_layer_pallet"/>
+                            <field name="cartoon_cbm"/>
+                        </group>
+                        <group>
+                            <field name="no_pallet_20_container"/>
+                            <field name="no_pallet_40_container"/>
+                            <field name="cartoon_net_weight"/>
+                            <field name="cartoon_gross_weight"/>
+                            <field name="min_invoiceable_qty"/>
+                        </group>
+                        <group>
+                            <field name="trans_temp"/>
+                            <field name="storage_temp"/>
+                            <field name="storage_condition"/>
+                            <field name="sale_clearance_required"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="brand_id" required="type == 'consu' and is_storable == True"/>
+                <field name="division"/>
+            </xpath>
+            <xpath expr="//field[@name='route_ids']" position="attributes">
+                <attribute name="string">Promotion / Regular</attribute>
+            </xpath>
+            <xpath expr="//label[@for='name']" position="attributes">
+                <attribute name="string">Description</attribute>
+                <attribute name="required">1</attribute>
+            </xpath>
+            <!--            <xpath expr="//field[@name='type']" position="attributes">-->
+            <!--                <attribute name="string">Item Type</attribute>-->
+            <!--            </xpath>-->
+
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="item_type" required="type == 'consu' and is_storable == True" invisible="type !='consu'"/>
+                <field name="item_description" required="0" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='uom_id']" position="attributes">
+                <attribute name="string">UoM</attribute>
+            </xpath>
+            <xpath expr="//label[@for='weight']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[@name='weight']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='volume']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[@name='volume']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_detailed_data_inherit_accounting_form" model="ir.ui.view">
+        <field name="name">product.detailed.data.inherit.form.accounting</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='invoicing']" position="inside">
+                <group string="Additional Info"
+                       invisible="type in ['consu', 'service', 'combo'] and is_storable == False">
+                    <field name="costing_dept_code_id" required="type == 'consu' and is_storable == True"/>
+                    <field name="exercise_tax_id"/>
+                    <field name="exercise_price"/>
+                    <field name="is_hazmat"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_only_detailed_data_inherit_accounting_form" model="ir.ui.view">
+        <field name="name">product.detailed.only.data.inherit.form.accounting</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="attributes">
+                <attribute name="string">Gulfco code</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_product_detailed_data_inherit_accounting_form" model="ir.ui.view">
+        <field name="name">product.product.only.data.inherit.form.accounting</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+
+<!--            <xpath expr="//list" position="attributes">-->
+<!--                    <attribute name="create">false</attribute>-->
+<!--                </xpath>-->
+
+            <xpath expr="//field[@name='uom_id']" position="attributes">
+                <attribute name="string">UoM</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="product_supplierinfo_data_inherit_accounting_form" model="ir.ui.view">
+        <field name="name">product.product.supplierinfo.data.inherit.form.accounting</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_name']" position="attributes">
+                <attribute name="string">Vendor Item Category</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="supplier_type_id"/>
+                <field name="est_landed_cost"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

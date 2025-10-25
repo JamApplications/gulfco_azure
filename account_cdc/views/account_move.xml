@@ -1,0 +1,28 @@
+<odoo>
+
+    <record id="account_move_cdc_form_inherit" model="ir.ui.view">
+        <field name="name">account.move.cdc.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account_pdc.account_move_form_inherit"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <field name="cheque_payment_id" invisible="1"/>
+                <field name="is_cdc_receivable_entry" invisible="1"/>
+                <field name="is_pdc_receivable_entry" invisible="1"/>
+                <button class="oe_stat_button" name="action_open_related_cdc"
+                        type="object" icon="fa-envelope-o"
+                        invisible="cheque_payment_id == False or is_cdc_receivable_entry == False">
+                    <span>1 CDC</span>
+                </button>
+            </div>
+            <button name="action_open_related_pdc" position="replace">
+                <button class="oe_stat_button" name="action_open_related_pdc"
+                        type="object" icon="fa-envelope-o"
+                        invisible="cheque_payment_id == False or is_pdc_receivable_entry == False">
+                    <span>1 PDC</span>
+                </button>
+            </button>
+        </field>
+    </record>
+
+</odoo>

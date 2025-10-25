@@ -1,0 +1,14 @@
+<odoo>
+    <record id="view_employee_form_inherit_barcode_pin" model="ir.ui.view">
+        <field name="name">hr.employee.form.barcode.pin</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='hr_settings']" position="inside">
+                <group string="Barcode Inventory" name="barcode_inventory">
+                    <field name="barcode_pin"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Inherit Form View to Modify it -->
+    <record id="gulfco_stock_scrap_form_view_inherit_custom" model="ir.ui.view">
+        <field name="name">gulfco.stock.scrap.form.view.inherit.custom</field>
+        <field name="model">stock.scrap</field>
+        <field name="inherit_id" ref="stock.stock_scrap_form_view"/>
+        <field name="arch" type="xml">
+            <!--action_view_stock_valuation_layers-->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object"
+                        name="action_view_stock_valuation_layers"
+                        class="oe_stat_button" icon="fa-dollar"
+                        invisible="state != 'done'">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Valuation</span>
+                    </div>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

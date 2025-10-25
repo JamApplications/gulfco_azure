@@ -1,0 +1,12 @@
+<odoo>
+    <record id="view_move_search_inherit_stock_account_ext" model="ir.ui.view">
+        <field name="name">view.move.search.inherit.stock.account.ext</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_search" />
+        <field name="arch" type="xml">
+            <filter name="ready" position="attributes">
+                <attribute name="string">Reserved</attribute>
+            </filter>
+        </field>
+    </record>
+</odoo>

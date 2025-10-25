@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_account_payment_term_form_inherit" model="ir.ui.view">
+        <field name="name">account.payment.term.form.inherit</field>
+        <field name="model">account.payment.term</field>
+        <field name="inherit_id" ref="account.view_payment_term_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[1]" position="after">
+                <label for="is_cach" string="Is Cash?"/>
+                <field name="is_cach"/>
+                <label for="calculation_based_on" string="Calculation Based On"/>
+                <field name="calculation_based_on" class="w-25"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

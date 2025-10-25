@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_notification_config_settings,notification.config.settings,model_notification_config,base.group_system,1,1,1,1
+access_notification_config_user,notification.config.user,model_notification_config,base.group_user,1,0,0,0
+access_notification_state_value,notification.state.value,model_notification_state_value,base.group_user,1,0,0,0
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- inherit view_stock_move_line_operation_tree -->
+    <record id="view_stock_move_line_operation_tree_inbound" model="ir.ui.view">
+        <field name="name">stock.move.line.operation.tree.inbound</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="product_expiry.view_stock_move_line_operation_tree_expiry"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='expiration_date']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='lot_name']" position="before">
+                <field name="move_id" column_invisible="1"/>
+                <field name="quantity" force_save="1" column_invisible="1"/>
+
+                <field name="production_date"/>
+                <!--        <field name="expiration_days" optional="show"/>-->
+                  <field name="expiration_date" force_save="1" readonly="0" column_invisible="0"
+                 decoration-danger="is_expired if state == 'done' else expiration_date &lt; context_today().strftime('%Y-%m-%d')"
+                 decoration-bf="is_expired if state == 'done' else expiration_date &lt; context_today().strftime('%Y-%m-%d')" widget="only_date"/>
+            </xpath>
+            <xpath expr="//field[@name='lot_name']" position="after">
+                <field name="internal_reference"/>
+            </xpath>
+
+<!--            <xpath expr="//field[@name='expiration_date']" position="attributes">-->
+<!--                <attribute name="readonly">0</attribute>-->
+<!--                <attribute name="column_invisible">0</attribute>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+
+    <record id="view_stock_move_line_operation_tree_inbouding_lot" model="ir.ui.view">
+        <field name="name">stock.move.line.operation.list.finished</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="stock.view_stock_move_line_operation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_id']" position="attributes">
+                <attribute name="column_invisible">parent.has_tracking == 'none' or parent.show_lots_text</attribute>
+                <attribute name="string">Batch/Lot number.</attribute>
+            </xpath>
+            <xpath expr="//field[@name='lot_name']" position="attributes">
+                <attribute name="string">Batch/Lot number.</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

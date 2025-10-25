@@ -1,0 +1,42 @@
+<odoo>
+    <record id="account_journal_form_inherit" model="ir.ui.view">
+        <field name="name">account.journal.form.inherit</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_cdc" invisible="type != 'bank'"/>
+            </xpath>
+            <xpath expr="//notebook/page[@id='outbound_payment_settings']/field[@name='outbound_payment_method_line_ids']/list"
+                   position="inside">
+                <field name="is_cdc_payable"/>
+            </xpath>
+
+
+            <xpath expr="//notebook" position="inside">
+                <page name="cdc_receivable_setting" string="CDC Receivable Settings"
+                       invisible="is_cdc == False">
+                    <group>
+                        <group string="Incoming CDC Account">
+                            <field name="cdc_notes_receivable_account_id" required="is_cdc == True"/>
+                            <field name="cdc_check_under_collection_account_id" required="is_cdc == True"/>
+                            <field name="write_off_cdc_account_id" required="is_cdc == True"/>
+                            <field name="cdc_bounce_receivable_account_id" required="is_cdc == True"/>
+                            <field name="cdc_bounce_beneficiaries_account_id" required="is_cdc == True"/>
+                        </group>
+                    </group>
+                </page>
+                <page name="cdc_payable_setting" string="CDC Payable Settings"
+                      invisible="type != 'bank' or is_cdc == False">
+                    <group>
+                        <group string="Outgoing CDC Account">
+                            <field name="cdc_notes_payable_account_id"/>
+                            <field name="cdc_payable_under_collection_account_id"/>
+                        </group>
+                    </group>
+                </page>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

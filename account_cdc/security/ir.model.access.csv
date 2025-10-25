@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_deposit_cdc_readonly,access.account.deposit.cdc.readonly,account_cdc.model_account_deposit_cdc,account.group_account_readonly,1,0,0,0
+access_account_hand_over_cdc_readonly,access.account.hand.over.cdc.readonly,account_cdc.model_account_hand_over_cdc,account.group_account_readonly,1,0,0,0
+access_account_deposit_cdc_billing,access.account.deposit.cdc.billing,account_cdc.model_account_deposit_cdc,account.group_account_invoice,1,1,1,0
+access_account_hand_over_cdc_billing,access.account.hand.over.cdc.billing,account_cdc.model_account_hand_over_cdc,account.group_account_invoice,1,1,1,0
+access_account_deposit_cdc_manager,access.account.deposit.cdc.manager,account_cdc.model_account_deposit_cdc,account.group_account_manager,1,1,1,1
+access_account_hand_over_cdc_manager,access.account.hand.over.cdc.manager,account_cdc.model_account_hand_over_cdc,account.group_account_manager,1,1,1,1
+access_account_payment_cash_manager,access.account.payment.cash.cdc.manager,account_cdc.model_account_payment_cash,account.group_account_invoice,1,1,1,1
+access_account_payment_cdc_writeoff_manager,access.account.payment.cdc.writeoff.cdc.manager,account_cdc.model_account_payment_cdc_writeoff,account.group_account_invoice,1,1,1,1
+access_account_payment_cdc_collection_fees_manager,access.account.payment.cdc.collection.fees.cdc.manager,account_cdc.model_account_payment_cdc_collection_fees,account.group_account_invoice,1,1,1,1
+access_account_payment_cdc_collect_manager,access.account.payment.cdc.collect.cdc.manager,account_cdc.model_account_payment_cdc_collect,account.group_account_invoice,1,1,1,1
+access_account_payment_cdc_bounce_manager,access.account.payment.cdc.bounce.cdc.manager,account_cdc.model_account_payment_cdc_bounce,account.group_account_invoice,1,1,1,1
+access_account_payment_cdc_payable_clear_manager,access.account.payment.cdc.payable.clear.cdc.manager,account_cdc.model_account_payment_cdc_payable_clear,account.group_account_invoice,1,1,1,1
+access_account_hand_over_reject_manager,access.account.hand.over.reject.manager,account_cdc.model_account_hand_over_reject,account.group_account_invoice,1,1,1,1
+access_account_payment_cdc_payable_delivered_manager,access.account.payment.cdc.payable.delivered.cdc.manager,account_cdc.model_account_payment_cdc_payable_delivered,account.group_account_invoice,1,1,1,1
+access_cheque_refusal_wizard,access_cheque_refusal_wizard,model_cheque_refusal_wizard,,1,1,1,1

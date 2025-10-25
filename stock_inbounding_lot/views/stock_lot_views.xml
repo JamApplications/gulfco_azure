@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="gulfco_view_move_form_expiry_form_inherit" model="ir.ui.view">
+        <field name="name">gulfco.view.move.form.expiry.inherit</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="product_expiry.view_move_form_expiry"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='expiration_date']" position="before">
+                <field name="production_date"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

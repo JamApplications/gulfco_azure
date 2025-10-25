@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="gulfco_report_followup_print_all" inherit_id="account_followup.report_followup_print_all">
+        <xpath expr="//div[hasclass('page')]" position="after">
+            <div class="page">
+                <span t-out="doc.get_soa_html(options)">SOA details</span>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+rma_analysis_excel_wizard_user,RMA Analysis Excel Wizard (User),model_rma_analysis_excel_wizard,base.group_user,1,1,1,1
+rma_analysis_excel_wizard_admin,RMA Analysis Excel Wizard (Admin),model_rma_analysis_excel_wizard,base.group_system,1,1,1,1

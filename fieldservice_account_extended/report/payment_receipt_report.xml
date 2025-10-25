@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_payment_receipt_voucher_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <style>
+    .thermal-receipt {
+        font-family: monospace;
+        font-size: 8px;
+        width: 68mm;
+        margin: 0 auto;
+        padding-left: 2mm;
+        padding-right: 2mm;
+        box-sizing: border-box;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    th, td {
+        font-size: 8px;
+        padding: 1px 2px;
+        white-space: normal;
+        word-break: break-word;
+        vertical-align: top;
+    }
+</style>
+                <t t-call="web.basic_layout">
+                    <t t-set="company" t-value="doc.company_id"/>
+<!--                    <div class="thermal-receipt" style="font-size:8px;" t-attf-style="background-image: url('/gulfco_sale_extanded/static/src/img/Cancelled.png');background-position: center; background-size: cover;background-size::85mm 160mm;">-->
+                    <div class="thermal-receipt" style="font-size:8px;">
+                        <!-- Header -->
+                        <div class="text-center">
+                            <img style="max-width: 280px; max-height: 80px; width: auto; height: auto; object-fit: contain;" src="/gulfco_sale_extanded/static/src/img/company_logo.png" alt="Logo"/>
+                            <strong t-esc="company.name"/>
+                            <br/>
+                            <span t-esc="company.street"/>
+                            <br/>
+                            <span t-esc="company.vat"/>
+                            <br/>
+                            <strong>RECEIPT VOUCHER</strong>
+                        </div>
+                        <hr/>
+                        <table style="font-size:8px;width: 100%; border: none; border-collapse: collapse; border-color:white!important;">
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>Customer Account #</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                     <t t-if="doc.partner_id.property_account_receivable_id">
+                                        <span t-esc="doc.partner_id.property_account_receivable_id.display_name"/>
+                                    </t>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Receipt No</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>Customer Name</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.partner_id.name"/>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Date &amp; Time</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.date"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>Address</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.partner_id.contact_address"/>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Collector</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.collector_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>TRN No</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.partner_id.vat_trn"/>
+                                </td>
+                                <td style="width: 25%;">
+                                    <strong>Notes</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.memo"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%;">
+                                    <strong>Currency</strong>
+                                </td>
+                                <td style="width: 25%;">
+                                    <span t-esc="doc.currency_id.name"/>
+                                </td>
+                                <td style="width: 25%;"></td>
+                                <td style="width: 25%;"></td>
+                            </tr>
+                        </table>
+                        <hr/>
+                        <t t-set="settlement_invoice_ids" t-value="doc.get_settlement_invoice()"/>
+                        <strong>Payment Details</strong>
+                        <table class="table table-sm" style="width: 100%; table-layout: fixed; font-size: 8px; margin-top: 5px;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">#</th>
+                                    <th style="width: 22%;">Method</th>
+                                    <th style="width: 18%;">Bank</th>
+                                    <th style="width: 15%;">Chq No</th>
+                                    <th style="width: 15%;">Maturity</th>
+                                    <th style="width: 10%; text-align:right;">Paid</th>
+                                    <th style="width: 7%; text-align:right;">Rate</th>
+                                    <th style="width: 8%; text-align:right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td style="word-break: break-word;">
+                                        <span t-esc="doc.payment_method_line_id.display_name"/>
+                                    </td>
+                                    <td style="word-break: break-word;">
+                                        <t t-if="doc.payment_mode == 'pdc'">
+                                            <span t-esc="doc.pdc_bank_id.name"/>
+                                        </t>
+                                        <t t-elif="doc.payment_mode == 'cdc'">
+                                            <span t-esc="doc.cdc_bank_id.name"/>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <t t-if="doc.payment_mode == 'pdc'">
+                                            <span t-esc="doc.pdc_ref"/>
+                                        </t>
+                                        <t t-elif="doc.payment_mode == 'cdc'">
+                                            <span t-esc="doc.cdc_ref"/>
+                                        </t>
+                                    </td>
+                                    <td><span t-esc="doc.due_date"/></td>
+                                    <td style="text-align: right;">
+                                        <t t-if="settlement_invoice_ids">
+                                            <span t-esc="doc.amount_company_currency_signed"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span>0.0</span>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <span t-esc="doc.rate"/>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <span t-esc="doc.amount"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            <strong>Amount in Words:</strong>
+                            <span t-esc="doc.currency_id.amount_to_text(doc.amount).replace(',', '')"/>
+                        </p>
+
+                        <strong>Settlement Details</strong>
+                        <t t-if="settlement_invoice_ids">
+                            <hr/>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Invoice</th>
+                                        <th>Date</th>
+                                        <th>Due</th>
+                                        <th>Paid</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="counter" t-value="1"/>
+                                    <t t-foreach="settlement_invoice_ids" t-as="line">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="counter"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line.invoice_date"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line.amount_residual"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line.amount_total - line.amount_residual"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="line.remark_invoice"/>
+                                            </td>
+                                        </tr>
+                                        <t t-set="counter" t-value="counter + 1"/>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                        <table style="font-size: 8px;width: 100%; border: none; border-collapse: collapse; border-color:white!important;">
+                            <tr>
+                            <td width="25%"><strong>Created By</strong></td>
+                            <td  t-esc="doc.create_uid.name" width="25%"/>
+                            <td width="50%"/>
+                            </tr>
+                            <tr>
+                                <td width="25%"><strong>Staff No</strong></td>
+                                <td t-esc="doc.collector_id.worker_code or ''" width="25%"/>
+                                <td width="50%"/>
+                            </tr>
+                            <tr>
+                                <td width="25%"><strong>Staff Name</strong></td>
+                                <td t-esc="doc.collector_id.name" width="25%"/>
+                                <td width="50%"/>
+                            </tr>
+                        </table>
+                        <hr/>
+
+                        <p class="text-center">Thank you for your payment!</p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_receipt_4inch" model="report.paperformat">
+        <field name="format">custom</field>
+        <field name="name">POS Thermal Receipt</field>
+        <field name="format">custom</field>
+        <field name="page_width" eval="102"/>
+        <field name="page_height" eval="208"/>
+        <field name="margin_top" eval="2"/>
+        <field name="margin_bottom" eval="10"/>
+        <field name="margin_left" eval="2"/>
+        <field name="margin_right" eval="2"/>
+        <field name="orientation">Portrait</field>
+        <field name="dpi" eval="80"/>
+    </record>
+
+    <record id="action_report_payment_receipt_voucher" model="ir.actions.report">
+        <field name="name">Payment Receipt Voucher(4inch)</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fieldservice_account_extended.report_payment_receipt_voucher_pdf</field>
+        <field name="report_file">fieldservice_account_extended.report_payment_receipt_voucher_pdf</field>
+        <field name="binding_model_id" ref="account.model_account_payment"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="fieldservice_account_extended.paperformat_receipt_4inch"/>
+    </record>
+</odoo>

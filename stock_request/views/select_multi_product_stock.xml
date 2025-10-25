@@ -1,0 +1,32 @@
+<odoo>
+
+    <record id="stock_multi_product_selection_wizard_form" model="ir.ui.view">
+        <field name="name">stock.multi.product.selection.wizard.form</field>
+        <field name="model">stock.multi.product.selection</field>
+        <field name="arch" type="xml">
+            <form string="Select Multiple Products">
+                <group>
+                    <field name="product_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="display_name" string="Name"/>
+                            <field name="quantity_stock" invisible="0"/>
+                        </list>
+                    </field>
+                </group>
+                <footer>
+                    <button class="btn-primary" name="add_products" type="object" string="Apply"/>
+                    Or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_select_multi_product_wizard" model="ir.actions.act_window">
+        <field name="name">Select Multiple Products</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.multi.product.selection</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

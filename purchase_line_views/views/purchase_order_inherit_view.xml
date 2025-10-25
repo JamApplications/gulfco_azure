@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_asn_request_form" model="ir.actions.act_window">
+            <field name="name">ASN Request</field>
+            <field name="res_model">asn.request</field>
+            <field name="view_mode">form</field>
+    </record>
+
+    <record id="create_asn_from_purchase_lines_action" model="ir.actions.server">
+        <field name="name">Generate ASN Document</field>
+        <field name="model_id" ref="purchase.model_purchase_order_line"/>
+        <field name="binding_model_id" ref="purchase.model_purchase_order_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="sequence">1001</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+            action = records.action_asn_create()
+
+        </field>
+    </record>
+
+
+    <record id="purchase_order_line_search_inherit_view" model="ir.ui.view">
+        <field name="name">purchase.order.line.search.inherit</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase.purchase_order_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_date_order']" position="after">
+                <field name="is_received_less_than_ordered"/>
+                <filter name="filter_received_less_than_ordered" string="Received &lt; Ordered"
+                        domain="[('is_received_less_than_ordered', '=', True)]"/>
+            </xpath>
+        </field>
+
+    </record>
+
+    <record id="purchase_order_form_inherit_view" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="open_asn_link" type="object" class="oe_stat_button" icon="fa-pencil"
+                        invisible="asn_count == 0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="asn_count"/>
+                        </span>
+                        <span class="o_stat_text">ASN list</span>
+                    </div>
+                </button>
+                 <button name="action_view_bill_matching"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-random"
+                        invisible="state not in ('purchase', 'done')">
+                    <field name="id" invisible="1"/>
+                    <span class="o_stat_text">Purchase Bill Matching Report</span>
+                </button>
+            </div>
+            <xpath expr="//header" position="inside">
+                <button name="action_po_amendment" string="Amendment" type="object" class="btn btn-primary" invisible="is_full_received or state != 'purchase'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="domain">[('contact_type', 'in', ['supplier', 'both']), ('supplier_type', '=', po_category)]</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="po_category" readonly="state not in ('draft', 'sent')"/>
+            </xpath>
+            <xpath expr="//sheet/group/group[1]" position="inside">
+                <field name="po_type" string="Purchase Type" readonly="state not in ('draft', 'sent')"/>
+                <field name="vendor_trn" readonly="state not in ('draft', 'sent')"/>
+                <field name="supplier_contact" readonly="state not in ('draft', 'sent')" invisible="po_category == 'local'"/>
+                <field name="shipping_remarks" invisible="po_category == 'local'"/>
+                <field name="packaging_remarks" invisible="po_category == 'local'"/>
+                <field name="insurance_detail" invisible="po_category == 'local'"/>
+                <field name="special_condition" invisible="po_category == 'local'"/>
+            </xpath>
+            <xpath expr="//sheet/group/group[2]" position="inside">
+                <field name="order_analysis" invisible="po_category == 'local'"/>
+
+                <field name="payment_term_id" readonly="1" force_save="1"/>
+<!--                readonly="state not in ('draft', 'sent')"/>-->
+                <field name="payment_type" readonly="state not in ('draft', 'sent')"/>
+                <field name="shipment_mode" invisible="po_category == 'local'"/>
+                <field name="delivery_to_contact" invisible="po_category == 'local'"/>
+                <field name="po_remarks" />
+<!--                invisible="po_category == 'local'"/>-->
+            </xpath>
+            <xpath expr="//page[@name='purchase_delivery_invoice']//field[@name='payment_term_id']" position="replace">
+                <field name="revision"/>
+            </xpath>
+            
+            <!--
+                PO lines becomes readonly based on the following conditions:
+                  - If the purchase order type (po_type) is not 'non_tradable' and the order state is not 'draft'.
+                  - OR, if the purchase order type is 'non_tradable', there are no service products (has_service_products is False), and the order state is not 'draft'.
+                 Ref: TASK-13875, TASK-15170
+            -->
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="readonly">(po_type != 'non_tradable' and state != 'draft') or (po_type == 'non_tradable' and not has_service_products and state not in ('draft', 'sent'))</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="attributes">
+                <attribute name="context">{'po_type_context': po_type}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="before">
+                <field name="po_type" column_invisible="1"/>
+                <field name="po_line_index"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_packaging_qty']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_packaging_id']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="after">
+                <field name="is_existing_line" column_invisible="1"/>
+                <field name="vendor_item_code"/>
+                <field name="product_packaging_qty"  groups="product.group_stock_packaging" optional="show"/>
+                <field name="product_packaging_id" context="{'default_product_id': product_id, 'list_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" groups="product.group_stock_packaging" optional="show"/>
+                <field name="package_price" optional="show"/>
+                <field name="asn_released_qty"/>
+                <field name="available_qty_to_release"/>
+                <field name="rdd"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='order_line']//list//field[@name='taxes_id']" position="after">
+                <field name="price_tax" string="Tax Amount"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='price_unit']" position="after">
+                <field name="is_excise" readonly="1" force_save="1"/>
+                <field name="exercise_price" readonly="1"/>
+                <field name="excise_price_total"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="gulfco_purchase_order_kpis_tree" model="ir.ui.view">
+        <field name="name">gulfco.purchase.order.inherit.purchase.order.list</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_kpis_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                 <button name="action_view_multiple_bill_matching" type="object" string="Purchase Bill Matching Report"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

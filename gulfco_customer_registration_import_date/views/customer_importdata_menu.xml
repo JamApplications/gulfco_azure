@@ -1,0 +1,6 @@
+<odoo>
+    <menuitem id="contact_registration_menu" name="Customer Registration Import Data"
+              action="gulfco_customer_registration_import_date.action_customer_registration_wizard"
+              parent="gulfco_contact_registration_custom.menu_contact_registration"
+              sequence="1"/>
+</odoo>

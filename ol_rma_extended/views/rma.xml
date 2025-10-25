@@ -1,0 +1,33 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="fmcg_gulfco_rma_form_view_inherit_return_caused_by_domain">
+            <field name="name">rma.form.inherit.return.caused.by.domain</field>
+            <field name="model">rma</field>
+            <field name="inherit_id" ref="plnx_rma_extended.fmcg_gulfco_rma_form_view"/>  <!-- Use the original view's XML ID here -->
+            <field name="arch" type="xml">
+                <!-- Locate the return_caused_by field -->
+<!--                <xpath expr="//field[@name='return_caused_by']" position="attributes">-->
+<!--                    &lt;!&ndash; Apply domain on return_caused_by field &ndash;&gt;-->
+<!--                    <attribute name="domain">[('id', 'in', return_caused_by_ids)]</attribute>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='operation_id']" position="after">
+                    <field name="return_reason_ids" widget="many2many_tags" invisible="1"/>
+                    <field name="return_caused_by_ids" widget="many2many_tags" invisible="1"/>
+                    <field name="return_reason_id"/>
+                    <field name="return_reason_type_id"/>
+                    <field name="return_caused_by_id"/>
+                </xpath>
+
+                 <xpath expr="//field[@name='line_ids']/list/field[@name='return_reason_id']" position="before">
+                         <field name="return_reason_ids" widget="many2many_tags" column_invisible="1"/>
+                         <field name="return_caused_by_ids" widget="many2many_tags" column_invisible="1"/>
+                 </xpath>
+                 <xpath expr="//field[@name='product_line_ids']/list/field[@name='return_reason_id']" position="before">
+                         <field name="return_reason_ids" widget="many2many_tags" column_invisible="1"/>
+                         <field name="return_caused_by_ids" widget="many2many_tags" column_invisible="1"/>
+                 </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

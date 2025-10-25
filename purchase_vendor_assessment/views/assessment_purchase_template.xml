@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="assessment_purchase_template_view_list" model="ir.ui.view">
+        <field name="name">assessment_purchase_template_view_list</field>
+        <field name="model">assessment.purchase.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="partner_categ_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+    <record id="assessment_purchase_template_view_filter" model="ir.ui.view">
+        <field name="name">assessment_purchase_template_view_filter</field>
+        <field name="model">assessment.purchase.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+    <record id="assessment_purchase_template_view_form" model="ir.ui.view">
+        <field name="name">assessment_purchase_template_view_form</field>
+        <field name="model">assessment.purchase.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_categ_ids" widget="many2many_tags"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details" name="lines">
+                            <field name="line_ids">
+                                <list editable="top">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="criteria_id" options="{'no_create': true, 'no_open': true}"/>
+                                    <field name="point_min" sum="Total Min"/>
+                                    <field name="point_max" sum="Total Max"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Results" name="results">
+                            <field name="result_ids">
+                                <list editable="top">
+                                    <field name="result_id" options="{'no_create': true, 'no_open': true}"/>
+                                    <field name="point_max" string="Max Point" sum="Total Max"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="assessment_purchase_template_action" model="ir.actions.act_window">
+        <field name="name">Purchase Assessment</field>
+        <field name="res_model">assessment.purchase.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="view_id" eval="False" />
+    </record>
+</odoo>

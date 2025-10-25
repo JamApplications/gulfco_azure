@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="view_hr_expense_sheet_form_outbouding" model="ir.ui.view">
+            <field name="name">hr.expense.sheet.form.outbouding</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="financial_approve" class="btn-primary" invisible="state != 'approve'" type="object" string="Financial Approve" groups="account.group_account_manager"/>
+                    <button name="action_director_approval" class="btn-primary" invisible="state != 'financial_approval'" type="object" string="Director Approve" groups="stock_inventory_adjustment.group_director_approval"/>
+                </xpath>
+                <xpath expr="//header/field[@name='state']" position="attributes">
+                    <attribute name="statusbar_visible">draft,submitted,approved,financial_approval,director_approval,open,cancel,done</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_sheet_move_post']" position="attributes">
+                    <attribute name="invisible">state != 'director_approval'</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sale_order_id']" position="after">
+                    <field name="vendor"/>
+                    <field name="vendor_trn"/>
+                    <field name="invoice_no"/>
+                    <field name="invoice_date"/>
+                </xpath>
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="responsible_id" invisible="1"/>
+                    <field name="responsible_employee_id" string="Responsible"/>
+                </xpath>
+                <xpath expr="//field[@name='sale_order_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr_expense_view_form_inherit_trn" model="ir.ui.view">
+            <field name="name">hr.expense.view.form.inherit.trn</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="responsible_id" invisible="1"/>
+                     <field name="responsible_employee_id" string="Responsible"/>
+                </xpath>
+                <xpath expr="//field[@name='vendor_id']" position="after">
+                    <field name="vendor"/>
+                    <field name="vendor_trn"/>
+                </xpath>
+                <xpath expr="//field[@name='vendor_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='analytic_distribution']" position="after">
+                    <field name="invoice_no"/>
+                    <field name="invoice_date"/>
+                </xpath>
+                <xpath expr="//field[@name='tax_ids']" position="attributes">
+                    <attribute name="required">is_editable</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_employee_form_inherit_stock_outbouding_operation" model="ir.ui.view">
+            <field name="name">hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='hr_settings']" position="after">
+                    <page name="accounting" string="Accounting">
+                        <group>
+                            <field name="employee_limit"/>
+                        </group>`
+                    </page>
+                </xpath>
+            </field>
+    </record>
+    </data>
+</odoo>

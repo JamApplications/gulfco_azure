@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_access_override_cash_limit" model="res.groups">
+        <field name="name">Override Cash Transaction Limit</field>
+    </record>
+
+    <record id="group_access_bu_credit_limit" model="res.groups">
+        <field name="name">BU Credit</field>
+    </record>
+
+
+
+
+</odoo>

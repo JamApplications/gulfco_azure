@@ -1,0 +1,29 @@
+<odoo>
+    <odoo>
+        <record id="display_area_view_tree" model="ir.ui.view">
+            <field name="name">Display Area Tree</field>
+            <field name="model">display.area</field>
+            <field name="arch" type="xml">
+                <list string="Display Area" editable="top">
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="action_display_area" model="ir.actions.act_window">
+            <field name="name">Display Area</field>
+            <field name="res_model">display.area</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="display_area_view_tree"/>
+        </record>
+
+
+        <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
+        <menuitem id="merchandiser" name="Merchandiser" parent="fieldservice.config"
+                  groups="plnx_sales_team.group_sales_team_merchandiser"/>
+        <menuitem id="display_area_menu" name="Display Area" parent="merchandiser" action="action_display_area"/>
+
+
+    </odoo>
+</odoo>

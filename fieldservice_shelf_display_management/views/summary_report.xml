@@ -1,0 +1,7 @@
+<odoo>
+    <menuitem id="menu_action_fsm_summary_report_wizard"
+              name="Summary Report"
+              parent="fieldservice.reporting"
+              action="action_fsm_summary_report_wizard"
+    />
+</odoo>

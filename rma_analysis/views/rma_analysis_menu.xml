@@ -1,0 +1,23 @@
+<odoo>
+    <!-- ننشئ قائمة "التقارير" تحت RMA (قبل Configuration لأنه sequence=25 < 30) -->
+    <menuitem id="gulfco_rma_reporting_menu"
+              name="Reports"
+              parent="rma.rma_menu"
+              sequence="25"/>
+
+    <!-- Action الويزارد -->
+    <record id="action_rma_analysis_excel_wizard" model="ir.actions.act_window">
+        <field name="name">RMA Analysis - Excel</field>
+        <field name="res_model">rma.analysis.excel.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- بند التقرير تحت "التقارير" -->
+    <menuitem id="menu_rma_analysis_excel"
+              name="RMA Analysis - Excel"
+              parent="gulfco_rma_reporting_menu"
+              action="action_rma_analysis_excel_wizard"
+              sequence="10"/>
+</odoo>

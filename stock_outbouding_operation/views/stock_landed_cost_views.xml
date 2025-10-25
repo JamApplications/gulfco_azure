@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id='view_asn_landed_costs_form' model='ir.ui.view'>
+        <field name="name">asn.landed.cost.form</field>
+        <field name="model">stock.landed.cost</field>
+        <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
+        <field name="arch" type="xml">
+            <field name="picking_ids" position="attributes">
+                <attribute name="domain">[
+                        '|',('asn_no_id', 'in', asn_ids),
+                        ('company_id', '=', company_id), ('move_ids.stock_valuation_layer_ids', '!=', False)
+                    ]
+                </attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
