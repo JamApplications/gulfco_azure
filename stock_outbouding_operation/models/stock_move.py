@@ -290,35 +290,37 @@ class StockMove(models.Model):
 
     @api.depends('origin', 'move_line_ids.result_package_id.name')
     def _compute_pack_reference(self):
-        _logger.info("STOCK_OUTPOUND_OPERATION _compute_pack_reference")
-        moves = self.filtered('origin')
-        others = self - moves
-        for m in others:
-            m.pack_reference = False
-        if not moves:
+        """Compute pack reference from the first package in move lines."""
+        # Clear pack_reference for records without origin
+        records_without_origin = self.filtered(lambda m: not m.origin)
+        records_without_origin.pack_reference = False
+        
+        records_with_origin = self - records_without_origin
+        if not records_with_origin:
             return
-
-        origins = tuple({m.origin for m in moves})
-
-        # Single cheap SELECT (no writes): earliest package name per origin
+        
+        # Batch fetch: get first package name per origin in a single query
+        origins = tuple(records_with_origin.mapped('origin'))
+        
         self.env.cr.execute("""
             SELECT DISTINCT ON (sm.origin)
-                   sm.origin,
-                   sp.name
+                sm.origin,
+                sp.name
             FROM stock_move_line sml
-            JOIN stock_move sm ON sm.id = sml.move_id
-            JOIN stock_quant_package sp ON sp.id = sml.result_package_id
+            INNER JOIN stock_move sm ON sm.id = sml.move_id
+            INNER JOIN stock_quant_package sp ON sp.id = sml.result_package_id
             WHERE sm.origin IN %s
-              AND sp.name IS NOT NULL AND sp.name <> ''
+            AND sp.name IS NOT NULL 
+            AND sp.name != ''
             ORDER BY sm.origin, sml.id
-        """, [origins])  # <-- tuple (remember ('S86470',) for single item)
+        """, (origins,))
+        
+        pack_by_origin = dict(self.env.cr.fetchall())
+        
+        # Assign pack references in batch
+        for record in records_with_origin:
+            record.pack_reference = pack_by_origin.get(record.origin, False)
 
-        first_by_origin = dict(self.env.cr.fetchall())
-        _logger.info("STOCK_OUTPOUND_OPERATION end _compute_pack_reference")
-        for m in moves:
-            _logger.info("STOCK_OUTPOUND_OPERATION end _compute_pack_reference")
-            m.pack_reference = first_by_origin.get(m.origin) or False
-        _logger.info("STOCK_OUTPOUND_OPERATION end after assign _compute_pack_reference")
 
     def ship_confirm_button_validate(self):
         pickings = self.mapped('picking_id').filtered(lambda p: p.state not in ('done', 'cancel'))
