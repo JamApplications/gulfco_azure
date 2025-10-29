@@ -8,6 +8,11 @@ import math
 import io
 import zipfile
 import base64
+import logging
+import time
+from collections import defaultdict
+
+_logger = logging.getLogger(__name__)
 
 
 class StockPicking(models.Model):
@@ -17,6 +22,14 @@ class StockPicking(models.Model):
     draft_trigger = fields.Boolean(string='Draft trigger')
     delivery_planned_date = fields.Date('Delivery Planned date')
     priority_no = fields.Integer("Priority")
+    invoice_no = fields.Char(relayted='sale_id.invoice_number', string='Invoice No.')
+    invoice_date = fields.Date(relayted='sale_id.invoice_date', string='Invoice Date')
+    untaxed_invoice_amount = fields.Monetary(related='sale_id.untaxed_invoice_amount', string='UnTaxed Invoice Amount')
+    currency_id = fields.Many2one('res.currency', string='Currency')
+    assign_to = fields.Many2one('res.partner', related='sale_id.assign_to', string='Assign To')
+
+
+
 
     @api.depends('state', 'picking_type_id', 'picking_type_id.name')
     def _compute_status_label(self):
@@ -77,13 +90,18 @@ class StockPicking(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        _logger.info("STOCK_OUTBOUNDING_OPERATIONCREATE222222222")
         created_pickings = super().create(vals_list)
         for record in self:
             if record.is_out_type and record.picking_driver_id:
                 previous_transfers = self.env['stock.picking']
                 pickings = record._get_previous_transfers()
                 pickings = pickings.filtered(lambda s:s.id != record.id)
+                _logger.info("STOCK_OUTBOUNDING_OPERATIONCREATE222222222 %s" %pickings)
+                i = 0
                 while pickings:
+                    i += 1
+                    _logger.info("STOCK_OUTBOUNDING_OPERATIONLOOP %s " %i)
                     if len(pickings) == 1:
                         previous_transfers += pickings
                         pickings = pickings._get_previous_transfers()
@@ -94,17 +112,25 @@ class StockPicking(models.Model):
                 if previous_transfers:
                     previous_transfers.sudo().with_context(set_driver_previous=True).write(
                         {'picking_driver_id': record.picking_driver_id.id})
+        _logger.info("END STOCK_OUTBOUNDING_OPERATIONCREATE222222222")
         return created_pickings
 
     def write(self, vals):
+        _logger.info("STOCK_OUTBOUNDING_OPERATIONWRITE222222222")
         res = super(StockPicking, self).write(vals)
         if not self.env.context.get('set_driver_previous'):
+            _logger.info("STOCK_OUTBOUNDING_OPERATIONWRITE222222222 INSIDE IF")
             for record in self:
                 if vals.get('picking_driver_id') and record.is_out_type and record.picking_driver_id:
                     previous_transfers = self.env['stock.picking']
                     pickings = record._get_previous_transfers()
                     pickings = pickings.filtered(lambda s: s.id != record.id)
+                    _logger.info("STOCK_OUTBOUNDING_OPERATIONWRITE222222222 %s" % pickings)
+
+                    i = 0
                     while pickings:
+                        _logger.info("inside the loop %s" % i)
+
                         if len(pickings) == 1:
                             previous_transfers += pickings
                             pickings = pickings._get_previous_transfers()
@@ -114,6 +140,7 @@ class StockPicking(models.Model):
                                 pickings = p._get_previous_transfers()
                     if previous_transfers:
                         previous_transfers.sudo().with_context(set_driver_previous=True).write({'picking_driver_id': record.picking_driver_id.id})
+        _logger.info("END STOCK_OUTBOUNDING_OPERATIONWRITE222222222")
         return res
 
     # def make_all_delivery_planned(self):
@@ -304,6 +331,7 @@ class StockPicking(models.Model):
                                  ('internal_transfer', 'Internal Transfer'),
                                  ('foc_receiving', 'Foc Receiving'),
                                  ('miscellaneous_receiving', 'Miscellaneous Receiving'),
+                                 ('miscellaneous_issue_out', 'Miscellaneous Issue Out'),
                                  ('scrap_issuance', 'Scrap Issuance'),
                                  ('damage_expiry_issue_out', 'Damage Expiry Issue out'),
                                  ('stock_takeover', 'Stock Takeover'),
@@ -383,7 +411,7 @@ class StockPicking(models.Model):
                     and not record.forklift_partner_id
             ):
                 raise UserError(_("Please select Forklift "))
-        res = super().button_validate()
+        res = super(StockPicking, self).button_validate()
         self.custom_state_trigger = True
         return res
 
@@ -565,121 +593,327 @@ class StockPicking(models.Model):
         return action
 
     def action_put_in_pack(self, move_lines_to_pack=False):
+        """
+        Optimized version:
+        - No O(n^2) writes
+        - Batch create of stock.package_level
+        - Groups lines smart instead of recomputing everything per loop
+        """
         self.ensure_one()
-        if self.state not in ('done', 'cancel'):
-            move_line_ids = self._package_move_lines(move_lines_to_pack=move_lines_to_pack)
-            if move_line_ids:
-                if self.picking_type_code == 'incoming':
-                    in_stock_moves  = move_line_ids.mapped('move_id')
-                    # good_tag_id = self.env.ref('stock_3dbase.stock_location_tag_good')
-                    good_tag_id = self.env['stock.location.tag'].search([('is_inbound', '=', True)], limit=1)
-                    for in_stock_move in in_stock_moves:
-                        pallete_packages = in_stock_move.product_id.packaging_ids.filtered(
-                            lambda s: s.package_type_id.is_pallete_package)
-                        no_creating_package = 0
-                        for pallete_package in pallete_packages:
-                            move_quantity = sum(
-                                in_stock_move.filtered(lambda s: pallete_package in s.product_id.packaging_ids).mapped(
-                                    'quantity'))
-                            if pallete_package.qty > 0.0:
-                                no_creating_package += math.ceil(move_quantity / pallete_package.qty)
-                        # package_ids = []
-                        first_package = False
-                        if no_creating_package > 0:
-                            vals = {
-                                'stock_move_id': in_stock_move.id,
-                                'purchase_order_id': self.purchase_id.id,
-                            }
-                            if pallete_packages:
-                                vals['package_type_id'] = pallete_packages[0].package_type_id.id
-                            if good_tag_id:
-                                vals['tag_id'] = good_tag_id.id
-                            package_vals = [vals.copy() for _ in range(no_creating_package)]
-                            packages = self.env['stock.quant.package'].create(package_vals)
-                            first_package = packages[0].id
 
-                        # assign first pa
-                        # for i in range(no_creating_package):
-                        #     package = self.env['stock.quant.package'].create({'stock_move_id': in_stock_move.id,'purchase_order_id':self.purchase_id.id})
-                        #     if pallete_packages:
-                        #         package.package_type_id = pallete_packages[0].package_type_id.id
-                        #     if good_tag_id:
-                        #         package.tag_id = good_tag_id.id
-                        #     # package_type = in_stock_move.product_packaging_id.package_type_id
-                        #     # if len(package_type) == 1:
-                        #     #     package.package_type_id = package_type
-                        #     package_ids.append(package.id)
-                        move_line_ids.write({
-                            'result_package_id': first_package if first_package else False,
-                        })
-                        for picking in move_line_ids.mapped('picking_id'):
-                            picking_lines = move_line_ids.filtered(lambda ml: ml.picking_id == picking)
-                            self.env['stock.package_level'].with_context(from_put_in_pack=True).create({
-                                'package_id': first_package if first_package else False,
-                                'picking_id': picking.id,
-                                'location_id': picking_lines[0].location_id.id,
-                                'location_dest_id': picking_lines[0].location_dest_id.id,
-                                'move_line_ids': [(6, 0, picking_lines.ids)],
-                                'company_id': picking.company_id.id,
-                            })
-                    return True
-                elif self.picking_type_code == 'outgoing':
-                    out_move_line_ids = move_line_ids.filtered(lambda ml: ml.state != 'done')
-                    for move_line in out_move_line_ids:
-                        if not move_line.location_dest_id:
-                            product = move_line.product_id
-                            quantity = move_line.qty_done or move_line.product_uom_qty or 1.0
-                            default_dest_location = move_line._get_default_dest_location()
-                            if default_dest_location:
-                                location = default_dest_location._get_putaway_strategy(
-                                    product=product,
-                                    quantity=quantity,
-                                    package=False
-                                )
-                                if location:
-                                    move_line.location_dest_id = location.id
-                    pallete_package_type = self.env['stock.package.type'].search(
-                        [('is_pallete_package', '=', True)], limit=1
+        if self.state in ('done', 'cancel'):
+            # same behavior as core
+            raise UserError(_(
+                "There is nothing eligible to put in a pack. Either there are no quantities to put in a pack "
+                "or all products are already in a pack."
+            ))
+
+        # Step 1: which move lines are we actually packing
+        move_line_ids = self._package_move_lines(move_lines_to_pack=move_lines_to_pack)
+        if not move_line_ids:
+            raise UserError(_(
+                "There is nothing eligible to put in a pack. Either there are no quantities to put in a pack "
+                "or all products are already in a pack."
+            ))
+
+        # ======================================================================
+        # INCOMING / PURCHASE LOGIC
+        # ======================================================================
+        if self.picking_type_code == 'incoming' and self.trx_type in ['purchase']:
+
+            StockMoveLine = self.env['stock.move.line']
+            StockPackage = self.env['stock.quant.package']
+            PackageLevel = self.env['stock.package_level'].with_context(from_put_in_pack=True)
+
+            # 1. Pre-fetch inbound good tag once
+            good_tag_id = self.env['stock.location.tag'].search([('is_inbound', '=', True)], limit=1)
+
+            # 2. Group move lines by move_id so we don't re-touch the same lines 1000 times
+            lines_by_move = defaultdict(lambda: StockMoveLine.browse())
+            for ml in move_line_ids:
+                lines_by_move[ml.move_id.id] |= ml
+
+            package_level_vals_all = []
+
+            for move_id, lines in lines_by_move.items():
+                in_stock_move = lines[0].move_id
+                product = in_stock_move.product_id
+
+                # all pallet-type packagings for that product
+                pallete_packages = product.packaging_ids.filtered(
+                    lambda p: p.package_type_id.is_pallete_package
+                )
+
+                # How many pallets do we need?
+                # (If you actually depend on qty_done instead of in_stock_move.quantity,
+                #  replace getattr(...) with sum(lines.mapped('qty_done')) or similar.)
+                no_creating_package = 0
+                if pallete_packages:
+                    for pallete_package in pallete_packages:
+                        if pallete_package.qty > 0:
+                            move_quantity = getattr(in_stock_move, 'quantity', 0.0)
+                            no_creating_package += math.ceil(move_quantity / pallete_package.qty)
+
+                if no_creating_package <= 0:
+                    raise ValidationError(
+                        _("Please add Pallet for item %s") % (product.display_name,)
                     )
-                    if not pallete_package_type:
-                        raise UserError(
-                            "No pallet package type found. Please define one with 'Is Pallet Package' enabled.")
-                    grouped_by_location = {}
-                    for move_line in out_move_line_ids:
-                        key = move_line.location_dest_id.id
-                        grouped_by_location[key] = grouped_by_location.get(key, self.env['stock.move.line']) | move_line
-                    for location_dest_id, move_lines in grouped_by_location.items():
-                        driver_id = False
-                        if self.picking_driver_id:
-                            driver_id = self.picking_driver_id.id
-                        package = self.env['stock.quant.package'].create({
-                            'package_type_id': pallete_package_type.id,
-                            'purchase_order_id':self.purchase_id.id,
-                            'driver_id':driver_id
 
-                        })
-                        move_lines.write({
-                            'result_package_id': package.id,
-                        })
-                        for picking in move_lines.mapped('picking_id'):
-                            picking_lines = move_lines.filtered(lambda ml: ml.picking_id == picking)
-                            self.env['stock.package_level'].with_context(from_put_in_pack=True).create({
-                                'package_id': package.id,
-                                'picking_id': picking.id,
-                                'location_id': picking_lines[0].location_id.id,
-                                'location_dest_id': picking_lines[0].location_dest_id.id,
-                                'move_line_ids': [(6, 0, picking_lines.ids)],
-                                'company_id': picking.company_id.id,
-                            })
-                    return True
-                else:
-                    res = self._pre_put_in_pack_hook(move_line_ids)
-                    if not res:
-                        package = self._put_in_pack(move_line_ids)
-                        return self._post_put_in_pack_hook(package)
-                    return res
-            raise UserError(
-                _("There is nothing eligible to put in a pack. Either there are no quantities to put in a pack or all products are already in a pack."))
+                # Build base vals for ALL packages needed for this move
+                base_vals = {
+                    'stock_move_id': in_stock_move.id,
+                    'purchase_order_id': self.purchase_id.id,
+                }
+                if pallete_packages:
+                    base_vals['package_type_id'] = pallete_packages[0].package_type_id.id
+                if good_tag_id:
+                    base_vals['tag_id'] = good_tag_id.id
+
+                # Create N packages in one SQL call
+                packages = StockPackage.create([base_vals.copy() for _ in range(no_creating_package)])
+                first_package = packages[0]  # you only ever assign the first one downstream, so keep that behavior
+
+                # Assign that package ONCE to only these lines, not all lines
+                lines.write({'result_package_id': first_package.id})
+
+                # Prepare package_level rows grouped by picking (again, group once, not per line)
+                lines_by_picking = defaultdict(lambda: StockMoveLine.browse())
+                for ml in lines:
+                    lines_by_picking[ml.picking_id.id] |= ml
+
+                for picking_id, picking_lines in lines_by_picking.items():
+                    picking = picking_lines[0].picking_id
+                    package_level_vals_all.append({
+                        'package_id': first_package.id,
+                        'picking_id': picking.id,
+                        'location_id': picking_lines[0].location_id.id,
+                        'location_dest_id': picking_lines[0].location_dest_id.id,
+                        'move_line_ids': [(6, 0, picking_lines.ids)],
+                        'company_id': picking.company_id.id,
+                    })
+
+            # create ALL stock.package.level in one go
+            if package_level_vals_all:
+                PackageLevel.create(package_level_vals_all)
+
+            return True
+
+        # ======================================================================
+        # OUTGOING LOGIC
+        # ======================================================================
+        elif self.picking_type_code == 'outgoing':
+
+            StockMoveLine = self.env['stock.move.line']
+            StockPackage = self.env['stock.quant.package']
+            PackageLevel = self.env['stock.package_level'].with_context(from_put_in_pack=True)
+
+            # we only consider move lines that aren't done
+            out_move_line_ids = move_line_ids.filtered(lambda ml: ml.state != 'done')
+            if not out_move_line_ids:
+                return True
+
+            # auto-assign destination location if it's missing
+            lines_no_dest = out_move_line_ids.filtered(lambda ml: not ml.location_dest_id)
+            for ml in lines_no_dest:
+                product = ml.product_id
+                quantity = ml.qty_done or ml.product_uom_qty or 1.0
+                default_dest_location = ml._get_default_dest_location()
+                if default_dest_location:
+                    putaway_loc = default_dest_location._get_putaway_strategy(
+                        product=product,
+                        quantity=quantity,
+                        package=False,
+                    )
+                    if putaway_loc:
+                        ml.location_dest_id = putaway_loc.id
+
+            # Pallet package type (search once!)
+            pallete_package_type = self.env['stock.package.type'].search(
+                [('is_pallete_package', '=', True)],
+                limit=1
+            )
+            if not pallete_package_type:
+                raise UserError(
+                    _("No pallet package type found. Please define one with 'Is Pallet Package' enabled.")
+                )
+
+            # Group move lines by destination location so we make one pallet per drop location
+            lines_by_location = defaultdict(lambda: StockMoveLine.browse())
+            for ml in out_move_line_ids:
+                lines_by_location[ml.location_dest_id.id] |= ml
+
+            driver_id = self.picking_driver_id.id if self.picking_driver_id else False
+            package_level_vals_all = []
+
+            for location_dest_id, lines in lines_by_location.items():
+                # Create ONE package per location group
+                package = StockPackage.create({
+                    'package_type_id': pallete_package_type.id,
+                    'purchase_order_id': self.purchase_id.id,
+                    'driver_id': driver_id,
+                })
+
+                # assign that package to those lines in one write
+                lines.write({'result_package_id': package.id})
+
+                # now group these lines by picking to build package levels
+                lines_by_picking = defaultdict(lambda: StockMoveLine.browse())
+                for ml in lines:
+                    lines_by_picking[ml.picking_id.id] |= ml
+
+                for picking_id, picking_lines in lines_by_picking.items():
+                    picking = picking_lines[0].picking_id
+                    package_level_vals_all.append({
+                        'package_id': package.id,
+                        'picking_id': picking.id,
+                        'location_id': picking_lines[0].location_id.id,
+                        'location_dest_id': picking_lines[0].location_dest_id.id,
+                        'move_line_ids': [(6, 0, picking_lines.ids)],
+                        'company_id': picking.company_id.id,
+                    })
+
+            # one create instead of inside the loop
+            if package_level_vals_all:
+                PackageLevel.create(package_level_vals_all)
+
+            return True
+
+        # ======================================================================
+        # FALLBACK TO STANDARD BEHAVIOR
+        # ======================================================================
+        else:
+            res = self._pre_put_in_pack_hook(move_line_ids)
+            if not res:
+                package = self._put_in_pack(move_line_ids)
+                return self._post_put_in_pack_hook(package)
+            return res
+
+    # def action_put_in_pack(self, move_lines_to_pack=False):
+    #     self.ensure_one()
+    #     if self.state not in ('done', 'cancel'):
+    #         move_line_ids = self._package_move_lines(move_lines_to_pack=move_lines_to_pack)
+    #         if move_line_ids:
+    #             if self.picking_type_code == 'incoming' and self.trx_type in ['purchase']:
+    #                 in_stock_moves  = move_line_ids.mapped('move_id')
+    #                 # good_tag_id = self.env.ref('stock_3dbase.stock_location_tag_good')
+    #                 good_tag_id = self.env['stock.location.tag'].search([('is_inbound', '=', True)], limit=1)
+    #                 for in_stock_move in in_stock_moves:
+    #                     pallete_packages = in_stock_move.product_id.packaging_ids.filtered(
+    #                         lambda s: s.package_type_id.is_pallete_package)
+    #                     no_creating_package = 0
+    #                     for pallete_package in pallete_packages:
+    #                         move_quantity = sum(
+    #                             in_stock_move.filtered(lambda s: pallete_package in s.product_id.packaging_ids).mapped(
+    #                                 'quantity'))
+    #                         if pallete_package.qty > 0.0:
+    #                             no_creating_package += math.ceil(move_quantity / pallete_package.qty)
+    #                     # package_ids = []
+    #                     first_package = False
+    #                     if no_creating_package > 0:
+    #                         vals = {
+    #                             'stock_move_id': in_stock_move.id,
+    #                             'purchase_order_id': self.purchase_id.id,
+    #                         }
+    #                         if pallete_packages:
+    #                             vals['package_type_id'] = pallete_packages[0].package_type_id.id
+    #                         if good_tag_id:
+    #                             vals['tag_id'] = good_tag_id.id
+    #                         package_vals = [vals.copy() for _ in range(no_creating_package)]
+    #                         packages = self.env['stock.quant.package'].create(package_vals)
+    #                         first_package = packages[0].id
+    #                     else:
+    #                         raise ValidationError(
+    #                             f"Please add Pallet for item {in_stock_move.product_id.display_name}"
+    #                         )
+    #
+    #                     # assign first pa
+    #                     # for i in range(no_creating_package):
+    #                     #     package = self.env['stock.quant.package'].create({'stock_move_id': in_stock_move.id,'purchase_order_id':self.purchase_id.id})
+    #                     #     if pallete_packages:
+    #                     #         package.package_type_id = pallete_packages[0].package_type_id.id
+    #                     #     if good_tag_id:
+    #                     #         package.tag_id = good_tag_id.id
+    #                     #     # package_type = in_stock_move.product_packaging_id.package_type_id
+    #                     #     # if len(package_type) == 1:
+    #                     #     #     package.package_type_id = package_type
+    #                     #     package_ids.append(package.id)
+    #                     move_line_ids.write({
+    #                         'result_package_id': first_package if first_package else False,
+    #                     })
+    #                     spl_vals_list = []
+    #                     for picking in move_line_ids.mapped('picking_id'):
+    #                         picking_lines = move_line_ids.filtered(lambda ml: ml.picking_id == picking)
+    #                         spl_vals_list.append({
+    #                             'package_id': first_package if first_package else False,
+    #                             'picking_id': picking.id,
+    #                             'location_id': picking_lines[0].location_id.id,
+    #                             'location_dest_id': picking_lines[0].location_dest_id.id,
+    #                             'move_line_ids': [(6, 0, picking_lines.ids)],
+    #                             'company_id': picking.company_id.id,
+    #                         })
+    #                     self.env['stock.package_level'].with_context(from_put_in_pack=True).create(spl_vals_list)
+    #                 return True
+    #             elif self.picking_type_code == 'outgoing':
+    #                 out_move_line_ids = move_line_ids.filtered(lambda ml: ml.state != 'done')
+    #                 if not out_move_line_ids:
+    #                     return True
+    #                 for move_line in out_move_line_ids.filtered(lambda ml: not ml.location_dest_id):
+    #                     product = move_line.product_id
+    #                     quantity = move_line.qty_done or move_line.product_uom_qty or 1.0
+    #                     default_dest_location = move_line._get_default_dest_location()
+    #                     if default_dest_location:
+    #                         location = default_dest_location._get_putaway_strategy(
+    #                             product=product,
+    #                             quantity=quantity,
+    #                             package=False
+    #                         )
+    #                         if location:
+    #                             move_line.location_dest_id = location.id
+    #                 pallete_package_type = self.env['stock.package.type'].search(
+    #                     [('is_pallete_package', '=', True)], limit=1
+    #                 )
+    #                 if not pallete_package_type:
+    #                     raise UserError(
+    #                         "No pallet package type found. Please define one with 'Is Pallet Package' enabled.")
+    #                 # grouped_by_location = {}
+    #                 grouped_by_location = defaultdict(lambda: self.env['stock.move.line'])
+    #                 for move_line in out_move_line_ids:
+    #                     grouped_by_location[move_line.location_dest_id.id] |= move_line
+    #                 driver_id = self.picking_driver_id.id if self.picking_driver_id else False
+    #                 for location_dest_id, move_lines in grouped_by_location.items():
+    #                     # driver_id = False
+    #                     # if self.picking_driver_id:
+    #                     #     driver_id = self.picking_driver_id.id
+    #                     package = self.env['stock.quant.package'].create({
+    #                         'package_type_id': pallete_package_type.id,
+    #                         'purchase_order_id':self.purchase_id.id,
+    #                         'driver_id':driver_id
+    #
+    #                     })
+    #                     move_lines.write({
+    #                         'result_package_id': package.id,
+    #                     })
+    #                     spl_vals_list = []
+    #                     for picking in move_lines.mapped('picking_id'):
+    #                         picking_lines = move_lines.filtered(lambda ml: ml.picking_id == picking)
+    #                         spl_vals_list.append({
+    #                             'package_id': package.id,
+    #                             'picking_id': picking.id,
+    #                             'location_id': picking_lines[0].location_id.id,
+    #                             'location_dest_id': picking_lines[0].location_dest_id.id,
+    #                             'move_line_ids': [(6, 0, picking_lines.ids)],
+    #                             'company_id': picking.company_id.id,
+    #                         })
+    #                     self.env['stock.package_level'].with_context(from_put_in_pack=True).create(spl_vals_list)
+    #                 return True
+    #             else:
+    #                 res = self._pre_put_in_pack_hook(move_line_ids)
+    #                 if not res:
+    #                     package = self._put_in_pack(move_line_ids)
+    #                     return self._post_put_in_pack_hook(package)
+    #                 return res
+    #         raise UserError(
+    #             _("There is nothing eligible to put in a pack. Either there are no quantities to put in a pack or all products are already in a pack."))
 
     def action_print_related_so_invoices(self):
         invoice_ids = self.env['account.move']
